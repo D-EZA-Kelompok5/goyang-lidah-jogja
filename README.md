@@ -53,7 +53,6 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
    Fitur peta terintegrasi untuk membantu menemukan restoran terdekat.
 ##### Dikerjakan oleh: Rakabima Ghaniendra Rusdianto
 
-
 5. **Filter Pencarian**
    Pengguna dapat memfilter hasil pencarian berdasarkan kriteria seperti:
    - Kategori kuliner (Indonesian, Western, Korean, dll.)
@@ -63,8 +62,12 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 ##### Dikerjakan oleh: Vissuta Gunawan Lim
 
 6. **Kolom Announcement**  
-   Pemilik restoran dapat memposting pengumuman khusus terkait restoran mereka.
+   Restaurant owner dapat memposting pengumuman khusus terkait restoran mereka.
 ##### Dikerjakan oleh: Farhan Dwi Putra
+
+7. **CRUD Menu**
+   Restaurant owner dapat menambah, mengubah, dan menghapus menu pada restoran.
+#### Dikerjakan oleh: Vissuta Gunawan Lim
 
 ## Role & Permissions
 
