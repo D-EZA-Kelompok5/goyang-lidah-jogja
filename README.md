@@ -3,7 +3,7 @@
 - **Malvin Muhammad Raqin** - 2306275821
 - **Farhan Dwi Putra** - 2306245743
 - **Vissuta Gunawan Lim** - 2306214656
-- **Rakabima Ghaniendra Rusdianto** - 2306228472
+- **Rakabima Ghaniendra Rusdianto** - 2306228472 
 
 # GoyangLidahJogja
 
