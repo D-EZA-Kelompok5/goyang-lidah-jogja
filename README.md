@@ -17,7 +17,7 @@ GoyangLidahJogja adalah platform online yang dirancang untuk memudahkan Anda dal
 
 ## Masalah yang Ingin Ditangani
 
-Masalah utama yang ingin diatasi oleh **GoyangLidahJogja** adalah kebingungan dalam menemukan tempat makan yang sesuai dengan selera, harga, dan lokasi di tengah banyaknya pilihan kuliner di Yogyakarta. Baik wisatawan maupun penduduk lokal sering merasa kesulitan menentukan pilihan tempat makan yang sesuai dengan preferensi mereka.
+Masalah utama yang ingin diatasi oleh **GoyangLidahJogja** adalah kebingungan dalam menemukan tempat makan yang sesuai dengan selera, harga, dan lokasi di tengah banyaknya pilihan kuliner di Yogyakarta. Baik wisatawan, penduduk lokal, maupun pendatang yang merasa kesulitan menentukan pilihan tempat makan yang sesuai dengan preferensi mereka.
 
 ## Siapa yang Akan Terbantu
 
