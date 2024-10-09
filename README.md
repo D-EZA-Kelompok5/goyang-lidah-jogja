@@ -5,6 +5,8 @@
 - **Vissuta Gunawan Lim** - 2306214656
 - **Rakabima Ghaniendra Rusdianto** - 2306228472 
 
+**Tautan Deployment Aplikasi :**  http://vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id
+
 # GoyangLidahJogja
 
 GoyangLidahJogja adalah platform online yang dirancang untuk memudahkan Anda dalam menjelajahi, menemukan, dan menikmati ragam kuliner terbaik yang ada di Yogyakarta. Kami menyediakan informasi lengkap, rekomendasi akurat, dan ulasan jujur dari para pecinta kuliner dan komunitas lokal. Baik Anda seorang wisatawan yang ingin menikmati cita rasa khas Jogja atau penduduk lokal yang mencari referensi tempat makan baru, GoyangLidahJogja siap membantu Anda menemukan sajian kuliner yang memanjakan lidah.
@@ -87,7 +89,7 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
   - Memberikan announcement terkait restoran
   - Mengedit detail restoran (khusus untuk restoran yang dimiliki)
 
-## Sumber Daya Eksternal
+## Sumber Initial Dataset
 
 - [Google Sheets - Data Restoran](https://docs.google.com/spreadsheets/d/1CiyTyo6Z4WJ6JniwLJ9oCfMEon323hIYjYlfqgFiw_0/edit?usp=sharing)
 - [Trip Advisor - Restoran di Yogyakarta](https://www.tripadvisor.co.id/Restaurants-g14782503-Yogyakarta_Yogyakarta_Region_Java.html)
