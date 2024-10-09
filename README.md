@@ -9,7 +9,7 @@
 
 GoyangLidahJogja adalah platform online yang dirancang untuk memudahkan Anda dalam menjelajahi, menemukan, dan menikmati ragam kuliner terbaik yang ada di Yogyakarta. Kami menyediakan informasi lengkap, rekomendasi akurat, dan ulasan jujur dari para pecinta kuliner dan komunitas lokal. Baik Anda seorang wisatawan yang ingin menikmati cita rasa khas Jogja atau penduduk lokal yang mencari referensi tempat makan baru, GoyangLidahJogja siap membantu Anda menemukan sajian kuliner yang memanjakan lidah.
 
-## Visi & Misi
+## Visi & Misi  
 
 **Visi** kami adalah menjadi platform kuliner terdepan di Yogyakarta yang menyediakan rekomendasi restoran terpercaya dan berbasis preferensi pengguna, sekaligus membangun komunitas yang aktif berbagi pengalaman kuliner. Kami ingin membantu pengguna menemukan tempat makan yang tepat dengan mudah dan mendukung pemilik restoran dalam memperluas jangkauan bisnis mereka.
 
