@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Goyang Lidah Jogja</h1>
+
+<h5>Class: </h5>
+<p>{{ class }}</p>
+<h5>Group: </h5>
+<p>{{ group }}</p>
+
+<h5>Last login session: {{ last_login }}</h5>
+
+<a href="{% url 'main:logout' %}">
+    <button>Logout</button>
+</a>
+{% endblock content %}
