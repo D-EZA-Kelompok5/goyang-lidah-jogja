@@ -4,7 +4,9 @@
 - **Malvin Muhammad Raqin** - 2306275821
 - **Farhan Dwi Putra** - 2306245743
 - **Vissuta Gunawan Lim** - 2306214656
-- **Rakabima Ghaniendra Rusdianto** - 2306228472
+- **Rakabima Ghaniendra Rusdianto** - 2306228472 
+
+**Tautan Deployment Aplikasi :**  http://vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id
 
 # GoyangLidahJogja
 
@@ -18,7 +20,7 @@ GoyangLidahJogja adalah platform online yang dirancang untuk memudahkan Anda dal
 
 ## Masalah yang Ingin Ditangani
 
-Masalah utama yang ingin diatasi oleh **GoyangLidahJogja** adalah kebingungan dalam menemukan tempat makan yang sesuai dengan selera, harga, dan lokasi di tengah banyaknya pilihan kuliner di Yogyakarta. Baik wisatawan maupun penduduk lokal sering merasa kesulitan menentukan pilihan tempat makan yang sesuai dengan preferensi mereka.
+Masalah utama yang ingin diatasi oleh **GoyangLidahJogja** adalah kebingungan dalam menemukan tempat makan yang sesuai dengan selera, harga, dan lokasi di tengah banyaknya pilihan kuliner di Yogyakarta. Baik wisatawan, penduduk lokal, maupun pendatang yang merasa kesulitan menentukan pilihan tempat makan yang sesuai dengan preferensi mereka.
 
 ## Siapa yang Akan Terbantu
 
@@ -54,7 +56,6 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
    Fitur peta terintegrasi untuk membantu menemukan restoran terdekat.
 ##### Dikerjakan oleh: Rakabima Ghaniendra Rusdianto
 
-
 5. **Filter Pencarian**
    Pengguna dapat memfilter hasil pencarian berdasarkan kriteria seperti:
    - Kategori kuliner (Indonesian, Western, Korean, dll.)
@@ -64,8 +65,12 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 ##### Dikerjakan oleh: Vissuta Gunawan Lim
 
 6. **Kolom Announcement**  
-   Pemilik restoran dapat memposting pengumuman khusus terkait restoran mereka.
+   Restaurant owner dapat memposting pengumuman khusus terkait restoran mereka.
 ##### Dikerjakan oleh: Farhan Dwi Putra
+
+7. **CRUD Menu**
+   Restaurant owner dapat menambah, mengubah, dan menghapus menu pada restoran.
+#### Dikerjakan oleh: Vissuta Gunawan Lim
 
 ## Role & Permissions
 
@@ -85,7 +90,7 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
   - Memberikan announcement terkait restoran
   - Mengedit detail restoran (khusus untuk restoran yang dimiliki)
 
-## Sumber Daya Eksternal
+## Sumber Initial Dataset
 
 - [Google Sheets - Data Restoran](https://docs.google.com/spreadsheets/d/1CiyTyo6Z4WJ6JniwLJ9oCfMEon323hIYjYlfqgFiw_0/edit?usp=sharing)
 - [Trip Advisor - Restoran di Yogyakarta](https://www.tripadvisor.co.id/Restaurants-g14782503-Yogyakarta_Yogyakarta_Region_Java.html)
