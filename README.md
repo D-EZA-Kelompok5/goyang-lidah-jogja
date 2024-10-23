@@ -39,8 +39,8 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 
 ## Fitur Utama
 
-1. **Rekomendasi Kuliner Berdasarkan Preferensi Pengguna**  
-   Setiap restoran akan memiliki "tags" yang mendeskripsikan jenis makanannya (misalnya: Japanese, Italian). Rekomendasi yang muncul akan sesuai dengan tags yang dipilih pengguna.
+1. **Informasi Seputar Event Kuliner**  
+   Admin dapat mambuat announcement tentang informasi event kuliner yang bisa dilihat oleh customer dan pemilik resto.
 ##### Dikerjakan oleh: Rakabima Ghaniendra Rusdianto
    
 2. **GoyangNanti**  
@@ -70,12 +70,12 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 ## Role & Permissions
 
 - **Admin**: 
-  - Tambah/Hapus restoran
-  - Tambah/Hapus produk
+  - Tambah/Hapus Informasi Event
   
 - **Customer**: 
   - Mencari restoran
   - Memberikan ulasan restoran
+  - Menambah produk ke wishlist
   - Mendapatkan level berdasarkan jumlah ulasan yang diberikan:
     - Bronze: 15x Review
     - Silver: 25x Review
