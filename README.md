@@ -41,7 +41,7 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 
 1. **Rekomendasi Kuliner Berdasarkan Preferensi Pengguna**  
    Setiap restoran akan memiliki "tags" yang mendeskripsikan jenis makanannya (misalnya: Japanese, Italian). Rekomendasi yang muncul akan sesuai dengan tags yang dipilih pengguna.
-##### Dikerjakan oleh: Bersama
+##### Dikerjakan oleh: Rakabima Ghaniendra Rusdianto
    
 2. **GoyangNanti**  
    Fitur untuk menyimpan daftar restoran yang ingin dikunjungi di masa depan (konsep seperti "wishlist").
@@ -51,23 +51,19 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
    Pengguna dapat membaca ulasan jujur dari komunitas terkait pengalaman kuliner mereka.
 ##### Dikerjakan oleh: Malvin Muhammad Raqin
 
-4. **Peta Lokasi**  
-   Fitur peta terintegrasi untuk membantu menemukan restoran terdekat.
-##### Dikerjakan oleh: Rakabima Ghaniendra Rusdianto
-
-5. **Filter Pencarian**
+4. **Filter Pencarian**
    Pengguna dapat memfilter hasil pencarian berdasarkan kriteria seperti:
    - Kategori kuliner (Indonesian, Western, Korean, dll.)
    - Harga (Murah, Menengah, Mahal)
    - Rating pengguna (dari tertinggi ke terendah)
    - Lokasi (berdasarkan jarak dari lokasi pengguna)
-##### Dikerjakan oleh: Vissuta Gunawan Lim
+##### Dikerjakan oleh: Bersama
 
-6. **Kolom Announcement**  
+5. **Kolom Announcement**  
    Restaurant owner dapat memposting pengumuman khusus terkait restoran mereka.
 ##### Dikerjakan oleh: Farhan Dwi Putra
 
-7. **CRUD Menu**
+6. **CRUD Menu**
    Restaurant owner dapat menambah, mengubah, dan menghapus menu pada restoran.
 #### Dikerjakan oleh: Vissuta Gunawan Lim
 
