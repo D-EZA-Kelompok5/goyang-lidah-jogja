@@ -9,22 +9,7 @@ from django.urls import reverse
 from .models import Event, UserProfile
 from .forms import EventForm
 
-
-# Custom User Creation Form with Role selection
-class CustomUserCreationForm(UserCreationForm):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('customer', 'Customer'),
-        ('owner', 'Restaurant Owner'),
-    ]
-    role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = UserCreationForm.Meta.fields + ('role',)
-
-
-#@login_required(login_url='/login')
+# @login_required(login_url='/login')
 def show_main(request):
     context = {
         'class': 'PBP D',
@@ -34,36 +19,27 @@ def show_main(request):
     return render(request, "main.html", context)
 
 def register_user(request):
-    form = CustomUserCreationForm()  # Gunakan CustomUserCreationForm di sini
+    form = UserCreationForm()
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)  # Menggunakan CustomUserCreationForm
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.role = form.cleaned_data.get('role')  # Simpan role dari form
-            user.save()
+            form.save()
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('main:show_main')  # Redirect ke halaman utama setelah sukses register
+            return redirect('main:show_main')  # Correct namespace
     context = {'form': form}
-    return render(request, 'register.html', context)
+    return render(request, 'main.html', context)
 
-# Login user with role check
 def login_user(request):
     form = AuthenticationForm(request, data=request.POST or None)
-
     if request.method == 'POST' and form.is_valid():
         user = form.get_user()
-        selected_role = request.POST.get('role')  # Get the selected role from form
-        
-        # Assuming role is stored in the user model's profile or custom field
-        if hasattr(user, 'role') and user.role == selected_role:  # Check if selected role matches user's role
-            login(request, user)
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
-            return response
-        else:
-            messages.error(request, 'You cannot login as this role.')
-    
-    return render(request, 'login.html', {'form': form})
+        login(request, user)
+        response = HttpResponseRedirect(reverse("main:show_main"))  # Ensure 'main:show_main' is correct
+        response.set_cookie('last_login', str(datetime.datetime.now()))
+        return response
+
+    return render(request, 'main.html', {'form': form})
+
 
 def logout_user(request):
     logout(request)

@@ -12,4 +12,4 @@ urlpatterns = [
     path('event_manager/dashboard/', event_manager_dashboard, name='event_manager_dashboard'),
     path('event_manager/events/create/', event_create, name='event_create'),
     path('event_manager/events/<int:pk>/update/', event_update, name='event_update'),
-    path('event_manager/events/<int:pk>/delete/', event_delete, name='event_delete'),
+    path('event_manager/events/<int:pk>/delete/', event_delete, name='event_delete'),]
