@@ -1,13 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django import forms
+from .models import Event, UserProfile
+from .forms import EventForm
+
 
 # Custom User Creation Form with Role selection
 class CustomUserCreationForm(UserCreationForm):
@@ -69,3 +70,50 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:show_main'))  # Correct namespace
     response.delete_cookie('last_login')
     return response
+
+def is_event_manager(user):
+    return user.is_authenticated and user.profile.role == 'EVENT_MANAGER'
+
+@login_required
+@user_passes_test(is_event_manager)
+def event_manager_dashboard(request):
+    events = Event.objects.all().order_by('-date')
+    form = EventForm()
+    return render(request, 'event_manager_dashboard.html', {
+        'events': events,
+        'form': form
+    })
+
+@login_required
+@user_passes_test(is_event_manager)
+def event_create(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.created_by = request.user.profile
+            event.save()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error', 'errors': form.errors})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@login_required
+@user_passes_test(is_event_manager)
+def event_update(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error', 'errors': form.errors})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@login_required
+@user_passes_test(is_event_manager)
+def event_delete(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == 'POST':
+        event.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
