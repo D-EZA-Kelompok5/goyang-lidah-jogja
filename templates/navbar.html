@@ -4,7 +4,6 @@
     
     <!-- Left Section: Logo -->
     <div class="flex items-center space-x-4">
-      <!-- Using the static template tag to load the logo -->
       <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja" class="w-10 h-10">
       <a href="{% url 'main:main' %}" class="text-2xl font-bold text-green-600 hover:text-green-700">
         GoyangLidahJogja
@@ -31,7 +30,7 @@
       <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Soto</a>
       <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Sate</a>
       
-      <!-- Separator (Removed IDR section, keeping the design clean) -->
+      <!-- Separator -->
       <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
 
       <!-- Login/Dashboard Buttons -->
@@ -84,3 +83,33 @@
     </div>
   </div>
 </nav>
+
+<!-- Role Selection Modal -->
+<div id="roleModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white rounded-lg p-6 w-80">
+    <h2 class="text-xl font-bold mb-4">Pilih Role</h2>
+    <div class="flex flex-col space-y-3">
+      <a href="{% url 'main:login_user' %}?role=admin" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-300">
+        Login sebagai Admin
+      </a>
+      <a href="{% url 'main:login_user' %}?role=customer" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-300">
+        Login sebagai Customer
+      </a>
+      <a href="{% url 'main:login_user' %}?role=owner" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition duration-300">
+        Login sebagai Restaurant Owner
+      </a>
+    </div>
+    <button class="mt-4 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition duration-300" onclick="closeRoleModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- JavaScript to toggle the modal -->
+<script>
+  function openRoleModal() {
+    document.getElementById('roleModal').classList.remove('hidden');
+  }
+
+  function closeRoleModal() {
+    document.getElementById('roleModal').classList.add('hidden');
+  }
+</script>
