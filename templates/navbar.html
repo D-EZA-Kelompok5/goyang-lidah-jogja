@@ -1,0 +1,49 @@
+{% load static %}
+<nav class="bg-white shadow-md py-2">
+  <div class="container mx-auto flex justify-between items-center">
+    
+    <!-- Left Section: Logo -->
+    <div class="flex items-center space-x-4">
+      <!-- Using the static template tag to load the logo -->
+      <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja" class="w-10 h-10">
+      <a href="{% url 'main:main' %}" class="text-2xl font-bold text-green-600 hover:text-green-700">
+        GoyangLidahJogja
+      </a>
+    </div>
+
+    <!-- Middle Section: Search Bar -->
+    <div class="flex-grow mx-4">
+      <form action="#" method="GET" class="relative">
+        <input type="text" class="w-full border rounded-full py-2 px-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-600"
+               placeholder="Cari">
+        <button type="submit" class="absolute right-3 top-2 text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H3" />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Section: Links and Login Button -->
+    <div class="flex items-center space-x-4">
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Ayam</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Bebek</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Soto</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Sate</a>
+      
+      <!-- Separator (Removed IDR section, keeping the design clean) -->
+      <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
+
+      <!-- Login Button -->
+      {% if user.is_authenticated %}
+      <a href="{% url 'main:logout' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+        Logout
+      </a>
+      {% else %}
+      <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
+        Masuk
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

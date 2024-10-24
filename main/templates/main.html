@@ -1,16 +1,126 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Restoran di Yogyakarta
+{% endblock %}
+
 {% block content %}
-<h1>Goyang Lidah Jogja</h1>
+<header class="bg-white shadow-lg mt-4 py-8">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900">Restoran di Yogyakarta</h1>
+        <p class="text-lg text-gray-600 mt-2">Tempat makan terbaik di Yogyakarta</p>
+    </div>
+</header>
 
-<h5>Class: </h5>
-<p>{{ class }}</p>
-<h5>Group: </h5>
-<p>{{ group }}</p>
+<!-- Filter and Sorting -->
+<div class="container mx-auto mt-8 flex justify-between items-center">
+    <div>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Semua Penyaring</button>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Pesan Meja</button>
+    </div>
+    <div>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Peta</button>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Lihat Semua</button>
+    </div>
+</div>
 
-<h5>Last login session: {{ last_login }}</h5>
+<!-- Restaurant Cards -->
+<section class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+    <!-- Restaurant 1 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant1.jpg" alt="Restaurant 1" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">Kesuma Restaurant</h3>
+            <p class="text-gray-600 mt-2">Authentic Indonesian food with a warm ambiance.</p>
+        </div>
+    </div>
 
-<a href="{% url 'main:logout' %}">
-    <button>Logout</button>
-</a>
-{% endblock content %}
+    <!-- Restaurant 2 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant2.jpg" alt="Restaurant 2" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">Mediterranea Restaurant by Kamil</h3>
+            <p class="text-gray-600 mt-2">A Mediterranean cuisine experience in the heart of Yogyakarta.</p>
+        </div>
+    </div>
+
+    <!-- Restaurant 3 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant3.jpg" alt="Restaurant 3" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">The House of Raminten</h3>
+            <p class="text-gray-600 mt-2">Unique local flavors in a quirky setting.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal-backdrop {% if not form.errors %}hidden{% endif %}">
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="text-gray-500 hover:text-gray-700" data-modal-toggle="loginModal">&times;</button>
+      </div>
+
+      <!-- Logo (optional) -->
+      <div class="flex justify-center mb-4">
+        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+      </div>
+
+      <!-- Welcome Message -->
+      <h3 class="text-2xl font-bold text-center">Selamat datang kembali.</h3>
+
+      <!-- Login Form -->
+      <form method="POST" action="{% url 'main:login' %}" class="mt-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
+          <input type="text" name="username" id="email" placeholder="Username atau Email" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">Sandi</label>
+          <div class="relative">
+            <input type="password" name="password" id="password" placeholder="Sandi" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+        </div>
+
+        <!-- Error Handling -->
+        {% if form.non_field_errors %}
+        <div class="mt-2 text-red-500 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Masuk</button>
+        </div>
+      </form>
+
+      <!-- Registration Link -->
+      <div class="mt-6 text-center">
+        <span class="text-gray-400">Belum jadi anggota?</span>
+        <a href="{% url 'main:register' %}" class="text-black font-bold">Daftar Sekarang</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Toggle Script -->
+<script>
+  document.querySelectorAll("[data-modal-toggle]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const modal = document.getElementById(el.getAttribute("data-modal-toggle"));
+      modal.classList.toggle("hidden");
+    });
+  });
+
+
+
+</script>
+{% endblock %}
