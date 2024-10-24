@@ -1,7 +1,11 @@
-from django.forms import ModelForm
-from main.models import Menu
+from django import forms
+from .models import Event
 
-class MenuForm(ModelForm):
+class EventForm(forms.ModelForm):
     class Meta:
-        model = Menu
-        fields = ['nama', 'harga', 'restoran']
+        model = Event
+        fields = ['title', 'description', 'date', 'time', 'location', 'entrance_fee', 'image']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'time': forms.TimeInput(attrs={'type': 'time'}),
+        }

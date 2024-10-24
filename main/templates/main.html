@@ -1,16 +1,218 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Restoran di Yogyakarta
+{% endblock %}
+
 {% block content %}
-<h1>Goyang Lidah Jogja</h1>
+<header class="bg-white shadow-lg mt-4 py-8">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900"style="text-center">Mau makan apa?</h1>
+        <p class="text-lg text-gray-600 mt-2">Tempat makan terbaik di Yogyakarta</p>
+    </div>
+</header>
 
-<h5>Class: </h5>
-<p>{{ class }}</p>
-<h5>Group: </h5>
-<p>{{ group }}</p>
+<!-- Filter and Sorting -->
+<div class="container mx-auto mt-8 flex justify-between items-center">
+    <div>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Semua Penyaring</button>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Pesan Meja</button>
+    </div>
+    <div>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Peta</button>
+        <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Lihat Semua</button>
+    </div>
+</div>
 
-<h5>Last login session: {{ last_login }}</h5>
+<!-- Restaurant Cards -->
+<section class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+    <!-- Restaurant 1 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant1.jpg" alt="Restaurant 1" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">Kesuma Restaurant</h3>
+            <p class="text-gray-600 mt-2">Authentic Indonesian food with a warm ambiance.</p>
+        </div>
+    </div>
 
-<a href="{% url 'main:logout' %}">
-    <button>Logout</button>
-</a>
-{% endblock content %}
+    <!-- Restaurant 2 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant2.jpg" alt="Restaurant 2" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">Mediterranea Restaurant by Kamil</h3>
+            <p class="text-gray-600 mt-2">A Mediterranean cuisine experience in the heart of Yogyakarta.</p>
+        </div>
+    </div>
+
+    <!-- Restaurant 3 -->
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img src="path/to/restaurant3.jpg" alt="Restaurant 3" class="w-full h-56 object-cover">
+        <div class="p-4">
+            <h3 class="font-bold text-xl">The House of Raminten</h3>
+            <p class="text-gray-600 mt-2">Unique local flavors in a quirky setting.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+      </div>
+
+      <!-- Logo (optional) -->
+      <div class="flex justify-center mb-4">
+        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+      </div>
+
+      <!-- Welcome Message -->
+      <h3 class="text-2xl font-bold text-center">Selamat datang kembali.</h3>
+
+      <!-- Login Form -->
+      <form method="POST" action="{% url 'main:login' %}" class="mt-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
+          <input type="text" name="username" id="email" placeholder="Username atau Email" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.username.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">Sandi</label>
+          <div class="relative">
+            <input type="password" name="password" id="password" placeholder="Sandi" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          {% if form.password.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Error Handling -->
+        {% if form.non_field_errors %}
+        <div class="mt-2 text-red-500 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Masuk</button>
+        </div>
+      </form>
+
+      <!-- Registration Link -->
+      <div class="mt-6 text-center">
+        <span class="text-gray-400">Belum jadi anggota?</span>
+        <a href="#" class="text-black font-bold" data-modal-toggle="registerModal">Daftar Sekarang</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div id="registerModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+      </div>
+
+      <!-- Logo (optional) -->
+      <div class="flex justify-center mb-4">
+        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+      </div>
+
+      <!-- Welcome Message -->
+      <h3 class="text-2xl font-bold text-center">Daftar Sekarang</h3>
+
+      <!-- Register Form -->
+      <form method="POST" action="{% url 'main:register' %}" class="mt-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" name="username" id="username" placeholder="Username" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.username.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="password1" class="block text-sm font-medium text-gray-700">Sandi</label>
+          <input type="password" name="password1" id="password1" placeholder="Sandi" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.password1.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password1.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="password2" class="block text-sm font-medium text-gray-700">Konfirmasi Sandi</label>
+          <input type="password" name="password2" id="password2" placeholder="Konfirmasi Sandi" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.password2.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password2.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Error Handling -->
+        {% if form.non_field_errors %}
+        <div class="mt-2 text-red-500 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Daftar</button>
+        </div>
+      </form>
+
+      <!-- Back to Login Button -->
+      <div class="mt-6 text-center">
+        <span class="text-gray-400">Sudah punya akun?</span>
+        <a href="#" class="text-black font-bold" data-modal-toggle="loginModal">Masuk</a>
+        <!-- Back Button -->
+        <div class="mt-4">
+          <button class="w-full bg-gray-200 text-black py-2 rounded-lg" data-modal-toggle="loginModal">Kembali ke Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Toggle Script -->
+<script>
+  // Function to toggle modals
+  document.querySelectorAll("[data-modal-toggle]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const targetModal = el.getAttribute("data-modal-toggle");
+
+      // Close both modals first to ensure they are hidden
+      document.getElementById('loginModal').classList.add("hidden");
+      document.getElementById('registerModal').classList.add("hidden");
+
+      // Open the targeted modal
+      document.getElementById(targetModal).classList.toggle("hidden");
+    });
+  });
+
+  // Function to close both modals when the close button is clicked
+  document.querySelectorAll("[data-modal-close]").forEach((el) => {
+    el.addEventListener("click", () => {
+      document.getElementById('loginModal').classList.add("hidden");
+      document.getElementById('registerModal').classList.add("hidden");
+    });
+  });
+</script>
+{% endblock %}

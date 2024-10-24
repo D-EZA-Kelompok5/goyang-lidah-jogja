@@ -1,0 +1,88 @@
+{% load static %}
+<nav class="bg-white shadow-md py-2">
+  <div class="container mx-auto flex justify-between items-center">
+    
+    <!-- Left Section: Logo -->
+    <div class="flex items-center space-x-4">
+      <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja" class="w-10 h-10">
+      <a href="{% url 'main:main' %}" class="text-2xl font-bold text-green-600 hover:text-green-700">
+        GoyangLidahJogja
+      </a>
+    </div>
+
+    <!-- Middle Section: Search Bar -->
+    <div class="flex-grow mx-4">
+      <form action="#" method="GET" class="relative">
+        <input type="text" class="w-full border rounded-full py-2 px-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-600"
+               placeholder="Cari">
+        <button type="submit" class="absolute right-3 top-2 text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H3" />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Section: Links and Login Button -->
+    <div class="flex items-center space-x-4">
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Ayam</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Bebek</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Soto</a>
+      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Sate</a>
+      
+      <!-- Separator -->
+      <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
+
+      <!-- Login/Dashboard Buttons -->
+      {% if user.is_authenticated %}
+        {% if user.profile.role == 'EVENT_MANAGER' %}
+          <a href="{% url 'main:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Manager Dashboard
+          </a>
+        {% elif user.profile.role == 'RESTAURANT_OWNER' %}
+          <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Restaurant Dashboard
+          </a>
+        {% endif %}
+        
+        <!-- User Profile Info -->
+        <div class="relative group">
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+            {% if user.profile.profile_picture %}
+              <img src="#" alt="Profile" class="w-8 h-8 rounded-full">
+            {% else %}
+              <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                <span class="text-sm">{{ user.username|make_list|first|upper }}</span>
+              </div>
+            {% endif %}
+            <span>{{ user.username }}</span>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block">
+            <div class="py-1">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Profile ({{ user.profile.level }})
+              </a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                My Reviews ({{ user.profile.review_count }})
+              </a>
+              <hr class="my-1">
+              <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+        
+      {% else %}
+        <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
+          Masuk
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+
+</script>
