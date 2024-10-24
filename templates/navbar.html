@@ -34,15 +34,52 @@
       <!-- Separator (Removed IDR section, keeping the design clean) -->
       <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
 
-      <!-- Login Button -->
+      <!-- Login/Dashboard Buttons -->
       {% if user.is_authenticated %}
-      <a href="{% url 'main:logout' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
-        Logout
-      </a>
+        {% if user.profile.role == 'EVENT_MANAGER' %}
+          <a href="{% url 'main:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Manager Dashboard
+          </a>
+        {% elif user.profile.role == 'RESTAURANT_OWNER' %}
+          <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Restaurant Dashboard
+          </a>
+        {% endif %}
+        
+        <!-- User Profile Info -->
+        <div class="relative group">
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+            {% if user.profile.profile_picture %}
+              <img src="#" alt="Profile" class="w-8 h-8 rounded-full">
+            {% else %}
+              <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                <span class="text-sm">{{ user.username|make_list|first|upper }}</span>
+              </div>
+            {% endif %}
+            <span>{{ user.username }}</span>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block">
+            <div class="py-1">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Profile ({{ user.profile.level }})
+              </a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                My Reviews ({{ user.profile.review_count }})
+              </a>
+              <hr class="my-1">
+              <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+        
       {% else %}
-      <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
-        Masuk
-      </a>
+        <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
+          Masuk
+        </a>
       {% endif %}
     </div>
   </div>
