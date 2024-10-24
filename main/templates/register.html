@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 
-{% block meta %}
-<title>Register</title>
-{% endblock meta %}
+{% block title %}
+Register
+{% endblock title %}
 
 {% block content %}
-
-<div class="login">
+<div class="register">
     <h1>Register</h1>
 
     <form method="POST">
@@ -15,7 +14,7 @@
         {{ form.as_table }}
         <tr>
         <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
+        <td><input class="btn register_btn" type="submit" value="Register" /></td>
         </tr>
     </table>
     </form>
@@ -28,5 +27,4 @@
     </ul>
     {% endif %}
 </div>
-
 {% endblock content %}
