@@ -25,7 +25,7 @@ def register_user(request):
             messages.success(request, 'Your account has been successfully created!')
             return redirect('main:show_main')  # Correct namespace
     context = {'form': form}
-    return render(request, 'register.html', context)
+    return render(request, 'main.html', context)
 
 def login_user(request):
     form = AuthenticationForm(request, data=request.POST or None)
@@ -36,7 +36,8 @@ def login_user(request):
         response.set_cookie('last_login', str(datetime.datetime.now()))
         return response
 
-    return render(request, 'base.html', {'form': form})
+    return render(request, 'main.html', {'form': form})
+
 
 def logout_user(request):
     logout(request)
