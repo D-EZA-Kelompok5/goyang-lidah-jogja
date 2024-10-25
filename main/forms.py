@@ -1,17 +1,7 @@
 from django import forms
-from .models import Event
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import UserProfile
-
-class EventForm(forms.ModelForm):
-    class Meta:
-        model = Event
-        fields = ['title', 'description', 'date', 'time', 'location', 'entrance_fee', 'image']
-        widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
-            'time': forms.TimeInput(attrs={'type': 'time'}),
-        }
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(

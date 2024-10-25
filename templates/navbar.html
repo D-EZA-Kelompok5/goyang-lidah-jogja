@@ -36,7 +36,7 @@
       <!-- Login/Dashboard Buttons -->
       {% if user.is_authenticated %}
         {% if user.profile.role == 'EVENT_MANAGER' %}
-          <a href="{% url 'main:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+          <a href="{% url 'managerDashboard:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Manager Dashboard
           </a>
         {% elif user.profile.role == 'RESTAURANT_OWNER' %}
