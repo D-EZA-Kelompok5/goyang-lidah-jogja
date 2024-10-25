@@ -11,6 +11,9 @@ from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
+from django.db.models import Avg
+from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
+
 
 # @login_required(login_url='/login')
 def show_main(request):
@@ -63,10 +66,28 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Avg
+from main.models import Menu
+from ulasGoyangan.models import Review
+
 def menu_detail(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
+    
+    # Calculate average rating
+    reviews = Review.objects.filter(menu=menu)
+    if reviews.exists():
+        average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+    else:
+        average_rating = 0  # Default to 0 if no reviews
+
+    # Pass a fixed range for stars
+    star_range = [1, 2, 3, 4, 5]
+
     context = {
-        'menu': menu
+        'menu': menu,
+        'average_rating': round(average_rating, 1),
+        'star_range': star_range,
     }
     return render(request, 'menu_detail.html', context)
 
