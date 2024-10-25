@@ -17,6 +17,11 @@ Restoran di Yogyakarta
     <div>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Semua Penyaring</button>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Pesan Meja</button>
+        <a href="{% url 'main:event_list' %}">
+          <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600 hover:bg-green-500 hover:text-white transition-all duration-300">
+              Event
+          </button>
+      </a>
     </div>
     <div>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Peta</button>
@@ -24,38 +29,26 @@ Restoran di Yogyakarta
     </div>
 </div>
 
-<!-- Restaurant Cards -->
+<!-- Menu Items -->
 <section class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-    <!-- Restaurant 1 -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img src="path/to/restaurant1.jpg" alt="Restaurant 1" class="w-full h-56 object-cover">
+  {% for menu in menus %}
+  <a href="{% url 'main:menu_detail' menu.id %}" class="block">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
+        {% if menu.image %}
+        <img src="{{ menu.image }}" alt="{{ menu.name }}" class="w-full h-56 object-cover">
+        {% endif %}
         <div class="p-4">
-            <h3 class="font-bold text-xl">Kesuma Restaurant</h3>
-            <p class="text-gray-600 mt-2">Authentic Indonesian food with a warm ambiance.</p>
+            <h3 class="font-bold text-xl">{{ menu.name }}</h3>
+            <p class="text-gray-600 mt-2">{{ menu.description }}</p>
+            <p class="font-medium text-gray-900 mt-1">Rp {{ menu.price|floatformat:2 }}</p>
         </div>
     </div>
-
-    <!-- Restaurant 2 -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img src="path/to/restaurant2.jpg" alt="Restaurant 2" class="w-full h-56 object-cover">
-        <div class="p-4">
-            <h3 class="font-bold text-xl">Mediterranea Restaurant by Kamil</h3>
-            <p class="text-gray-600 mt-2">A Mediterranean cuisine experience in the heart of Yogyakarta.</p>
-        </div>
-    </div>
-
-    <!-- Restaurant 3 -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <img src="path/to/restaurant3.jpg" alt="Restaurant 3" class="w-full h-56 object-cover">
-        <div class="p-4">
-            <h3 class="font-bold text-xl">The House of Raminten</h3>
-            <p class="text-gray-600 mt-2">Unique local flavors in a quirky setting.</p>
-        </div>
-    </div>
+  </a>
+  {% endfor %}
 </section>
 
 <!-- Login Modal -->
-<div id="loginModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
+<div id="loginModal" class="modal-backdrop {% if login_error %}block{% else %}hidden{% endif %}">
   <div class="fixed inset-0 flex items-center justify-center">
     <div class="bg-white rounded-lg p-6 max-w-md w-full">
       
@@ -77,8 +70,10 @@ Restoran di Yogyakarta
         {% csrf_token %}
         <div class="mb-4">
           <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
-          <input type="text" name="username" id="email" placeholder="Username atau Email" required
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <input type="text" name="username" id="email" 
+            value="{{ request.POST.username }}"
+            placeholder="Username atau Email" required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
           {% if form.username.errors %}
           <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
           {% endif %}
@@ -96,11 +91,14 @@ Restoran di Yogyakarta
         </div>
 
         <!-- Error Handling -->
-        {% if form.non_field_errors %}
-        <div class="mt-2 text-red-500 text-sm">
-          {{ form.non_field_errors }}
+        {% if login_error %}
+        <div class="mb-4 text-red-500 text-sm text-center">
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
         </div>
         {% endif %}
+
 
         <!-- Submit Button -->
         <div class="mt-6">
@@ -165,27 +163,25 @@ Restoran di Yogyakarta
           {% endif %}
         </div>
 
-        <!-- Error Handling -->
-        {% if form.non_field_errors %}
-        <div class="mt-2 text-red-500 text-sm">
-          {{ form.non_field_errors }}
+        <!-- Role Selection -->
+        <div class="mb-10">
+          <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+          {{ form.role }}
+          {% if form.role.errors %}
+              <div class="mt-1 text-red-500 text-sm">{{ form.role.errors }}</div>
+          {% endif %}
         </div>
-        {% endif %}
 
         <!-- Submit Button -->
         <div class="mt-6">
           <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Daftar</button>
         </div>
       </form>
-
+      
       <!-- Back to Login Button -->
       <div class="mt-6 text-center">
         <span class="text-gray-400">Sudah punya akun?</span>
         <a href="#" class="text-black font-bold" data-modal-toggle="loginModal">Masuk</a>
-        <!-- Back Button -->
-        <div class="mt-4">
-          <button class="w-full bg-gray-200 text-black py-2 rounded-lg" data-modal-toggle="loginModal">Kembali ke Login</button>
-        </div>
       </div>
     </div>
   </div>
@@ -195,23 +191,47 @@ Restoran di Yogyakarta
 <script>
   // Function to toggle modals
   document.querySelectorAll("[data-modal-toggle]").forEach((el) => {
-    el.addEventListener("click", () => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
       const targetModal = el.getAttribute("data-modal-toggle");
 
-      // Close both modals first to ensure they are hidden
-      document.getElementById('loginModal').classList.add("hidden");
-      document.getElementById('registerModal').classList.add("hidden");
+      // Hide all modals first
+      document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.classList.add('hidden');
+      });
 
-      // Open the targeted modal
-      document.getElementById(targetModal).classList.toggle("hidden");
+      // Show the target modal
+      const modalElement = document.getElementById(targetModal);
+      if (modalElement) {
+        modalElement.classList.remove('hidden');
+      }
     });
   });
 
-  // Function to close both modals when the close button is clicked
+  // Close modal when clicking the close button
   document.querySelectorAll("[data-modal-close]").forEach((el) => {
-    el.addEventListener("click", () => {
-      document.getElementById('loginModal').classList.add("hidden");
-      document.getElementById('registerModal').classList.add("hidden");
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const modal = el.closest('.modal-backdrop');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Close modal when clicking outside
+  document.querySelectorAll('.modal-backdrop').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Prevent modal backdrop click from bubbling to parent
+  document.querySelectorAll('.modal-backdrop > div').forEach(modalContent => {
+    modalContent.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
   });
 </script>
