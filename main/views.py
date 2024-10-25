@@ -10,12 +10,16 @@ from .models import UserProfile
 from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
+from .models import Menu
+from .models import Restaurant
 
 # @login_required(login_url='/login')
 def show_main(request):
     form = CustomUserCreationForm()
+    menus = Menu.objects.all()
     context = {
-        'form': form
+        'form': form,
+        'menus': menus,
         # 'last_login': request.COOKIES.get('last_login'),  # Use .get to avoid KeyError
     }
     return render(request, "main.html", context)
@@ -72,3 +76,20 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:show_main'))  # Correct namespace
     response.delete_cookie('last_login')
     return response
+
+def menu_detail(request, menu_id):
+    # Fetch the specific menu item or return a 404 error if it doesn't exist
+    menu = get_object_or_404(Menu, id=menu_id)
+
+    # Pass the menu item to the template for rendering
+    context = {
+        'menu': menu
+    }
+    return render(request, 'menu_detail.html', context)
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    context = {
+        'restaurant': restaurant,
+    }
+    return render(request, 'restaurant_detail.html', context)
