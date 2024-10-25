@@ -12,5 +12,6 @@ urlpatterns = [
     path('show_main/', views.show_main, name='show_main'),
     path('menu/<int:menu_id>/', views.menu_detail, name='menu_detail'),
     path('restaurant/<int:restaurant_id>/', views.restaurant_detail, name='restaurant_detail'), 
-    path('events/', event_list, name='event_list') # URL for restaurant detail
+    path('events/', event_list, name='event_list'), # URL for restaurant detail
+    
 ]
