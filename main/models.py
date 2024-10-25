@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
@@ -8,9 +9,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='profile'
+        related_name='profile',
+        unique=True,
+        primary_key=True
     )
-
     ROLE_CHOICES = [
         ('EVENT_MANAGER', 'Event Manager'),
         ('RESTAURANT_OWNER', 'Restaurant Owner'),
@@ -29,7 +31,6 @@ class UserProfile(models.Model):
         default='CUSTOMER'
     )
     bio = models.TextField(
-        max_length=500,
         blank=True
     )
     profile_picture = models.URLField(
@@ -44,8 +45,6 @@ class UserProfile(models.Model):
         choices=LEVEL_CHOICES,
         default='BRONZE'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def update_level(self):
         if self.review_count >= 50:
@@ -82,14 +81,12 @@ class Restaurant(models.Model):
         blank=True,
         validators=[URLValidator()]
     )
-    owner = models.OneToOneField(
+    owner = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
         related_name='owned_restaurant',
-        limit_choices_to={'role': 'RESTAURANT_OWNER'}
+        limit_choices_to={'role': 'RESTAURANT_OWNER'},
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -104,7 +101,6 @@ class Menu(models.Model):
         on_delete=models.CASCADE,
         related_name='menus'
     )
-    menu_code = models.CharField(max_length=50)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -114,17 +110,13 @@ class Menu(models.Model):
         blank=True,
         validators=[URLValidator()]
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.menu_code} - {self.name} ({self.restaurant.name})"
+        return f"{self.name} ({self.restaurant.name})"
 
     class Meta:
         verbose_name = 'Menu'
         verbose_name_plural = 'Menus'
-        unique_together = ['restaurant', 'menu_code']
-        ordering = ['restaurant', 'menu_code']
 
 class Event(models.Model):
     title = models.CharField(max_length=255)
@@ -150,8 +142,6 @@ class Event(models.Model):
         related_name='events',
         limit_choices_to={'role': 'EVENT_MANAGER'}
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
@@ -163,8 +153,6 @@ class Event(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     menus = models.ManyToManyField(Menu, related_name='tags')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -181,8 +169,6 @@ class Announcement(models.Model):
     )
     title = models.CharField(max_length=255)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} - {self.restaurant.name}"
@@ -203,8 +189,6 @@ class Wishlist(models.Model):
         on_delete=models.CASCADE,
         related_name='wishlisted_by'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.user.username}'s wishlist item: {self.menu.name}"
@@ -212,4 +196,3 @@ class Wishlist(models.Model):
     class Meta:
         verbose_name = 'Wishlist'
         verbose_name_plural = 'Wishlists'
-        unique_together = ['user', 'menu']
