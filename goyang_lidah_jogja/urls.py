@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('event_manager/', include('managerDashboard.urls')),
+    path('wishlist/', include('goyangNanti.urls', namespace='wishlist')),
 ]

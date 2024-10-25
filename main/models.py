@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator, URLVali
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -99,47 +100,6 @@ class Restaurant(models.Model):
         verbose_name = 'Restaurant'
         verbose_name_plural = 'Restaurants'
 
-class Menu(models.Model):
-    restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.CASCADE,
-        related_name='menus'
-    )
-    menu_code = models.CharField(max_length=50)
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.URLField(
-        max_length=500,
-        null=True,
-        blank=True,
-        validators=[URLValidator()]
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.menu_code} - {self.name} ({self.restaurant.name})"
-
-    class Meta:
-        verbose_name = 'Menu'
-        verbose_name_plural = 'Menus'
-        unique_together = ['restaurant', 'menu_code']
-        ordering = ['restaurant', 'menu_code']
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    menus = models.ManyToManyField(Menu, related_name='tags')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
-
 class Announcement(models.Model):
     restaurant = models.ForeignKey(
         Restaurant,
@@ -158,25 +118,4 @@ class Announcement(models.Model):
         verbose_name = 'Announcement'
         verbose_name_plural = 'Announcements'
 
-class Wishlist(models.Model):
-    user = models.ForeignKey(
-        UserProfile,
-        on_delete=models.CASCADE,
-        related_name='wishlists',
-        limit_choices_to={'role': 'CUSTOMER'}
-    )
-    menu = models.ForeignKey(
-        Menu,
-        on_delete=models.CASCADE,
-        related_name='wishlisted_by'
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.user.user.username}'s wishlist item: {self.menu.name}"
-
-    class Meta:
-        verbose_name = 'Wishlist'
-        verbose_name_plural = 'Wishlists'
-        unique_together = ['user', 'menu']

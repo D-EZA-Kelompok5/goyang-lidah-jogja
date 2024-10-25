@@ -15,23 +15,23 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name='Menu',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('date', models.DateField()),
-                ('time', models.TimeField()),
-                ('location', models.CharField(max_length=255)),
-                ('entrance_fee', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
+                ('menu_code', models.CharField(max_length=50)),
+                ('name', models.CharField(max_length=255)),
+                ('description', models.TextField(blank=True)),
+                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('image', models.URLField(blank=True, max_length=500, null=True, validators=[django.core.validators.URLValidator()])),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('created_by', models.ForeignKey(limit_choices_to={'role': 'EVENT_MANAGER'}, on_delete=django.db.models.deletion.CASCADE, related_name='events', to='main.userprofile')),
+                ('restaurant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='menus', to='main.restaurant')),
             ],
             options={
-                'verbose_name': 'Event',
-                'verbose_name_plural': 'Events',
+                'verbose_name': 'Menu',
+                'verbose_name_plural': 'Menus',
+                'ordering': ['restaurant', 'menu_code'],
+                'unique_together': {('restaurant', 'menu_code')},
             },
         ),
     ]
