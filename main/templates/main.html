@@ -17,6 +17,11 @@ Restoran di Yogyakarta
     <div>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Semua Penyaring</button>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Pesan Meja</button>
+        <a href="{% url 'main:event_list' %}">
+          <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600 hover:bg-green-500 hover:text-white transition-all duration-300">
+              Event
+          </button>
+      </a>
     </div>
     <div>
         <button class="bg-white shadow-md px-4 py-2 rounded text-gray-600">Peta</button>
