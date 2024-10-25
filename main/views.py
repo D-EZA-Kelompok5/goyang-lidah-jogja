@@ -10,6 +10,7 @@ from .models import UserProfile
 from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
+from managerDashboard.models import Event
 
 # @login_required(login_url='/login')
 def show_main(request):
@@ -72,3 +73,7 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:show_main'))  # Correct namespace
     response.delete_cookie('last_login')
     return response
+
+def event_list(request):
+    events = Event.objects.all().order_by('-date')
+    return render(request, 'events.html', {'events': events})
