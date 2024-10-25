@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .models import UserProfile
+from .models import UserProfile, Menu, Restaurant
 from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
@@ -15,9 +15,10 @@ from managerDashboard.models import Event
 # @login_required(login_url='/login')
 def show_main(request):
     form = CustomUserCreationForm()
+    menus = Menu.objects.all()
     context = {
-        'form': form
-        # 'last_login': request.COOKIES.get('last_login'),  # Use .get to avoid KeyError
+        'form': form,
+        'menus': menus,
     }
     return render(request, "main.html", context)
 
@@ -26,13 +27,8 @@ def register_user(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             try:
-                # Get the role before saving the user
                 role = form.cleaned_data.get('role')
-                
-                # Save the user
                 user = form.save()
-                
-                # Update the automatically created profile with the role
                 user.profile.role = role
                 user.profile.save()
 
@@ -48,8 +44,6 @@ def register_user(request):
     context = {'form': form}
     return render(request, 'main.html', context)
 
-
-
 def login_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -59,20 +53,29 @@ def login_user(request):
             login(request, user)
             return redirect('main:show_main')
         else:
-            # Pass login_error instead of using form.errors
             messages.error(request, 'Username or password is incorrect!')
-            return render(request, 'main.html', {
-                'login_error': True,  # Add this specific flag
-                'form': CustomUserCreationForm()  # For register form
-            })
+            return render(request, 'main.html', {'login_error': True, 'form': CustomUserCreationForm()})
     return redirect('main:show_main')
-
 
 def logout_user(request):
     logout(request)
-    response = HttpResponseRedirect(reverse('main:show_main'))  # Correct namespace
+    response = HttpResponseRedirect(reverse('main:show_main'))
     response.delete_cookie('last_login')
     return response
+
+def menu_detail(request, menu_id):
+    menu = get_object_or_404(Menu, id=menu_id)
+    context = {
+        'menu': menu
+    }
+    return render(request, 'menu_detail.html', context)
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    context = {
+        'restaurant': restaurant,
+    }
+    return render(request, 'restaurant_detail.html', context)
 
 def event_list(request):
     events = Event.objects.all().order_by('-date')
