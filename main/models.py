@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from userPreferences.models import Tag
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -44,6 +45,11 @@ class UserProfile(models.Model):
         max_length=10,
         choices=LEVEL_CHOICES,
         default='BRONZE'
+    )
+    
+    preferences = models.ManyToManyField(
+        Tag,
+        related_name='preferences'
     )
 
     def update_level(self):
@@ -117,17 +123,6 @@ class Menu(models.Model):
     class Meta:
         verbose_name = 'Menu'
         verbose_name_plural = 'Menus'
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    menus = models.ManyToManyField(Menu, related_name='tags')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
 
 class Announcement(models.Model):
     restaurant = models.ForeignKey(
