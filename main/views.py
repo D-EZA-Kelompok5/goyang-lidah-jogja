@@ -1,19 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import UserProfile, Menu, Restaurant
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
 from django.db.models import Avg
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from django.db.models import Avg, Count
+from django.contrib.auth.hashers import make_password
 
 
 # @login_required(login_url='/login')
@@ -67,11 +68,6 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
-from django.shortcuts import render, get_object_or_404
-from django.db.models import Avg
-from main.models import Menu
-from ulasGoyangan.models import Review
-
 def menu_detail(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
 
@@ -118,3 +114,40 @@ def restaurant_detail(request, restaurant_id):
 def event_list(request):
     events = Event.objects.all().order_by('-date')
     return render(request, 'events.html', {'events': events})
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            # Handle password update if provided
+            password = user_form.cleaned_data.get('password')
+            if password:
+                request.user.password = make_password(password)
+            
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('main:edit_profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+    
+    # Get restaurant information if user is a restaurant owner
+    owned_restaurant = None
+    if request.user.profile.role == 'RESTAURANT_OWNER':
+        owned_restaurant = request.user.profile.owned_restaurant.first()
+
+    context = {
+        'user': request.user,
+        'user_profile': request.user.profile,
+        'owned_restaurant': owned_restaurant,
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'edit_profile.html', context)
+
