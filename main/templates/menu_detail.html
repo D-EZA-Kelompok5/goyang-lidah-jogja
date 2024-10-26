@@ -94,9 +94,15 @@ Detail Menu: {{ menu.name }}
 
             <!-- Action Buttons -->
             <div class="flex justify-end items-center mb-8">
+                {% if user.is_authenticated %}
                 <a href="{% url 'ulasGoyangan:submit_review' menu.id %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-lg transition-all transform hover:scale-105 hover:animate-bounce">
                     Ulas Goyangan
                 </a>
+                {% else %}
+                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-lg transition-all transform hover:scale-105 hover:animate-bounce" data-modal-toggle="loginModal"> 
+                    Ulas Goyangan
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -164,11 +170,149 @@ Detail Menu: {{ menu.name }}
         {% endfor %}
     </div>
 
-    <!-- Scroll to Top Floating Button -->
-    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="fixed bottom-5 right-5 bg-blue-500 text-white p-3 rounded-full shadow-lg transition-transform transform hover:scale-110">
-        ⬆️
-    </button>
+    <!-- Login Modal -->
+<div id="loginModal" class="modal-backdrop {% if login_error %}block{% else %}hidden{% endif %}">
+    <div class="fixed inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        
+        <!-- Close Button -->
+        <div class="flex justify-end">
+          <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+        </div>
+  
+        <!-- Logo (optional) -->
+        <div class="flex justify-center mb-4">
+          <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        </div>
+  
+        <!-- Welcome Message -->
+        <h3 class="text-2xl font-bold text-center">Selamat datang kembali.</h3>
+  
+        <!-- Login Form -->
+        <form method="POST" action="{% url 'main:login' %}" class="mt-6">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
+            <input type="text" name="username" id="email" 
+              value="{{ request.POST.username }}"
+              placeholder="Username atau Email" required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if form.username.errors %}
+            <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <div class="mb-4">
+            <label for="password" class="block text-sm font-medium text-gray-700">Sandi</label>
+            <div class="relative">
+              <input type="password" name="password" id="password" placeholder="Sandi" required
+                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+            {% if form.password.errors %}
+            <div class="mt-1 text-red-500 text-sm">{{ form.password.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <!-- Error Handling -->
+          {% if login_error %}
+          <div class="mb-4 text-red-500 text-sm text-center">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          </div>
+          {% endif %}
+  
+  
+          <!-- Submit Button -->
+          <div class="mt-6">
+            <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Masuk</button>
+          </div>
+        </form>
+  
+        <!-- Registration Link -->
+        <div class="mt-6 text-center">
+          <span class="text-gray-400">Belum jadi anggota?</span>
+          <a href="#" class="text-black font-bold" data-modal-toggle="registerModal">Daftar Sekarang</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
+    <div class="fixed inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        
+        <!-- Close Button -->
+        <div class="flex justify-end">
+          <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+        </div>
+  
+        <!-- Logo (optional) -->
+        <div class="flex justify-center mb-4">
+          <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        </div>
+  
+        <!-- Welcome Message -->
+        <h3 class="text-2xl font-bold text-center">Daftar Sekarang</h3>
+  
+        <!-- Register Form -->
+        <form method="POST" action="{% url 'main:register' %}" class="mt-6">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" name="username" id="username" placeholder="Username" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if form.username.errors %}
+            <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <div class="mb-4">
+            <label for="password1" class="block text-sm font-medium text-gray-700">Sandi</label>
+            <input type="password" name="password1" id="password1" placeholder="Sandi" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if form.password1.errors %}
+            <div class="mt-1 text-red-500 text-sm">{{ form.password1.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <div class="mb-4">
+            <label for="password2" class="block text-sm font-medium text-gray-700">Konfirmasi Sandi</label>
+            <input type="password" name="password2" id="password2" placeholder="Konfirmasi Sandi" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            {% if form.password2.errors %}
+            <div class="mt-1 text-red-500 text-sm">{{ form.password2.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <!-- Role Selection -->
+          <div class="mb-10">
+            <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+            {{ form.role }}
+            {% if form.role.errors %}
+                <div class="mt-1 text-red-500 text-sm">{{ form.role.errors }}</div>
+            {% endif %}
+          </div>
+  
+          <!-- Submit Button -->
+          <div class="mt-6">
+            <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Daftar</button>
+          </div>
+        </form>
+        
+        <!-- Back to Login Button -->
+        <div class="mt-6 text-center">
+          <span class="text-gray-400">Sudah punya akun?</span>
+          <a href="#" class="text-black font-bold" data-modal-toggle="loginModal">Masuk</a>
+        </div>
+      </div>
+    </div>
 </div>
+
+  
+
+   
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -177,5 +321,53 @@ Detail Menu: {{ menu.name }}
         restaurantInfoSection.classList.remove("translate-y-20", "opacity-0");
         restaurantInfoSection.classList.add("translate-y-0", "opacity-100");
     });
+
+
+     // Function to toggle modals
+  document.querySelectorAll("[data-modal-toggle]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetModal = el.getAttribute("data-modal-toggle");
+
+      // Hide all modals first
+      document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.classList.add('hidden');
+      });
+
+      // Show the target modal
+      const modalElement = document.getElementById(targetModal);
+      if (modalElement) {
+        modalElement.classList.remove('hidden');
+      }
+    });
+  });
+
+  // Close modal when clicking the close button
+  document.querySelectorAll("[data-modal-close]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const modal = el.closest('.modal-backdrop');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Close modal when clicking outside
+  document.querySelectorAll('.modal-backdrop').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Prevent modal backdrop click from bubbling to parent
+  document.querySelectorAll('.modal-backdrop > div').forEach(modalContent => {
+    modalContent.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  });
 </script>
+
 {% endblock %}
