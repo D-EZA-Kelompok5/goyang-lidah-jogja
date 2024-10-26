@@ -27,11 +27,20 @@ Restoran di Yogyakarta
           <!-- Search Button -->
           <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">Cari</button>
       </div>
-  </div>
+    </div>
   </div>
 
-  
-
+  {% if user.is_authenticated %}
+    {% if not user.profile.preferences.exists %}
+    <!-- Preferences Section -->
+    <div class="text-center mt-4">
+        <p class="text-gray-600 mb-2">Belum memilih preferensi? Pilih preferensi menu untuk mendapatkan rekomendasi yang sesuai!</p>
+        <a href="{% url 'userPreferences:edit_preferences' %}" class="inline-block bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">
+            Atur Preferensi
+        </a>
+    </div>
+    {% endif %}
+{% endif %}
 </header>
 
 <!-- Foto Udang Section -->

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'menuResto',
     'goyangNanti',
     'ulasGoyangan',  
+    'userPreferences',
 ]
 
 

@@ -29,4 +29,7 @@ urlpatterns = [
     
     # UlasGoyangan app (for reviews)
     path('ulasGoyangan/', include('ulasGoyangan.urls', namespace='ulasGoyangan')),
+    
+    # userPreferences app (for editing user preferences)
+    path('userPreferences/', include('userPreferences.urls', namespace='userPreferences')),
 ]
