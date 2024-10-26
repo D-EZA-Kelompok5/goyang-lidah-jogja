@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Review
-from main.models import Menu
+from menuResto.models import Menu
 from .forms import ReviewForm
 from django.contrib.auth.decorators import login_required
 

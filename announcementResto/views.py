@@ -1,29 +1,72 @@
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Restaurant, Pengumuman
-from .forms import PengumumanForm  
+from announcementResto.models import Announcement
+from main.models import Restaurant
+from menuResto.views import is_restaurant_owner
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 
-
-def daftar_pengumuman(request, restaurant_id):
+# Create your views here.
+@login_required
+@user_passes_test(is_restaurant_owner)
+def create_announcement(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    pengumuman_list = restaurant.pengumuman.all()
-    return render(request, 'daftar_pengumuman.html', {'restaurant': restaurant, 'pengumuman_list': pengumuman_list})
+    
+    # Verify ownership
+    if restaurant.owner != request.user.profile:
+        return HttpResponseForbidden("You don't have permission to create announcements for this restaurant.")
+    
+    if request.method == "POST":
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        
+        if title and message:
+            Announcement.objects.create(
+                restaurant=restaurant,
+                title=title,
+                message=message
+            )
+            messages.success(request, 'Announcement created successfully!')
+        else:
+            messages.error(request, 'Title and message are required.')
+            
+    return redirect('menuResto:restaurant_detail_menu', restaurant_id=restaurant_id)
 
+@login_required
+@user_passes_test(is_restaurant_owner)
+def edit_announcement(request, pk):
+    announcement = get_object_or_404(Announcement, pk=pk)
+    restaurant = announcement.restaurant
+    
+    # Verify ownership
+    if restaurant.owner != request.user.profile:
+        return HttpResponseForbidden("You don't have permission to edit this announcement.")
+    
+    if request.method == "POST":
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        
+        if title and message:
+            announcement.title = title
+            announcement.message = message
+            announcement.save()
+            messages.success(request, 'Announcement updated successfully!')
+        else:
+            messages.error(request, 'Title and message are required.')
+            
+    return redirect('menuResto:restaurant_detail_menu', restaurant_id=restaurant.id)
 
-def tambah_pengumuman(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    if request.method == 'POST':
-        form = PengumumanForm(request.POST)
-        if form.is_valid():
-            pengumuman = form.save(commit=False)
-            pengumuman.restaurant = restaurant
-            pengumuman.save()
-            return redirect('daftar_pengumuman', restaurant_id=restaurant.id)
-    else:
-        form = PengumumanForm()
-    return render(request, 'tambah_pengumuman.html', {'form': form, 'restaurant': restaurant})
-
-def detail_pengumuman(request, pengumuman_id):
-    pengumuman = get_object_or_404(Pengumuman, id=pengumuman_id)
-    return render(request, 'detail_pengumuman.html', {'pengumuman': pengumuman})
-
+@login_required
+@user_passes_test(is_restaurant_owner)
+def delete_announcement(request, pk):
+    announcement = get_object_or_404(Announcement, pk=pk)
+    restaurant = announcement.restaurant
+    
+    # Verify ownership
+    if restaurant.owner != request.user.profile:
+        return HttpResponseForbidden("You don't have permission to delete this announcement.")
+    
+    announcement.delete()
+    messages.success(request, 'Announcement deleted successfully!')
+    return redirect('menuResto:restaurant_detail_menu', restaurant_id=restaurant.id)

@@ -8,20 +8,17 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('menuResto', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name='Wishlist',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('menus', models.ManyToManyField(related_name='tags', to='menuResto.menu')),
             ],
             options={
-                'verbose_name': 'Tag',
-                'verbose_name_plural': 'Tags',
+                'verbose_name': 'Wishlist',
+                'verbose_name_plural': 'Wishlists',
             },
         ),
     ]
