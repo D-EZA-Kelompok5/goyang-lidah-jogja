@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .models import UserProfile, Menu, Restaurant
+from .models import UserProfile, Restaurant
+from menuResto.models import Menu
 from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model

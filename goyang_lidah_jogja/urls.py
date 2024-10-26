@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('event_manager/', include('managerDashboard.urls')),
+    path('restaurant/', include('menuResto.urls')),
+    path('restaurant/', include('announcementResto.urls')),
 ]
