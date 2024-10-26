@@ -48,7 +48,6 @@
             Restaurant Dashboard
           </a>
         {% endif %}
-      {% endif %}
         
         <!-- User Profile Info -->
         <div class="relative group" id="profileDropdown">
@@ -79,6 +78,11 @@
             </div>
           </div>
         </div>
+        {% else %}
+        <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
+          Masuk
+        </a>
+      {% endif %}
   <!-- Rest of the nav content remains the same -->
 </nav>
 
