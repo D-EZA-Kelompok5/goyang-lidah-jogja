@@ -88,8 +88,11 @@
             </div>
             {% endif %}
 
-            <!-- Submit Button -->
-            <div class="flex justify-end mt-6">
+            <!-- Edit Preferences and Submit Button -->
+            <div class="flex justify-between mt-6 space-x-2">
+                <a href="{% url 'userPreferences:edit_preferences' %}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    Edit Preferences
+                </a>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Save Changes
                 </button>
