@@ -104,6 +104,7 @@ def menu_detail(request, menu_id):
         'average_rating': average_rating,
         'star_range': star_range,
         'rating_distribution': rating_distribution,  # Add this line
+        
     }
     return render(request, 'menu_detail.html', context)
 

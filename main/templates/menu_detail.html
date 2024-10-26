@@ -16,8 +16,8 @@ Detail Menu: {{ menu.name }}
             Kembali ke Daftar Menu
         </a>
 
-        <!-- Love Icon -->
-        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105">
+        <!-- Love Icon with Tooltip -->
+        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105" title="Tambahkan ke Favorit">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
@@ -54,7 +54,7 @@ Detail Menu: {{ menu.name }}
             <p class="text-gray-700 mb-6 leading-relaxed">{{ menu.description }}</p>
 
             <!-- Restaurant Information Section -->
-            <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="grid grid-cols-3 gap-4 mb-8 transform translate-y-20 opacity-0 transition duration-1000 ease-out" id="restaurant-info-section">
                 <!-- Penilaian dan Ulasan -->
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
                     <h2 class="text-2xl font-bold mb-2">Penilaian dan Ulasan</h2>
@@ -67,7 +67,7 @@ Detail Menu: {{ menu.name }}
                                 <div class="flex items-center mb-2">
                                     <span class="text-sm text-gray-700">{{ i }} Bintang</span>
                                     <div class="w-full h-2 bg-gray-300 ml-2 rounded relative overflow-hidden">
-                                        <div class="h-full bg-green-500 rounded transition-all duration-500" style="width: {{ percentage }}%;"></div>
+                                        <div class="h-full bg-green-500 rounded transition-all duration-500" ></div>
                                     </div>
                                 </div>
                             {% endwith %}
@@ -94,7 +94,7 @@ Detail Menu: {{ menu.name }}
 
             <!-- Action Buttons -->
             <div class="flex justify-end items-center mb-8">
-                <a href="{% url 'ulasGoyangan:submit_review' menu.id %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-lg transition-all transform hover:scale-105">
+                <a href="{% url 'ulasGoyangan:submit_review' menu.id %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-lg transition-all transform hover:scale-105 hover:animate-bounce">
                     Ulas Goyangan
                 </a>
             </div>
@@ -102,75 +102,80 @@ Detail Menu: {{ menu.name }}
     </div>
 
     <!-- User Reviews Section -->
-<div class="mt-12 bg-white shadow-lg rounded-lg p-8">
-    <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
-    {% for review in menu.reviews.all %}
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-4">
-            <div class="flex items-start">
-                <div class="w-12 h-12 rounded-full overflow-hidden mr-4 flex items-center justify-center bg-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 
-                                 5 2.24 5 5 5zm0 2c-3.33 0-10 
-                                 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
-                    </svg>
-                </div>
-
-                <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-lg font-semibold text-gray-900">{{ review.user.username }}</p>
-                            <div class="flex items-center">
-                                {% for i in "12345" %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if i <= review.rating|stringformat:"i" %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M12 .587l3.668 7.451L24 
-                                                 9.75l-6 5.847 1.421 
-                                                 8.302L12 18.899 4.579 
-                                                 23.899 6 15.597 0 
-                                                 9.75l8.332-1.712z"/>
-                                    </svg>
-                                {% endfor %}
-                                <span class="text-gray-600 ml-2 text-sm">({{ review.rating }})</span>
-                            </div>
-                        </div>
-
-                        <!-- Edit/Delete Icons (Visible only to review author) -->
-                        {% if review.user == request.user %}
-                        <div class="flex space-x-2">
-                            <!-- Edit Button -->
-                            <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M3 17.25V21h3.75l11-11.03-3.75-3.75L3 
-                                             17.25zm18.71-10.04a1 1 0 0 
-                                             0 0-1.41l-2.5-2.5a1 1 0 0 
-                                             0-1.41 0l-1.83 1.83 3.75 
-                                             3.75 1.99-1.67z"/>
-                                </svg>
-                            </a>
-                            <!-- Delete Button with Confirmation -->
-                            <form action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?');">
-                                {% csrf_token %}
-                                <button type="submit" class="text-red-500 hover:text-red-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M3 6h18v2H3zm2 3h14v13H5z"/>
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                        {% endif %}
+    <div class="mt-12 bg-white shadow-lg rounded-lg p-8">
+        <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
+        {% for review in menu.reviews.all %}
+            <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-4 transition-transform transform scale-90 hover:scale-100 duration-500">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 rounded-full overflow-hidden mr-4 flex items-center justify-center bg-gray-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
+                        </svg>
                     </div>
 
-                    <!-- Review Content -->
-                    <p class="text-gray-800 mt-4">{{ review.comment }}</p>
-                    <!-- Review Date -->
-                    <p class="text-gray-500 text-sm mt-2">{{ review.created_at|date:"d M Y, H:i" }}</p>
-                    {% if review.last_edited %}
-                    <p class="text-gray-400 text-xs italic">Diedit: {{ review.last_edited|date:"d M Y, H:i" }}</p>
-                    {% endif %}
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-lg font-semibold text-gray-900">{{ review.user.username }}</p>
+                                <div class="flex items-center">
+                                    {% for i in "12345" %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if i <= review.rating|stringformat:"i" %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
+                                        </svg>
+                                    {% endfor %}
+                                    <span class="text-gray-600 ml-2 text-sm">({{ review.rating }})</span>
+                                </div>
+                            </div>
+
+                            <!-- Edit/Delete Icons (Visible only to review author) -->
+                            {% if review.user == request.user %}
+                            <div class="flex space-x-2">
+                                <!-- Edit Button -->
+                                <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M3 17.25V21h3.75l11-11.03-3.75-3.75L3 17.25zm18.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a 1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67z"/>
+                                    </svg>
+                                </a>
+                                <!-- Delete Button with Confirmation -->
+                                <form id="deleteReviewForm" action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-500 hover:text-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M3 6h18v2H3zm2 3h14v13H5z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Review Content -->
+                        <p class="text-gray-800 mt-4">{{ review.comment }}</p>
+                        <!-- Review Date -->
+                        <p class="text-gray-500 text-sm mt-2">{{ review.created_at|date:"d M Y, H:i" }}</p>
+                        {% if review.last_edited %}
+                        <p class="text-gray-400 text-xs italic">Diedit: {{ review.last_edited|date:"d M Y, H:i" }}</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% empty %}
-        <p class="text-gray-500 mt-4">Belum ada ulasan untuk menu ini. Jadilah yang pertama memberikan ulasan!</p>
-    {% endfor %}
+        {% empty %}
+            <p class="text-gray-500 mt-4">Belum ada ulasan untuk menu ini. Jadilah yang pertama memberikan ulasan!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Scroll to Top Floating Button -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="fixed bottom-5 right-5 bg-blue-500 text-white p-3 rounded-full shadow-lg transition-transform transform hover:scale-110">
+        ⬆️
+    </button>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Animasi muncul dari bawah
+        const restaurantInfoSection = document.getElementById("restaurant-info-section");
+        restaurantInfoSection.classList.remove("translate-y-20", "opacity-0");
+        restaurantInfoSection.classList.add("translate-y-0", "opacity-100");
+    });
+</script>
 {% endblock %}
