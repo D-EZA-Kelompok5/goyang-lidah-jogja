@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detail Menu: {{ menu.name }}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden flex">
+        {% if menu.image %}
+        <div class="w-1/3 p-4">
+            <img src="{{ menu.image }}" alt="{{ menu.name }}" class="w-full h-48 object-cover rounded-lg">
+        </div>
+        {% endif %}
+
+        <div class="w-2/3 p-8">
+            <h1 class="text-4xl font-bold mb-4 text-gray-900">{{ menu.name }}</h1>
+
+            <!-- Average Rating Display -->
+            <div class="flex items-center mb-4">
+                {% for i in "12345" %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 {% if i <= average_rating|floatformat:0 %}fill-yellow-500{% else %}fill-gray-300{% endif %}" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
+                    </svg>
+                {% endfor %}
+                <span class="text-gray-600 ml-2">({{ average_rating }})</span>
+            </div>
+
+            <p class="text-2xl text-green-600 font-semibold mb-4">Rp {{ menu.price|floatformat:2 }}</p>
+            <p class="text-gray-700 mb-6 leading-relaxed">{{ menu.description }}</p>
+
+            <!-- Restaurant Information -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800">Tentang Restoran</h2>
+                <div class="mt-4">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        <a href="{% url 'main:restaurant_detail' restaurant_id=menu.restaurant.id %}" class="text-blue-500 hover:underline">
+                            {{ menu.restaurant.name }}
+                        </a>
+                    </h3>
+                    <p class="text-gray-600 mt-2">{{ menu.restaurant.description }}</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between items-center mb-8">
+                <a href="{% url 'main:show_main' %}" class="inline-block bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                    Kembali ke Daftar Menu
+                </a>
+                <button class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                    Tambahkan ke Keranjang
+                </button>
+                <a href="{% url 'ulasGoyangan:submit_review' menu.id %}" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 ml-4">
+                    Ulas Goyangan
+                </a>
+            </div>
+            
+            <!-- Display User Reviews -->
+            <h2 class="text-2xl font-bold mt-8">Ulasan Pengguna</h2>
+            {% for review in menu.reviews.all %}
+                <div class="bg-gray-100 p-4 mt-4 rounded-lg">
+                    <p class="font-semibold">{{ review.user.username }}</p>
+                    
+                    <!-- Star Rating for Individual Review -->
+                    <div class="flex items-center mb-2">
+                        {% for i in star_range %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if i <= review.rating %}fill-yellow-500{% else %}fill-gray-300{% endif %}" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
+                            </svg>
+                        {% endfor %}
+                        <span class="text-gray-600 ml-2">({{ review.rating }})</span>
+                    </div>
+
+                    <p>{{ review.comment }}</p>
+                    <p class="text-gray-500 text-sm">{{ review.created_at }}</p>
+
+                    <!-- Edit/Delete Buttons -->
+                    {% if review.user == request.user %}
+                    <div class="mt-2 flex space-x-2">
+                        <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                        <form action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this review?');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="text-gray-500 mt-4">Belum ada ulasan untuk menu ini. Jadilah yang pertama memberikan ulasan!</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
