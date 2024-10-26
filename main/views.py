@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
 from django.db.models import Avg
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
+from goyangNanti.models import Wishlist
 from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
 
@@ -21,9 +22,17 @@ from django.contrib.auth.hashers import make_password
 def show_main(request):
     form = CustomUserCreationForm()
     menus = Menu.objects.all()
+    wishlist_items = []  # Daftar kosong untuk item wishlist
+
+    # Cek jika pengguna sudah login dan memiliki role 'CUSTOMER'
+    if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role == 'CUSTOMER':
+        # Ambil semua ID menu di wishlist pengguna
+        wishlist_items = Wishlist.objects.filter(user=request.user.profile).values_list('menu_id', flat=True)
+    
     context = {
         'form': form,
         'menus': menus,
+        'wishlist_items': wishlist_items,  # Kirim daftar ID item wishlist ke template
     }
     return render(request, "main.html", context)
 

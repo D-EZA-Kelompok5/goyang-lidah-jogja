@@ -39,6 +39,10 @@
           <a href="{% url 'managerDashboard:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Manager Dashboard
           </a>
+        {% elif user.profile.role == 'CUSTOMER' %}
+          <a href="{% url 'wishlist:show_wishlist' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Wishtlists
+          </a>
         {% elif user.profile.role == 'RESTAURANT_OWNER' %}
           <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Restaurant Dashboard

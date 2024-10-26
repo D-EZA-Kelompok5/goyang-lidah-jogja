@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # Custom apps
     'main',
     'managerDashboard',
+    'menuResto',
+    'goyangNanti',
     'ulasGoyangan',  
 ]
 
