@@ -6,20 +6,31 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .models import UserProfile, Restaurant
+from .models import UserProfile, Menu, Restaurant
 from .forms import CustomUserCreationForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
-from menuResto.models import Menu
+from django.db.models import Avg
+from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
+from goyangNanti.models import Wishlist
+
 
 # @login_required(login_url='/login')
 def show_main(request):
     form = CustomUserCreationForm()
     menus = Menu.objects.all()
+    wishlist_items = []  # Daftar kosong untuk item wishlist
+
+    # Cek jika pengguna sudah login dan memiliki role 'CUSTOMER'
+    if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.role == 'CUSTOMER':
+        # Ambil semua ID menu di wishlist pengguna
+        wishlist_items = Wishlist.objects.filter(user=request.user.profile).values_list('menu_id', flat=True)
+    
     context = {
         'form': form,
         'menus': menus,
+        'wishlist_items': wishlist_items,  # Kirim daftar ID item wishlist ke template
     }
     return render(request, "main.html", context)
 
@@ -64,10 +75,28 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Avg
+from main.models import Menu
+from ulasGoyangan.models import Review
+
 def menu_detail(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
+    
+    # Calculate average rating
+    reviews = Review.objects.filter(menu=menu)
+    if reviews.exists():
+        average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+    else:
+        average_rating = 0  # Default to 0 if no reviews
+
+    # Pass a fixed range for stars
+    star_range = [1, 2, 3, 4, 5]
+
     context = {
-        'menu': menu
+        'menu': menu,
+        'average_rating': round(average_rating, 1),
+        'star_range': star_range,
     }
     return render(request, 'menu_detail.html', context)
 

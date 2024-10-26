@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Restoran di Yogyakarta
@@ -40,12 +41,87 @@ Restoran di Yogyakarta
         <div class="p-4">
             <h3 class="font-bold text-xl">{{ menu.name }}</h3>
             <p class="text-gray-600 mt-2">{{ menu.description }}</p>
-            <p class="font-medium text-gray-900 mt-1">Rp {{ menu.price|floatformat:2 }}</p>
+            <p class="font-medium text-gray-900 mt-1">
+                Rp {{ menu.price|floatformat:2 }}
+                
+                <!-- Tentukan apakah ikon love harus merah atau hitam -->
+                <button class="ml-2 focus:outline-none" onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
+                    <img src="{% if menu.id in wishlist_items %}{% static 'images/lovemerah.png' %}{% else %}{% static 'images/lovehitam.png' %}{% endif %}" alt="Love" class="w-5 h-5" id="love-icon-{{ menu.id }}">
+                </button>
+                
+            </p>
         </div>
     </div>
   </a>
   {% endfor %}
 </section>
+
+
+<script>
+  function handleLoveClick(event, button) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const isAuthenticated = button.getAttribute('data-is-authenticated') === 'True';
+      const menuId = button.getAttribute('data-menu-id');
+      const loveIcon = document.getElementById(`love-icon-${menuId}`);
+      
+      if (!isAuthenticated) {
+          const loginModal = document.getElementById('loginModal');
+          if (loginModal) {
+              loginModal.classList.remove('hidden');
+          }
+          return;
+      }
+      
+      // Get CSRF token from cookie
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+  
+      const csrftoken = getCookie('csrftoken');
+      
+      fetch("{% url 'wishlist:add_wishlist' %}", {
+          method: 'POST',
+          headers: {
+              'X-CSRFToken': csrftoken,
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              'menu_id': menuId,
+              'catatan': '' // Add empty note since it's required
+          })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.status === 'added') {
+              loveIcon.src = "{% static 'images/lovemerah.png' %}";
+          } else if (data.status === 'removed') {
+              loveIcon.src = "{% static 'images/lovehitam.png' %}";
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Terjadi kesalahan saat memproses permintaan Anda');
+      });
+  }
+  </script>
 
 <!-- Login Modal -->
 <div id="loginModal" class="modal-backdrop {% if login_error %}block{% else %}hidden{% endif %}">

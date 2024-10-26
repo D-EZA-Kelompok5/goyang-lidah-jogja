@@ -4,4 +4,4 @@ from .models import Wishlist
 class WishlistForm(forms.ModelForm):
     class Meta:
         model = Wishlist
-        fields = ['menu', 'catatan', 'status']
+        fields = ['catatan', 'status']

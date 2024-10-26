@@ -4,29 +4,53 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Wishlist
 from main.models import UserProfile
-from menuResto.models import Menu
+from main.models import Menu
 from .forms import WishlistForm
+import json
+from django.views.decorators.http import require_http_methods
 
 # Fungsi untuk memeriksa apakah pengguna adalah 'CUSTOMER'
 def is_customer(user):
     return user.is_authenticated and user.profile.role == 'CUSTOMER'
 
+@require_http_methods(["POST"])
 @user_passes_test(is_customer)
 def add_wishlist(request):
-    if request.method == 'POST':
-        menu_id = request.POST.get('menu_id')
+    try:
+        data = json.loads(request.body)
+        menu_id = data.get('menu_id')
+        
+        if not menu_id:
+            return JsonResponse({'message': 'Menu ID is required'}, status=400)
+            
         menu_item = get_object_or_404(Menu, id=menu_id)
         user_profile = request.user.profile
 
-        # Cek apakah item sudah ada di wishlist
-        if Wishlist.objects.filter(user=user_profile, menu=menu_item).exists():
-            return JsonResponse({'message': 'Item already in wishlist'}, status=400)
+        wishlist_item, created = Wishlist.objects.get_or_create(
+            user=user_profile,
+            menu=menu_item,
+            defaults={
+                'catatan': '',  # Set default empty note
+                'status': 'BELUM'
+            }
+        )
 
-        # Tambah item ke wishlist
-        Wishlist.objects.create(user=user_profile, menu=menu_item, catatan='', status='BELUM')
-        return JsonResponse({'message': 'Item added to wishlist'}, status=200)
-    
-    return JsonResponse({'message': 'Invalid request'}, status=400)
+        if created:
+            return JsonResponse({
+                'status': 'added',
+                'message': 'Item added to wishlist'
+            })
+        else:
+            wishlist_item.delete()
+            return JsonResponse({
+                'status': 'removed',
+                'message': 'Item removed from wishlist'
+            })
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
 
 @login_required(login_url='/main/login')
 @user_passes_test(is_customer)
@@ -34,6 +58,7 @@ def show_wishlist(request):
     wishlists = Wishlist.objects.filter(user=request.user.profile)
     context = {'wishlists': wishlists}
     return render(request, 'wishlists.html', context)
+
 
 @user_passes_test(is_customer)
 def edit_wishlist(request, pk):
@@ -46,7 +71,10 @@ def edit_wishlist(request, pk):
     else:
         form = WishlistForm(instance=wishlist)
     
-    context = {'form': form}
+    context = {
+        'form': form,
+        'wishlist': wishlist  # Untuk menampilkan detail menu di template
+    }
     return render(request, 'edit_wishlist.html', context)
 
 @user_passes_test(is_customer)

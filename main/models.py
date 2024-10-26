@@ -1,18 +1,18 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name='profile',
-        unique=True
+        unique=True,
+        primary_key=True
     )
-
     ROLE_CHOICES = [
         ('EVENT_MANAGER', 'Event Manager'),
         ('RESTAURANT_OWNER', 'Restaurant Owner'),
@@ -31,7 +31,6 @@ class UserProfile(models.Model):
         default='CUSTOMER'
     )
     bio = models.TextField(
-        max_length=500,
         blank=True
     )
     profile_picture = models.URLField(
@@ -46,8 +45,6 @@ class UserProfile(models.Model):
         choices=LEVEL_CHOICES,
         default='BRONZE'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def update_level(self):
         if self.review_count >= 50:
@@ -84,14 +81,12 @@ class Restaurant(models.Model):
         blank=True,
         validators=[URLValidator()]
     )
-    owner = models.OneToOneField(
+    owner = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
         related_name='owned_restaurant',
-        limit_choices_to={'role': 'RESTAURANT_OWNER'}
+        limit_choices_to={'role': 'RESTAURANT_OWNER'},
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -99,6 +94,40 @@ class Restaurant(models.Model):
     class Meta:
         verbose_name = 'Restaurant'
         verbose_name_plural = 'Restaurants'
+
+class Menu(models.Model):
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name='menus'
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        validators=[URLValidator()]
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.restaurant.name})"
+
+    class Meta:
+        verbose_name = 'Menu'
+        verbose_name_plural = 'Menus'
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    menus = models.ManyToManyField(Menu, related_name='tags')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Tag'
+        verbose_name_plural = 'Tags'
 
 class Announcement(models.Model):
     restaurant = models.ForeignKey(
@@ -108,8 +137,6 @@ class Announcement(models.Model):
     )
     title = models.CharField(max_length=255)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} - {self.restaurant.name}"
@@ -117,5 +144,3 @@ class Announcement(models.Model):
     class Meta:
         verbose_name = 'Announcement'
         verbose_name_plural = 'Announcements'
-
-

@@ -2,8 +2,15 @@
 {% load static %}
 
 {% block content %}
+
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Your Wishlist</h1>
+    <!-- Header Section with Back Button and Title -->
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Your Wishlist</h1>
+        <a href="{% url 'main:show_main' %}" class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+            Back to Main
+        </a>
+    </div>
 
     {% if wishlists %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
