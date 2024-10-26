@@ -1,50 +1,70 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-Ulas Goyangan untuk {{ menu.name }}
+Edit Ulas Goyangan {{ menu.name }}
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
-    <!-- Page Title -->
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Ulas Goyangan untuk "{{ menu.name }}"</h1>
-    
-    <!-- Review Form -->
-    <form method="post" class="space-y-6">
-        {% csrf_token %}
-        
-        <!-- Custom Star Rating Field -->
-        <div>
-            <label class="block text-lg font-medium text-gray-700">Rating</label>
-            <div id="star-rating" class="flex space-x-1 text-gray-400">
-                {% for i in "12345" %}  <!-- Adjusted to loop from 1 to 5, left to right -->
-                <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" class="hidden">
-                <label for="star{{ i }}" class="cursor-pointer star" data-value="{{ i }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 fill-current transition-colors duration-200 hover:fill-yellow-500" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
-                    </svg>
-                </label>
-                {% endfor %}
-            </div>
-        </div>
 
-        <!-- Comment Field -->
-        <div>
-            <label for="comment" class="block text-lg font-medium text-gray-700">Komentar</label>
-            {{ form.comment }}
-        </div>
 
-        <!-- Submit Button -->
-        <div class="pt-4">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md">
-                Kirim Ulasan
-            </button>
-            <a href="{% url 'main:menu_detail' menu.id %}" class="ml-4 inline-block text-gray-500 hover:text-gray-700">
-                Batal
-            </a>
+<div class="flex items-center justify-center w-screen h-screen">
+    <!-- Wrapper for the form and image -->
+    <div class="flex w-3/4 max-w-6xl shadow-lg rounded-lg overflow-hidden">
+        <!-- Left Section (Form) -->
+        <div class="w-1/2 p-8 bg-white bg-opacity-90">
+            <!-- Page Title -->
+            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Edit Ulas Goyangan </h1>
+            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">{{ menu.name }}</h1>
+
+            <!-- Review Form -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Custom Star Rating Field -->
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">Rating</label>
+                    <div id="star-rating" class="flex space-x-1 text-gray-400">
+                        {% for i in "12345" %}
+                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" class="hidden">
+                        <label for="star{{ i }}" class="cursor-pointer star" data-value="{{ i }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 fill-current transition-colors duration-200 hover:fill-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
+                            </svg>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Comment Field -->
+                <div>
+                    <label for="comment" class="block text-lg font-medium text-gray-700">Komentar</label>
+                    {{ form.comment }}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4 text-center">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md">
+                        Kirim Ulasan
+                    </button>
+                    <a href="{% url 'main:menu_detail' menu.id %}" class="ml-4 inline-block text-gray-500 hover:text-gray-700">
+                        Batal
+                    </a>
+                </div>
+
+            </form>
+
         </div>
-    </form>
+        <!-- Right Section (Background Image) -->
+        <div class="w-1/2 bg-cover bg-center relative" style="background-image: url('{{ menu.image }}');">
+        </div>
+    </div>
 </div>
+
+    
+
+    
+
 
 <!-- JavaScript to handle star rating selection -->
 <script>
@@ -52,7 +72,6 @@ Ulas Goyangan untuk {{ menu.name }}
         const stars = document.querySelectorAll(".star");
         let selectedRating = 0;
 
-        // Function to update the visual state of stars
         function updateStars(rating) {
             stars.forEach((star, index) => {
                 if (index < rating) {
@@ -64,22 +83,19 @@ Ulas Goyangan untuk {{ menu.name }}
         }
 
         stars.forEach(star => {
-            // Click event to set the rating
             star.addEventListener("click", function() {
                 selectedRating = parseInt(this.getAttribute("data-value"));
                 document.querySelector(`input[name="rating"][value="${selectedRating}"]`).checked = true;
-                updateStars(selectedRating);  // Highlight stars up to selectedRating
+                updateStars(selectedRating);
             });
 
-            // Hover event to show temporary rating
             star.addEventListener("mouseover", function() {
                 const hoverValue = parseInt(this.getAttribute("data-value"));
-                updateStars(hoverValue);  // Temporarily highlight up to hover value
+                updateStars(hoverValue);
             });
 
-            // Mouse leave event to revert to selected rating
             star.addEventListener("mouseleave", function() {
-                updateStars(selectedRating);  // Revert back to selectedRating
+                updateStars(selectedRating);
             });
         });
     });
