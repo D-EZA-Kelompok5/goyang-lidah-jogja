@@ -101,6 +101,7 @@ def edit_menu(request, pk):
 @user_passes_test(is_restaurant_owner)
 def delete_menu(request, pk):
     menu = get_object_or_404(Menu, pk=pk)
+    
     restaurant = menu.restaurant
     
     # Verify ownership

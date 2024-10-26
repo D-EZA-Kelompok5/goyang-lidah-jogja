@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="bg-white shadow-md py-2">
+<nav class="fixed top-0 left-0 right-0 bg-white shadow-md py-2 z-50 transition-all duration-300" id="navbar">
   <div class="container mx-auto flex justify-between items-center">
     
     <!-- Left Section: Logo -->
@@ -10,29 +10,8 @@
       </a>
     </div>
 
-    <!-- Middle Section: Search Bar -->
-    <div class="flex-grow mx-4">
-      <form action="#" method="GET" class="relative">
-        <input type="text" class="w-full border rounded-full py-2 px-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-600"
-               placeholder="Cari">
-        <button type="submit" class="absolute right-3 top-2 text-gray-600">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H3" />
-          </svg>
-        </button>
-      </form>
-    </div>
-
     <!-- Right Section: Links and Login Button -->
     <div class="flex items-center space-x-4">
-      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Ayam</a>
-      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Bebek</a>
-      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Soto</a>
-      <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">Sate</a>
-      
-      <!-- Separator -->
-      <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
-
       <!-- Login/Dashboard Buttons -->
       {% if user.is_authenticated %}
         {% if user.profile.role == 'EVENT_MANAGER' %}
@@ -43,13 +22,20 @@
           <a href="{% url 'menuResto:restaurant_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Restaurant Dashboard
           </a>
+        {% elif user.profile.role == 'CUSTOMER' %}
+          <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            GoyangNanti
+          </a>
         {% endif %}
+
+        <!-- Separator -->
+        <div class="border-l-2 border-gray-300 h-6 mx-2"></div>
         
         <!-- User Profile Info -->
-        <div class="relative group">
-          <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+        <div class="relative group" id="profileDropdown">
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-gray-800" id="profileButton">
             {% if user.profile.profile_picture %}
-              <img src="#" alt="Profile" class="w-8 h-8 rounded-full">
+              <img src="{{ user.profile.profile_picture }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
             {% else %}
               <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <span class="text-sm">{{ user.username|make_list|first|upper }}</span>
@@ -59,10 +45,10 @@
           </button>
           
           <!-- Dropdown Menu -->
-          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block">
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden" id="profileMenu">
             <div class="py-1">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                Profile ({{ user.profile.level }})
+              <a href="{% url 'main:edit_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Profile
               </a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 My Reviews ({{ user.profile.review_count }})
@@ -74,8 +60,7 @@
             </div>
           </div>
         </div>
-        
-      {% else %}
+        {% else %}
         <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
           Masuk
         </a>
@@ -84,5 +69,63 @@
   </div>
 </nav>
 
+<!-- Add a spacer div to prevent content from jumping -->
+<div class="h-16"></div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const navbar = document.getElementById('navbar');
+  const profileButton = document.getElementById('profileButton');
+  const profileMenu = document.getElementById('profileMenu');
+  let isOpen = false;
+  let lastScrollY = window.scrollY;
+
+  // Handle navbar visibility on scroll
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    
+    // Add shadow effect when scrolling
+    if (currentScrollY > 0) {
+      navbar.classList.add('shadow-lg');
+      navbar.classList.remove('shadow-md');
+    } else {
+      navbar.classList.remove('shadow-lg');
+      navbar.classList.add('shadow-md');
+    }
+    
+    lastScrollY = currentScrollY;
+  });
+
+  // Toggle menu on button click
+  profileButton.addEventListener('click', function(e) {
+    e.stopPropagation();
+    isOpen = !isOpen;
+    if (isOpen) {
+      profileMenu.classList.remove('hidden');
+    } else {
+      profileMenu.classList.add('hidden');
+    }
+  });
+
+  // Prevent menu from closing when clicking inside it
+  profileMenu.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+
+  // Close menu when clicking anywhere else on the page
+  document.addEventListener('click', function() {
+    if (isOpen) {
+      profileMenu.classList.add('hidden');
+      isOpen = false;
+    }
+  });
+
+  // Optional: Close menu when pressing Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && isOpen) {
+      profileMenu.classList.add('hidden');
+      isOpen = false;
+    }
+  });
+});
 </script>

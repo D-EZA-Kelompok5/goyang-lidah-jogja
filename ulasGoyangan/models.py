@@ -1,6 +1,6 @@
-from django.utils import timezone
-from django.conf import settings
 from django.db import models
+from django.conf import settings  # Import settings for referencing the user model
+from django.utils import timezone
 from menuResto.models import Menu
 
 # Create your models here.

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Edit Profile</h1>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 max-w-md mx-auto">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Current Profile Picture Preview -->
+            <div class="mb-6 text-center">
+                {% if user.profile.profile_picture %}
+                    <img src="{{ user.profile.profile_picture }}" alt="Current Profile Picture" 
+                         class="w-24 h-24 rounded-full mx-auto mb-2 object-cover border-2 border-gray-200">
+                {% else %}
+                    <div class="w-24 h-24 rounded-full mx-auto mb-2 bg-gray-300 flex items-center justify-center">
+                        <span class="text-2xl text-gray-600">{{ user.username|make_list|first|upper }}</span>
+                    </div>
+                {% endif %}
+                <p class="text-sm text-gray-600 mb-4">Current Profile Picture</p>
+            </div>
+
+            <!-- Username -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ user_form.username.id_for_label }}">Username</label>
+                {{ user_form.username }}
+                {% if user_form.username.errors %}
+                    <p class="text-red-500 text-xs italic">{{ user_form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Profile Picture URL -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ profile_form.profile_picture.id_for_label }}">Profile Picture URL</label>
+                {{ profile_form.profile_picture }}
+                {% if profile_form.profile_picture.errors %}
+                    <p class="text-red-500 text-xs italic">{{ profile_form.profile_picture.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Enter a valid image URL (e.g., https://example.com/image.jpg)</p>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ user_form.password.id_for_label }}">New Password</label>
+                {{ user_form.password }}
+                {% if user_form.password.errors %}
+                    <p class="text-red-500 text-xs italic">{{ user_form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Bio -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ profile_form.bio.id_for_label }}">Bio</label>
+                {{ profile_form.bio }}
+                {% if profile_form.bio.errors %}
+                    <p class="text-red-500 text-xs italic">{{ profile_form.bio.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Role (Read-only) -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+                <input type="text" value="{{ user_profile.get_role_display }}" readonly
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100">
+            </div>
+
+            <!-- Level (For Customers) -->
+            {% if user_profile.role == 'CUSTOMER' %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Level</label>
+                <input type="text" value="{{ user_profile.get_level_display }}" readonly
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100">
+            </div>
+            {% endif %}
+
+            <!-- Restaurant Information (For Restaurant Owners) -->
+            {% if user_profile.role == 'RESTAURANT_OWNER' and owned_restaurant %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Owned Restaurant</label>
+                <input type="text" value="{{ owned_restaurant.name }}" readonly
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100">
+            </div>
+            {% endif %}
+
+            <!-- Edit Preferences and Submit Button -->
+            <div class="flex justify-between mt-6 space-x-2">
+                <a href="{% url 'userPreferences:edit_preferences' %}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    Edit Preferences
+                </a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

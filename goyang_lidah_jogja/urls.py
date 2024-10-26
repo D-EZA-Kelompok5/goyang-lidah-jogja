@@ -19,8 +19,18 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    
+    # Main app (landing page and other main features)
+    path('', include('main.urls', namespace='main')),
+    
+    # Event manager app
     path('event_manager/', include('managerDashboard.urls')),
     path('restaurant/', include('menuResto.urls')),
     path('restaurant/', include('announcementResto.urls')),
+    
+    # UlasGoyangan app (for reviews)
+    path('ulasGoyangan/', include('ulasGoyangan.urls', namespace='ulasGoyangan')),
+    
+    # userPreferences app (for editing user preferences)
+    path('userPreferences/', include('userPreferences.urls', namespace='userPreferences')),
 ]

@@ -136,3 +136,82 @@ footer {
     color: white;
     margin-top: 20px;
 }
+
+
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.udang-foto-container {
+    animation: slide-in-left 1s ease-out forwards;
+}
+
+.container {
+    max-width: 800px;
+}
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 1.5em;
+}
+.card-body {
+    padding: 20px;
+}
+
+/* Form and Button Styling */
+form h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+form .btn-primary, .btn-warning {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+}
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    margin-top: 10px;
+}
+.btn-primary:hover, .btn-warning:hover {
+    opacity: 0.9;
+}
+
+/* Alert Messages */
+.alert {
+    margin-bottom: 20px;
+}
+
+/* Account Information Section */
+.restaurant-info {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+.restaurant-info h5 {
+    color: #343a40;
+}
+p strong {
+    color: #007bff;
+}
