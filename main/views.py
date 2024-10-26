@@ -15,6 +15,7 @@ from django.db.models import Avg
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
+from goyangNanti.models import Wishlist
 
 
 # @login_required(login_url='/login')
