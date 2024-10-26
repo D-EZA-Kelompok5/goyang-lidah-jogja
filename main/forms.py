@@ -22,3 +22,32 @@ class CustomUserCreationForm(UserCreationForm):
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("This username is already taken.")
         return username
+
+class UserUpdateForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline',
+            'placeholder': 'Leave blank to keep current password'
+        }),
+        required=False
+    )
+
+    class Meta:
+        model = User
+        fields = ['username']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            })
+        }
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'profile_picture']
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline',
+                'rows': 4
+            })
+        }
