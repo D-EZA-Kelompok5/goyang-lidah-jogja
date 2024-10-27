@@ -6,99 +6,216 @@ Restoran di Yogyakarta
 {% endblock %}
 
 {% block content %}
-<div class="bg-white">
-<header class="py-8">
-  <div class="container mx-auto text-center">
-     <!-- Title and Subtitle -->
-    <h1 class="text-5xl font-bold text-gray-900">Mau makan apa?</h1>
-    <p class="text-lg text-gray-600 mt-2">Tempat makan terbaik di Yogyakarta</p>
+<div class="bg-white min-h-screen">
+  <header class="py-4 md:py-8 px-4">
+    <div class="container mx-auto text-center">
+      <!-- Title and Subtitle -->
+      <h1 class="text-3xl md:text-5xl font-bold text-gray-900">Mau makan apa?</h1>
+      <p class="text-base md:text-lg text-gray-600 mt-2">Tempat makan terbaik di Yogyakarta</p>
 
-    <div class="flex justify-center mb-2 mt-6">
-        <form action="{% url 'search:results' %}" method="GET" class="relative w-2/3 max-w-2xl">
-            <div class="shadow-md rounded-full bg-white border border-gray-300">
-                <input type="text" 
-                      name="q" 
-                      placeholder="Cari menu favorit anda..." 
-                      value="{{ request.GET.q|default:'' }}"
-                      class="w-full py-4 pl-12 pr-32 text-gray-700 bg-transparent rounded-full focus:outline-none">
-                
-                <!-- Search Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    stroke-width="2" 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                
-                <!-- Search Button -->
-                <button type="submit" 
-                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">
-                    Cari
-                </button>
-            </div>
+      <!-- Search Form -->
+      <div class="flex justify-center mb-2 mt-4 md:mt-6 px-4">
+        <form action="{% url 'search:results' %}" method="GET" class="relative w-full md:w-2/3 max-w-2xl">
+          <div class="shadow-md rounded-full bg-white border border-gray-300">
+            <input type="text" 
+                   name="q" 
+                   placeholder="Cari menu favorit anda..." 
+                   value="{{ request.GET.q|default:'' }}"
+                   class="w-full py-3 md:py-4 pl-12 pr-24 md:pr-32 text-gray-700 bg-transparent rounded-full focus:outline-none text-sm md:text-base">
+            
+            <!-- Search Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 class="w-4 h-4 md:w-5 md:h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" 
+                 viewBox="0 0 24 24" 
+                 fill="none" 
+                 stroke="currentColor" 
+                 stroke-width="2" 
+                 stroke-linecap="round" 
+                 stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            
+            <!-- Search Button -->
+            <button type="submit" 
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-400 text-black px-4 md:px-6 py-1.5 md:py-2 rounded-full text-sm md:text-base font-semibold hover:bg-green-500 transition-all duration-300">
+              Cari
+            </button>
+          </div>
         </form>
+      </div>
     </div>
-  </div>
 
-  {% if user.is_authenticated %}
-    {% if not user.profile.preferences.exists %}
-    <!-- Preferences Section -->
-    <div class="text-center mt-4">
-        <p class="text-gray-600 mb-2">Belum memilih preferensi? Pilih preferensi menu untuk mendapatkan rekomendasi yang sesuai!</p>
-        <a href="{% url 'userPreferences:edit_preferences' %}" class="inline-block bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">
-            Atur Preferensi
+    {% if user.is_authenticated %}
+      {% if not user.profile.preferences.exists %}
+      <!-- Preferences Section -->
+      <div class="text-center mt-4 px-4">
+        <p class="text-gray-600 mb-2 text-sm md:text-base">Belum memilih preferensi? Pilih preferensi menu untuk mendapatkan rekomendasi yang sesuai!</p>
+        <a href="{% url 'userPreferences:edit_preferences' %}" class="inline-block bg-green-400 text-black px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-semibold hover:bg-green-500 transition-all duration-300">
+          Atur Preferensi
         </a>
-    </div>
+      </div>
+      {% endif %}
     {% endif %}
-{% endif %}
-</header>
+  </header>
 
-<!-- Foto Udang Section -->
-<div class="relative mt-1 flex justify-center udang-foto-container">
-  <img src="{% static 'images/foto_udang.jpg' %}" alt="Foto Udang" class="w-[1136px] h-[500px] object-cover rounded-lg shadow-lg">
-  <!-- Overlay -->
-  <div class="w-[1136px] h-[500px] object-cover  absolute  bg-gradient-to-t from-black to-transparent rounded-lg p-8 flex flex-col justify-end">
-    <h2 class="text-3xl font-bold text-white mb-2">Event yang sedang terjadi</h2>
-    <p class="text-white text-lg mb-4">Dapatkan voucher voucher menarik.</p>
-    
-    <!-- Event Button -->
-    <a href="{% url 'main:event_list' %}">
-        <button class="bg-white text-gray-900 px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">Event</button>
-    </a>
-  </div>
-</div>
-
-
-
-<!-- Menu Items -->
-<section class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-  {% for menu in menus %}
-  <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block">
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow">
-        {% if menu.image %}
-        <img src="{{ menu.image }}" alt="{{ menu.name }}" class="w-full h-56 object-cover">
-        {% endif %}
-        <div class="p-4">
-            <h3 class="font-bold text-xl">{{ menu.name }}</h3>
-            <p class="text-gray-600 mt-2">{{ menu.description }}</p>
-            <p class="font-medium text-gray-900 mt-1">
-                Rp {{ menu.price|floatformat:2 }}
-                
-                <!-- Tentukan apakah ikon love harus merah atau hitam -->
-                <button class="ml-2 focus:outline-none" onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
-                    <img src="{% if menu.id in wishlist_items %}{% static 'images/lovemerah.png' %}{% else %}{% static 'images/lovehitam.png' %}{% endif %}" alt="Love" class="w-5 h-5" id="love-icon-{{ menu.id }}">
-                </button>
-                
-            </p>
+  <!-- Foto Udang Section -->
+  <div class="relative mt-1 px-4 md:px-8">
+    <div class="max-w-[1220px] mx-auto">
+      <div class="relative aspect-[16/9] md:aspect-[2.27/1]"> <!-- This maintains aspect ratio -->
+        <img src="{% static 'images/foto_udang.jpg' %}" alt="Foto Udang" class="w-full h-full object-cover rounded-lg shadow-lg">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent rounded-lg p-4 md:p-8 flex flex-col justify-end">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">Event yang sedang terjadi</h2>
+          <p class="text-white text-base md:text-lg mb-4">Dapatkan voucher voucher menarik.</p>
+          
+          <!-- Event Button -->
+          <a href="{% url 'main:event_list' %}">
+            <button class="bg-white text-gray-900 px-4 py-2 rounded-full text-sm md:text-base font-semibold hover:bg-gray-200 transition-all duration-300">Event</button>
+          </a>
         </div>
+      </div>
     </div>
-  </a>
-  {% endfor %}
+  </div>
+
+<!-- Menu Section -->
+<section class="container mx-auto px-4 md:px-8 mt-8">
+    <!-- Menu Tabs -->
+    <div class="flex justify-between space-x-4 mb-6 border-b border-gray-200">
+        <button onclick="switchTab('all')"
+                id="tab-all"
+                class="py-2 px-4 font-medium text-sm transition-all duration-200 border-b-2 border-green-600 text-green-600 w-full">
+            Semua Menu
+        </button>
+        <button onclick="switchTab('recommended')"
+                id="tab-recommended"
+                class="py-2 px-4 font-medium text-sm transition-all duration-200 border-b-2 border-transparent text-gray-500 w-full hover:text-green-600">
+            Rekomendasi
+        </button>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div id="all-menus" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for menu in menus %}
+        <div class="menu-item">
+            <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block h-full">
+                <!-- Menu card content -->
+                <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                    <!-- Image container -->
+                    <div class="relative w-full pt-[75%]">
+                        {% if menu.image %}
+                        <img src="{{ menu.image }}" 
+                             alt="{{ menu.name }}" 
+                             class="absolute top-0 left-0 w-full h-full object-cover">
+                        {% else %}
+                        <div class="absolute top-0 left-0 w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-400">No Image</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="font-bold text-lg md:text-xl mb-2 line-clamp-1">{{ menu.name }}</h3>
+                        <p class="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 flex-grow">{{ menu.description }}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="font-medium text-gray-900 text-sm md:text-base">
+                                Rp {{ menu.price|floatformat:2 }}
+                            </span>
+                            <button class="focus:outline-none" 
+                                    onclick="handleLoveClick(event, this)" 
+                                    data-menu-id="{{ menu.id }}" 
+                                    data-is-authenticated="{{ request.user.is_authenticated }}">
+                                <img src="{% if menu.id in wishlist_items %}{% static 'images/lovemerah.png' %}{% else %}{% static 'images/lovehitam.png' %}{% endif %}" 
+                                     alt="Love" 
+                                     class="w-4 h-4 md:w-5 md:h-5" 
+                                     id="love-icon-{{ menu.id }}">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+<!-- Recommended Menus Grid -->
+<div id="recommended-menus" class="{% if not recommended_menus %}hidden{% endif %}">
+    {% if not user.is_authenticated %}
+        <div class="text-center py-16">
+            <div class="mb-4">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Login untuk Melihat Rekomendasi</h3>
+            <p class="text-gray-500 mb-6">Silakan login untuk mendapatkan rekomendasi menu yang sesuai dengan preferensi Anda.</p>
+            <button onclick="openLoginModal()" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Login Sekarang
+            </button>
+        </div>
+    {% else %}
+        {% if recommended_menus %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for menu in recommended_menus %}
+                <div class="menu-item">
+                    <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block h-full">
+                        <!-- Menu card content -->
+                        <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
+                            <!-- Image container -->
+                            <div class="relative w-full pt-[75%]">
+                                {% if menu.image %}
+                                <img src="{{ menu.image }}" 
+                                     alt="{{ menu.name }}" 
+                                     class="absolute top-0 left-0 w-full h-full object-cover">
+                                {% else %}
+                                <div class="absolute top-0 left-0 w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <span class="text-gray-400">No Image</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h3 class="font-bold text-lg md:text-xl mb-2 line-clamp-1">{{ menu.name }}</h3>
+                                <p class="text-gray-600 text-sm md:text-base mb-4 line-clamp-2 flex-grow">{{ menu.description }}</p>
+                                <div class="flex items-center justify-between mt-auto">
+                                    <span class="font-medium text-gray-900 text-sm md:text-base">
+                                        Rp {{ menu.price|floatformat:2 }}
+                                    </span>
+                                    <button class="focus:outline-none" 
+                                            onclick="handleLoveClick(event, this)" 
+                                            data-menu-id="{{ menu.id }}" 
+                                            data-is-authenticated="{{ request.user.is_authenticated }}">
+                                        <img src="{% if menu.id in wishlist_items %}{% static 'images/lovemerah.png' %}{% else %}{% static 'images/lovehitam.png' %}{% endif %}" 
+                                             alt="Love" 
+                                             class="w-4 h-4 md:w-5 md:h-5" 
+                                             id="love-icon-{{ menu.id }}">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+
+                <div class="text-center py-16">
+                    <div class="mb-4">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Belum ada preferensi</h3>
+                    <p class="text-gray-500 mb-6">Anda belum memilih preferensi menu. Pilih preferensi untuk mendapatkan rekomendasi yang sesuai.</p>
+                    <a href="{% url 'userPreferences:edit_preferences' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        Atur Preferensi Sekarang
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
 </section>
 
 
@@ -180,7 +297,7 @@ Restoran di Yogyakarta
 
       <!-- Logo (optional) -->
       <div class="flex justify-center mb-4">
-        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        <img src="static\images\logo_sementara.png" alt="Logo" class="w-16 h-16">
       </div>
 
       <!-- Welcome Message -->
@@ -248,7 +365,7 @@ Restoran di Yogyakarta
 
       <!-- Logo (optional) -->
       <div class="flex justify-center mb-4">
-        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        <img src="static\images\logo_sementara.png" alt="Logo" class="w-16 h-16">
       </div>
 
       <!-- Welcome Message -->
@@ -370,5 +487,27 @@ Restoran di Yogyakarta
       e.stopPropagation();
     });
   });
+</script>
+</div>
+<!-- Add this JavaScript for tab switching -->
+<script>
+function openLoginModal() {
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        loginModal.classList.remove('hidden');
+    }
+}
+
+function switchTab(tab) {
+    // Update tab styles
+    document.getElementById('tab-all').classList.toggle('border-green-600', tab === 'all');
+    document.getElementById('tab-all').classList.toggle('text-green-600', tab === 'all');
+    document.getElementById('tab-recommended').classList.toggle('border-green-600', tab === 'recommended');
+    document.getElementById('tab-recommended').classList.toggle('text-green-600', tab === 'recommended');
+    
+    // Show/hide appropriate content
+    document.getElementById('all-menus').classList.toggle('hidden', tab !== 'all');
+    document.getElementById('recommended-menus').classList.toggle('hidden', tab !== 'recommended');
+}
 </script>
 {% endblock %}

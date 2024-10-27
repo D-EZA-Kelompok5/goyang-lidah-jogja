@@ -131,21 +131,23 @@
     <!-- Menu Section - Update the menu card part -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for menu in menus %}
-        <div class="menu-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div class="menu-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow h-full flex flex-col">
             {% if menu.image %}
             <img src="{{ menu.image }}" 
                 alt="{{ menu.name }}" 
                 class="menu-image w-full h-48 object-cover rounded-t-lg">
             {% else %}
-            <div class="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                <span class="text-gray-400">No Image</span>
+            <div class="relative pt-[75%] w-full bg-gray-200 rounded-t-lg">
+                <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                    <span class="text-gray-400">No Image</span>
+                </div>
             </div>
             {% endif %}
             
-            <div class="p-4">
+            <div class="p-4 flex flex-col flex-grow">
                 <h3 class="menu-name font-bold text-xl mb-2">{{ menu.name }}</h3>
-                <p class="text-gray-600 mb-2 line-clamp-2">{{ menu.description }}</p>
-                <p class="menu-price font-medium text-gray-900">Rp {{ menu.price|floatformat:2 }}</p>
+                <p class="text-gray-600 mb-4 line-clamp-2 flex-grow">{{ menu.description }}</p>
+                <p class="menu-price font-medium text-gray-900 mt-auto">Rp {{ menu.price|floatformat:2 }}</p>
             </div>
             
             <!-- Options Menu (three dots) -->
