@@ -5,39 +5,85 @@
 
 <div class="container mx-auto px-4 py-8">
     <!-- Header Section with Back Button and Title -->
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Your Wishlist</h1>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
+        <div class="text-center md:text-left">
+            <h1 class="text-3xl font-bold text-gray-900">Goyang Nanti</h1>
+            <h3 class="mt-2 text-gray-700">Simpan informasi menu yang kalian inginkan!</h3>
+        </div>
         <a href="{% url 'main:show_main' %}" class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
             Back to Main
         </a>
     </div>
 
+    <!-- Filter Section -->
+    <form method="get" action="" class="flex flex-wrap items-center mb-8 space-y-4 md:space-y-0"> 
+        <!-- Sorting Options -->
+        <div class="flex items-center space-x-2 mr-4 w-full sm:w-auto">
+            <label for="sort_order" class="text-gray-700 font-semibold">Sort By:</label>
+            <select name="sort_order" id="sort_order" class="border border-gray-300 rounded px-2 py-1">
+                <option value="">Pilih Urutan</option>
+                <option value="ascending" {% if request.GET.sort_order == "ascending" %}selected{% endif %}>Harga Terendah</option>
+                <option value="descending" {% if request.GET.sort_order == "descending" %}selected{% endif %}>Harga Tertinggi</option>
+            </select>
+        </div>
+
+        <!-- Predefined Price Ranges -->
+        <div class="flex items-center space-x-2 mr-4 w-full sm:w-auto">
+            <label for="price_range" class="text-gray-700 font-semibold">Range Harga:</label>
+            <select name="price_range" id="price_range" class="border border-gray-300 rounded px-2 py-1">
+                <option value="">Pilih Range</option>
+                <option value="under_20000" {% if request.GET.price_range == "under_20000" %}selected{% endif %}>&lt; Rp20.000</option>
+                <option value="20000_40000" {% if request.GET.price_range == "20000_40000" %}selected{% endif %}>Rp20.000 - Rp40.000</option>
+                <option value="40000_60000" {% if request.GET.price_range == "40000_60000" %}selected{% endif %}>Rp40.000 - Rp60.000</option>
+                <option value="60000_80000" {% if request.GET.price_range == "60000_80000" %}selected{% endif %}>Rp60.000 - Rp80.000</option>
+                <option value="80000_100000" {% if request.GET.price_range == "80000_100000" %}selected{% endif %}>Rp80.000 - Rp100.000</option>
+                <option value="100000_150000" {% if request.GET.price_range == "100000_150000" %}selected{% endif %}>Rp100.000 - Rp150.000</option>
+                <option value="150000_200000" {% if request.GET.price_range == "150000_200000" %}selected{% endif %}>Rp150.000 - Rp200.000</option>
+                <option value="above_200000" {% if request.GET.price_range == "above_200000" %}selected{% endif %}>&gt; Rp200.000</option>
+            </select>
+        </div>
+
+        <!-- Custom Min/Max Price Inputs -->
+        <div class="flex items-center space-x-2 mr-4 w-full sm:w-auto">
+            <label for="min_price" class="text-gray-700 font-semibold">Harga Min:</label>
+            <input type="number" name="min_price" id="min_price" value="{{ request.GET.min_price }}" class="border border-gray-300 rounded px-2 py-1" placeholder="0" min="0">
+        </div>
+
+        <div class="flex items-center space-x-2 mr-4 w-full sm:w-auto">
+            <label for="max_price" class="text-gray-700 font-semibold">Harga Max:</label>
+            <input type="number" name="max_price" id="max_price" value="{{ request.GET.max_price }}" class="border border-gray-300 rounded px-2 py-1" placeholder="500000" min="0">
+        </div>
+
+        <button type="submit" class="bg-black text-white hover:bg-gray-600 font-bold py-2 px-3 rounded ">Filter</button>
+    </form>
+
     {% if wishlists %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {% for wishlist in wishlists %}
-            <div class="{% if wishlist.status == 'SUDAH' %}bg-green-100{% else %}bg-white{% endif %} shadow-md rounded-lg overflow-hidden">
+            <div class="{% if wishlist.status == 'SUDAH' %}bg-green-100{% else %}bg-white{% endif %} shadow-md rounded-lg overflow-hidden flex flex-col">
                 {% if wishlist.menu.image %}
                 <div class="h-48 bg-cover bg-center" style="background-image: url('{{ wishlist.menu.image }}');"></div>
                 {% endif %}
-                <div class="p-6">
-                    <h2 class="text-xl font-bold text-gray-900">{{ wishlist.menu.name }}</h2>
-                    <p class="text-gray-600">{{ wishlist.menu.description|truncatewords:20 }}</p>
-                    <p class="mt-4 text-gray-600">Catatan: {{ wishlist.catatan }}</p>
-                    <p class="mt-2 text-gray-600 font-semibold">Status: {{ wishlist.get_status_display }}</p>
-
-                    <div class="mt-4 flex space-x-4">
-                        <!-- Edit Button -->
-                        <a href="{% url 'wishlist:edit_wishlist' wishlist.pk %}" class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-1/2 text-center">
-                            Edit
-                        </a>
-                        <!-- Delete Button -->
-                        <form action="{% url 'wishlist:delete_wishlist' wishlist.pk %}" method="post" class="w-1/2" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="bg-white border border-black hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded w-full text-center">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
+                <div class="p-6 flex-grow">
+                    <h2 class="text-xl font-bold text-black">{{ wishlist.menu.name }}</h2>
+                    <p class="mt-1 text-gray-800 font-semibold">{{ wishlist.menu.restaurant }}</p>
+                    <p class="mt-1 text-gray-600">{{ wishlist.menu.description|truncatewords:20 }}</p>
+                    <p class="mt-2 text-xl font-bold text-black ">Rp{{ wishlist.menu.price|floatformat:2 }}</p>
+                    <p class="mt-2 text-gray-600">Catatan: {{ wishlist.catatan }}</p>
+                    <p class="mt-2 text-black font-semibold">Status: {{ wishlist.get_status_display }}</p>
+                </div>
+                <div class="p-6 flex space-x-4">
+                    <!-- Edit Button -->
+                    <a href="{% url 'wishlist:edit_wishlist' wishlist.pk %}" class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-1/2 text-center">
+                        Edit
+                    </a>
+                    <!-- Delete Button -->
+                    <form action="{% url 'wishlist:delete_wishlist' wishlist.pk %}" method="post" class="w-1/2" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-white border border-black hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded w-full text-center">
+                            Delete
+                        </button>
+                    </form>
                 </div>
             </div>
             {% endfor %}

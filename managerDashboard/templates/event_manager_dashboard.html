@@ -2,79 +2,101 @@
 {% load static %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 max-w-7xl">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Event Management Dashboard</h1>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
+            <h1 class="text-2xl font-bold text-gray-900">Event Management Dashboard</h1>
+            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <label for="priceFilter" class="text-sm font-medium text-gray-700 whitespace-nowrap">Filter by Price:</label>
+                <select 
+                    id="priceFilter" 
+                    class="block w-full sm:w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                    onchange="EventManager.filterEvents(this.value)"
+                >
+                    <option value="all">All Events</option>
+                    <option value="free">Free Events</option>
+                    <option value="paid">Paid Events</option>
+                </select>
+            </div>
+        </div>
         <button 
             onclick="EventManager.openCreateModal()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Create New Event
         </button>
     </div>
 
     <!-- Events Table -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for event in events %}
-                <tr>
-                    <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-gray-900">{{ event.title }}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-gray-900">{{ event.date|date:"M d, Y" }}</div>
-                        <div class="text-sm text-gray-500">{{ event.time }}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-gray-900">{{ event.location }}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm text-gray-900">
-                            {% if event.entrance_fee %}
-                                Rp{{ event.entrance_fee }}
-                            {% else %}
-                                Free
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button 
-                            onclick="EventManager.handleEventAction(this, 'edit')"
-                            data-event='{"id": {{ event.id }}, "title": "{{ event.title|escapejs }}", "description": "{{ event.description|escapejs }}", "date": "{{ event.date|date:"Y-m-d" }}", "time": "{{ event.time|time:"H:i" }}", "location": "{{ event.location|escapejs }}", "entrance_fee": "{{ event.entrance_fee|default_if_none:"" }}", "image": "{{ event.image|default_if_none:"" }}"}'
-                            class="text-indigo-600 hover:text-indigo-900 mr-4">
-                            Edit
-                        </button>
-                        <button 
-                            onclick="EventManager.handleEventAction(this, 'delete')"
-                            data-event='{"id": {{ event.id }}, "title": "{{ event.title|escapejs }}"}'
-                            class="text-red-600 hover:text-red-900">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                        No events found. Click "Create New Event" to add one.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+        <div class="min-w-full inline-block align-middle">
+            <div class="overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th class="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fee</th>
+                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for event in events %}
+                        <tr class="event-row" data-fee="{{ event.entrance_fee|default_if_none:0 }}">
+                            <td class="px-3 sm:px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">{{ event.title }}</div>
+                                <!-- Mobile-only location -->
+                                <div class="sm:hidden text-sm text-gray-500 mt-1">{{ event.location }}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-4">
+                                <div class="text-sm text-gray-900">{{ event.date|date:"M d, Y" }}</div>
+                                <div class="text-sm text-gray-500">{{ event.time }}</div>
+                            </td>
+                            <td class="hidden sm:table-cell px-3 sm:px-6 py-4">
+                                <div class="text-sm text-gray-900">{{ event.location }}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-4">
+                                <div class="text-sm text-gray-900">
+                                    {% if event.entrance_fee %}
+                                        Rp{{ event.entrance_fee }}
+                                    {% else %}
+                                        Free
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-4">
+                                    <button 
+                                        onclick="EventManager.handleEventAction(this, 'edit')"
+                                        data-event='{"id": {{ event.id }}, "title": "{{ event.title|escapejs }}", "description": "{{ event.description|escapejs }}", "date": "{{ event.date|date:"Y-m-d" }}", "time": "{{ event.time|time:"H:i" }}", "location": "{{ event.location|escapejs }}", "entrance_fee": "{{ event.entrance_fee|default_if_none:"" }}", "image": "{{ event.image|default_if_none:"" }}"}'
+                                        class="text-indigo-600 hover:text-indigo-900">
+                                        Edit
+                                    </button>
+                                    <button 
+                                        onclick="EventManager.handleEventAction(this, 'delete')"
+                                        data-event='{"id": {{ event.id }}, "title": "{{ event.title|escapejs }}"}'
+                                        class="text-red-600 hover:text-red-900">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="no-events-row">
+                            <td colspan="5" class="px-3 sm:px-6 py-4 text-center text-gray-500">
+                                No events found. Click "Create New Event" to add one.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Create/Edit Modal -->
-    <div id="eventModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div id="eventModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full p-4">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Create New Event</h3>
@@ -82,70 +104,72 @@
                     {% csrf_token %}
                     <input type="hidden" id="eventId" name="event_id">
                     
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
-                            Title *
-                        </label>
-                        <input type="text" id="title" name="title" required
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                            Description *
-                        </label>
-                        <textarea id="description" name="description" required rows="3"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="space-y-4">
                         <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="date">
-                                Date *
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                                Title *
                             </label>
-                            <input type="date" id="date" name="date" required
+                            <input type="text" id="title" name="title" required
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         </div>
+
                         <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="time">
-                                Time *
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                                Description *
                             </label>
-                            <input type="time" id="time" name="time" required
+                            <textarea id="description" name="description" required rows="3"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="date">
+                                    Date *
+                                </label>
+                                <input type="date" id="date" name="date" required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="time">
+                                    Time *
+                                </label>
+                                <input type="time" id="time" name="time" required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="location">
+                                Location *
+                            </label>
+                            <input type="text" id="location" name="location" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="entrance_fee">
+                                Entrance Fee
+                            </label>
+                            <input type="number" id="entrance_fee" name="entrance_fee" step="0.01" min="0"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                                Image URL
+                            </label>
+                            <input type="url" id="image" name="image"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="location">
-                            Location *
-                        </label>
-                        <input type="text" id="location" name="location" required
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="entrance_fee">
-                            Entrance Fee
-                        </label>
-                        <input type="number" id="entrance_fee" name="entrance_fee" step="0.01" min="0"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-                            Image URL
-                        </label>
-                        <input type="url" id="image" name="image"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-
-                    <div class="flex justify-end mt-6">
+                    <div class="flex flex-col sm:flex-row justify-end mt-6 space-y-2 sm:space-y-0 sm:space-x-2">
                         <button type="button" onclick="EventManager.closeModal()"
-                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded mr-2">
+                            class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
                             Save Event
                         </button>
                     </div>
@@ -155,17 +179,17 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full p-4">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-sm shadow-lg rounded-md bg-white">
             <h3 class="text-lg font-medium text-gray-900">Confirm Delete</h3>
             <p class="mt-2 text-gray-500" id="deleteMessage"></p>
-            <div class="flex justify-end mt-6">
+            <div class="flex flex-col sm:flex-row justify-end mt-6 space-y-2 sm:space-y-0 sm:space-x-2">
                 <button onclick="EventManager.closeDeleteModal()"
-                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded mr-2">
+                    class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
                     Cancel
                 </button>
                 <button onclick="EventManager.deleteEvent()"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                    class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
                     Delete
                 </button>
             </div>
@@ -176,6 +200,36 @@
 <script>
 const EventManager = {
     currentEventId: null,
+
+    filterEvents: function(filterValue) {
+        const eventRows = document.querySelectorAll('.event-row');
+        const noEventsRow = document.getElementById('no-events-row');
+        let visibleCount = 0;
+
+        eventRows.forEach(row => {
+            const fee = parseFloat(row.dataset.fee);
+            let showRow = false;
+
+            switch(filterValue) {
+                case 'free':
+                    showRow = fee === 0;
+                    break;
+                case 'paid':
+                    showRow = fee > 0;
+                    break;
+                default: // 'all'
+                    showRow = true;
+            }
+
+            row.style.display = showRow ? '' : 'none';
+            if (showRow) visibleCount++;
+        });
+
+        // Show/hide the "no events" message
+        if (noEventsRow) {
+            noEventsRow.style.display = visibleCount === 0 ? '' : 'none';
+        }
+    },
 
     handleEventAction: function(button, action) {
         const eventData = JSON.parse(button.dataset.event);

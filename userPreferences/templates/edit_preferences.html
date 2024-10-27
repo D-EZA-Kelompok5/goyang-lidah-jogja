@@ -3,34 +3,34 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h1 class="text-2xl font-bold mb-6">Edit Your Preferences</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center md:text-left">Edit Your Preferences</h1>
         
         <form method="post" action="{% url 'userPreferences:edit_preferences' %}">
             {% csrf_token %}
             
             <div class="mb-6">
-                <h2 class="text-lg font-semibold mb-3">Available Tags</h2>
+                <h2 class="text-lg font-semibold mb-3 text-center md:text-left">Available Tags</h2>
                 {% if all_tags %}
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {% for tag in all_tags %}
                             <div class="flex items-center">
-                                <label class="inline-flex items-center cursor-pointer">
+                                <label class="inline-flex items-center cursor-pointer w-full">
                                     <input type="checkbox" 
                                            name="preferences" 
                                            value="{{ tag.id }}"
                                            {% if tag in user_preferences %}checked{% endif %}
                                            class="form-checkbox h-5 w-5 text-blue-600">
-                                    <span class="ml-2">{{ tag.name }}</span>
+                                    <span class="ml-2 text-sm">{{ tag.name }}</span>
                                 </label>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-gray-500">No tags available.</p>
+                    <p class="text-gray-500 text-center">No tags available.</p>
                 {% endif %}
             </div>
             
-            <div class="flex justify-end">
+            <div class="flex justify-center md:justify-end">
                 <button type="submit" 
                         class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-200">
                     Save Preferences
@@ -40,8 +40,8 @@
         
         {% if user_preferences %}
         <div class="mt-8">
-            <h2 class="text-lg font-semibold mb-3">Your Current Preferences</h2>
-            <div class="flex flex-wrap gap-2">
+            <h2 class="text-lg font-semibold mb-3 text-center md:text-left">Your Current Preferences</h2>
+            <div class="flex flex-wrap gap-2 justify-center md:justify-start">
                 {% for tag in user_preferences %}
                     <span class="bg-gray-100 px-3 py-1 rounded-full text-sm">
                         {{ tag.name }}

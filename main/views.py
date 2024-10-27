@@ -158,6 +158,8 @@ def edit_profile(request):
     owned_restaurant = None
     if request.user.profile.role == 'RESTAURANT_OWNER':
         owned_restaurant = request.user.profile.owned_restaurant.first()
+    
+    request.user.profile.update_level()
 
     context = {
         'user': request.user,
@@ -167,5 +169,8 @@ def edit_profile(request):
         'profile_form': profile_form,
     }
     return render(request, 'edit_profile.html', context)
+
+def goyang_nanti(request):
+    return render(request, 'goyang_nanti.html')
 
 
