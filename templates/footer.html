@@ -18,11 +18,11 @@
   
       <!-- Middle Section: Navigation Links -->
       <div class="flex flex-wrap justify-center lg:justify-start space-x-6 text-center lg:text-left">
-        <a href="#" class="text-gray-700 hover:text-gray-900 transition duration-300">Event Dashboard</a>
-        <a href="#" class="text-gray-700 hover:text-gray-900 transition duration-300">Menu Resto</a>
-        <a href="#" class="text-gray-700 hover:text-gray-900 transition duration-300">Ulas Goyangan</a>
+        <a href="{% url 'main:event_dashboard' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Event Dashboard</a>
+        <a href="{% url 'main:menu_resto' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Menu Resto</a>
+        <a href="{% url 'main:ulas_goyangan' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Ulas Goyangan</a>
         <a href="{% url 'main:goyang_nanti' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Goyang Nanti</a>
-        <a href="#" class="text-gray-700 hover:text-gray-900 transition duration-300">Announcement Resto</a>
+        <a href="{% url 'main:annoucement_resto' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Announcement Resto</a>
       </div> 
       
       <!-- Social Media Section -->

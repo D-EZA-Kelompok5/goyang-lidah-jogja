@@ -14,5 +14,9 @@ urlpatterns = [
     path('events/', views.event_list, name='event_list'), # URL for restaurant detail
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('goyang_nanti', views.goyang_nanti, name='goyang_nanti'),
+    path('ulas_goyangan', views.ulas_goyangan, name='ulas_goyangan'),
+    path('menu_resto', views.menu_resto, name='menu_resto'),
+    path('event_dashboard', views.event_dashboard, name='event_dashboard'),
+    path('annoucement_resto', views.annoucement_resto, name='annoucement_resto'),
     path('menu/<int:menu_id>/comments/', views.menu_comments, name='menu_comments'),
 ]

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Menu Resto
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Fitur Menu Resto</h1>
+    
+    <p class="text-gray-700 mb-4">
+        Selamat datang di <strong>Menu Resto</strong> – fitur wishlist yang dibuat khusus untuk customer kami yang ingin menyimpan menu favorit dan menjadikannya panduan kuliner. Dengan Goyang Nanti, pelanggan dapat:
+    </p>
+    
+    <ul class="list-disc pl-6 text-gray-700 mb-6 space-y-2">
+        <li>Menyimpan menu-menu favorit dari berbagai restoran untuk dikunjungi di masa depan.</li>
+        <li>Melihat apa saja menu yang sudah dimasukkan ke daftar wishlist secara keseluruhan.</li>
+        <li>Menambah dan mengurangi isi wishlist dengan ikon love di main dan menu_detail.</li>
+        <li>Mengatur catatan pribadi pada setiap menu yang disimpan untuk menuliskan kesan atau rencana kunjungan.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Menggunakan Fitur Goyang Nanti</h2>
+    <p class="text-gray-700 mb-6">
+        Untuk mulai menggunakan fitur Goyang Nanti, pastikan Anda sudah memiliki akun dan masuk ke aplikasi. Saat Anda menemukan menu yang menarik, cukup klik ikon <span class="text-red-500">Love</span> di halaman menu untuk menambahkannya ke wishlist.</a>
+    </p>
+    
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Fleksibilitas dan Kendali Penuh</h2>
+    <p class="text-gray-700 mb-6">
+        Anda dapat menambah atau menghapus menu dari wishlist kapan saja. Setiap kali Anda menghapus menu dari wishlist, perubahan tersebut akan langsung berlaku di sinkron di main, menu_detail, dan wishlists. Ini memberi Anda fleksibilitas untuk menyimpan pilihan kuliner sesuai dengan selera Anda dan mempermudah perencanaan kuliner di masa depan.
+    </p>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Nikmati Pengalaman Kuliner yang Lebih Tertata!</h2>
+    <p class="text-gray-700 mb-6">
+        Dengan Goyang Nanti, temukan pengalaman kuliner yang lebih terorganisir. Setiap menu favorit yang Anda simpan ada dalam jangkauan Anda, siap untuk dikunjungi kapan pun Anda inginkan. Ayo, mulai petualangan kuliner Anda dan buat wishlist dengan Goyang Nanti!
+    </p>
+
+    <a href="{% url 'main:show_main' %}" class="text-blue-500 hover:underline">Kembali ke Halaman Utama</a>
+</div>
+{% endblock %}

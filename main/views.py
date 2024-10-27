@@ -173,6 +173,17 @@ def edit_profile(request):
 def goyang_nanti(request):
     return render(request, 'goyang_nanti.html')
 
+def ulas_goyangan(request):
+    return render(request, 'ulas_goyangan.html')
+
+def event_dashboard(request):
+    return render(request, 'event_dashboard.html')
+
+def menu_resto(request):
+    return render(request, 'menu_resto.html')
+
+def annoucement_resto(request):
+    return render(request, 'annoucement_resto.html')
 
 def menu_comments(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
@@ -184,7 +195,7 @@ def menu_comments(request, menu_id):
         reviews = menu.reviews.order_by('rating')
     elif sort_option == 'oldest':
         reviews = menu.reviews.order_by('created_at')
-    else:  # Default to 'latest'
+    else: 
         reviews = menu.reviews.order_by('-created_at')
 
     return render(request, 'partials/comments_section.html', {'reviews': reviews})
