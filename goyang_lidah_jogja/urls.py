@@ -27,6 +27,7 @@ urlpatterns = [
     path('event_manager/', include('managerDashboard.urls')),
     path('restaurant/', include('menuResto.urls')),
     path('restaurant/', include('announcementResto.urls')),
+    path('wishlist/', include('goyangNanti.urls', namespace='wishlist')),
     
     # UlasGoyangan app (for reviews)
     path('ulasGoyangan/', include('ulasGoyangan.urls', namespace='ulasGoyangan')),
