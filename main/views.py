@@ -20,6 +20,7 @@ from goyangNanti.models import Wishlist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
+from announcementResto.models import Announcement
 
 # @login_required(login_url='/login')
 def show_main(request):
@@ -82,8 +83,10 @@ def logout_user(request):
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    announcements = Announcement.objects.filter(restaurant__owner_id=request.user.id)
     context = {
         'restaurant': restaurant,
+        'announcements': announcements
     }
     return render(request, 'restaurant_detail.html', context)
 
@@ -132,4 +135,15 @@ def edit_profile(request):
 def goyang_nanti(request):
     return render(request, 'goyang_nanti.html')
 
+def ulas_goyangan(request):
+    return render(request, 'ulas_goyangan.html')
+
+def event_dashboard(request):
+    return render(request, 'event_dashboard.html')
+
+def menu_resto(request):
+    return render(request, 'menu_resto.html')
+
+def annoucement_resto(request):
+    return render(request, 'annoucement_resto.html')
 

@@ -18,23 +18,22 @@ Detail Menu: {{ menu.name }}
         </a>
     </div>
     
-    
     <script>
-        function handleLoveClick(event, button) {
-            event.preventDefault();
-            event.stopPropagation();
-            const isAuthenticated = button.getAttribute('data-is-authenticated') === 'True';
-            const menuId = button.getAttribute('data-menu-id');
-            const loveIcon = document.getElementById(`love-icon-${menuId}`);
-            
-            if (!isAuthenticated) {
-                const loginModal = document.getElementById('loginModal');
-                if (loginModal) {
-                    loginModal.classList.remove('hidden');
-                }
-                return;
-            }
+    function handleLoveClick(event, button) {
+        event.preventDefault();
+        event.stopPropagation();
 
+        const isAuthenticated = button.getAttribute('data-is-authenticated') === 'True';
+        const menuId = button.getAttribute('data-menu-id');
+        const loveIcon = document.getElementById(`love-icon-${menuId}`);
+
+        if (!isAuthenticated) {
+            // Redirect to main.html with query parameter to show login modal
+            window.location.href = "{% url 'main:show_main' %}?show_login=true";
+            return;
+        }
+      
+            // Get CSRF token from cookie
             function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
