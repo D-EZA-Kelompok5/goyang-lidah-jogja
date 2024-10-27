@@ -1,6 +1,7 @@
 from django.db import models
+
 from main.models import UserProfile
-from main.models import Menu
+from menuResto.models import Menu
 
 # Create your models here.
 class Wishlist(models.Model):
@@ -20,7 +21,7 @@ class Wishlist(models.Model):
         on_delete=models.CASCADE,
         related_name='wishlisted_by'
     )
-    catatan = models.TextField(blank=True, default='')
+    catatan = models.TextField(null=True, blank=True, default='')
     status = models.CharField(
         max_length=6, 
         choices=PILIHAN_STATUS,

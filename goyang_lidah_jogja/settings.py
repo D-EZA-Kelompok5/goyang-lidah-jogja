@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'main',
     'managerDashboard',
     'menuResto',
+    'announcementResto',
     'goyangNanti',
-    'ulasGoyangan',  
+    'ulasGoyangan', 
     'userPreferences',
 ]
 

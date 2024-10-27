@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from .models import UserProfile, Menu, Restaurant
+from .models import UserProfile, Restaurant
+from menuResto.models import Menu
 from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
@@ -16,7 +17,9 @@ from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
 from goyangNanti.models import Wishlist
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import json
 
 # @login_required(login_url='/login')
 def show_main(request):
@@ -32,7 +35,7 @@ def show_main(request):
     context = {
         'form': form,
         'menus': menus,
-        'wishlist_items': wishlist_items,  # Kirim daftar ID item wishlist ke template
+        'wishlist_items': list(wishlist_items),  # Kirim daftar ID item wishlist ke template
     }
     return render(request, "main.html", context)
 
@@ -104,12 +107,14 @@ def menu_detail(request, menu_id):
     # Pass a fixed range for stars
     star_range = [1, 2, 3, 4, 5]
 
+    is_wishlisted = Wishlist.objects.filter(user=request.user.profile, menu=menu).exists() if request.user.is_authenticated else False
+    
     context = {
         'menu': menu,
         'average_rating': average_rating,
         'star_range': star_range,
         'rating_distribution': rating_distribution,  # Add this line
-        
+        'is_wishlisted' : is_wishlisted,
     }
     return render(request, 'menu_detail.html', context)
 
@@ -159,4 +164,5 @@ def edit_profile(request):
         'profile_form': profile_form,
     }
     return render(request, 'edit_profile.html', context)
+
 
