@@ -128,16 +128,22 @@ Detail Menu: {{ menu.name }}
                     <p class="text-gray-600">{{ menu.reviews.count }} ulasan</p>
                 </div>
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                    <h2 class="text-xl md:text-2xl font-bold mb-2">Rincian</h2>
-                    <p>Kisaran Harga: Rp {{ menu.price|floatformat:2 }}</p>
-                    <p>Masakan: {{ menu.restaurant.cuisine }}</p>
-                    <p>Diet Khusus: {{ menu.restaurant.special_diet }}</p>
+                  <h2 class="text-xl md:text-2xl font-bold mb-2">Tags</h2>
+                  {% if menu.tags.all %}
+                      <div class="flex flex-wrap gap-2">
+                          {% for tag in menu.tags.all %}
+                              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                  {{ tag.name }}
+                              </span>
+                          {% endfor %}
+                      </div>
+                  {% else %}
+                      <p class="text-gray-600">No tags available</p>
+                  {% endif %}
                 </div>
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                    <h2 class="text-xl md:text-2xl font-bold mb-2">Lokasi dan Kontak</h2>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">Lokasi</h2>
                     <p>{{ menu.restaurant.address }}</p>
-                    <p>Telepon: {{ menu.restaurant.phone }}</p>
-                    <p>Situs Web: <a href="{{ menu.restaurant.website }}" class="text-blue-500 hover:underline">{{ menu.restaurant.website }}</a></p>
                 </div>
             </div>
 
