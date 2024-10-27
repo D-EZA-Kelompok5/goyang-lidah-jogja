@@ -45,6 +45,11 @@ class UserProfile(models.Model):
         choices=LEVEL_CHOICES,
         default='BRONZE'
     )
+    
+    preferences = models.ManyToManyField(
+        'userPreferences.Tag',
+        related_name='preferences'
+    )
 
     def update_level(self):
         if self.review_count >= 50:
@@ -94,53 +99,3 @@ class Restaurant(models.Model):
     class Meta:
         verbose_name = 'Restaurant'
         verbose_name_plural = 'Restaurants'
-
-class Menu(models.Model):
-    restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.CASCADE,
-        related_name='menus'
-    )
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.URLField(
-        max_length=500,
-        null=True,
-        blank=True,
-        validators=[URLValidator()]
-    )
-
-    def __str__(self):
-        return f"{self.name} ({self.restaurant.name})"
-
-    class Meta:
-        verbose_name = 'Menu'
-        verbose_name_plural = 'Menus'
-
-class Tag(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    menus = models.ManyToManyField(Menu, related_name='tags')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
-
-class Announcement(models.Model):
-    restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.CASCADE,
-        related_name='announcements'
-    )
-    title = models.CharField(max_length=255)
-    message = models.TextField()
-
-    def __str__(self):
-        return f"{self.title} - {self.restaurant.name}"
-
-    class Meta:
-        verbose_name = 'Announcement'
-        verbose_name_plural = 'Announcements'

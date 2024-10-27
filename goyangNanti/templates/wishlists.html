@@ -15,7 +15,7 @@
     {% if wishlists %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for wishlist in wishlists %}
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="{% if wishlist.status == 'SUDAH' %}bg-green-100{% else %}bg-white{% endif %} shadow-md rounded-lg overflow-hidden">
                 {% if wishlist.menu.image %}
                 <div class="h-48 bg-cover bg-center" style="background-image: url('{{ wishlist.menu.image }}');"></div>
                 {% endif %}
@@ -27,13 +27,13 @@
 
                     <div class="mt-4 flex space-x-4">
                         <!-- Edit Button -->
-                        <a href="{% url 'wishlist:edit_wishlist' wishlist.pk %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                        <a href="{% url 'wishlist:edit_wishlist' wishlist.pk %}" class="bg-black hover:bg-gray-600 text-white font-bold py-2 px-4 rounded w-1/2 text-center">
                             Edit
                         </a>
                         <!-- Delete Button -->
-                        <form action="{% url 'wishlist:delete_wishlist' wishlist.pk %}" method="post" style="display:inline;">
+                        <form action="{% url 'wishlist:delete_wishlist' wishlist.pk %}" method="post" class="w-1/2" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                            <button type="submit" class="bg-white border border-black hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded w-full text-center">
                                 Delete
                             </button>
                         </form>

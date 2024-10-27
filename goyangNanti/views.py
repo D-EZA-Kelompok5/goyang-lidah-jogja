@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Wishlist
 from main.models import UserProfile
-from main.models import Menu
+from menuResto.models import Menu
 from .forms import WishlistForm
 import json
 from django.views.decorators.http import require_http_methods
