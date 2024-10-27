@@ -16,16 +16,6 @@ Detail Menu: {{ menu.name }}
             </svg>
             Kembali ke Daftar Menu
         </a>
-
-        <!-- Love Icon with Tooltip -->
-        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105"
-                onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
-            {% if is_wishlisted %}
-                <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-            {% else %}
-                <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-            {% endif %}
-        </button>
     </div>
     
     <script>
@@ -98,7 +88,19 @@ Detail Menu: {{ menu.name }}
         {% endif %}
 
         <div class="w-full md:w-2/3 p-4 md:p-8 bg-gray-50">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">{{ menu.name }}</h1>
+          <div class="flex items-center space-x-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ menu.name }}</h1>
+            
+            <!-- Love Icon with Tooltip -->
+            <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105"
+                    onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
+                {% if is_wishlisted %}
+                    <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+                {% else %}
+                    <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+                {% endif %}
+            </button>
+        </div>
             <h2 class="text-xl md:text-2xl font-bold mb-2">
                 <a href="{% url 'main:restaurant_detail' restaurant_id=menu.restaurant.id %}" class="text-blue-500 hover:underline">
                     {{ menu.restaurant.name }}
@@ -157,57 +159,19 @@ Detail Menu: {{ menu.name }}
     <!-- User Reviews Section -->
     <div class="mt-12 bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
-        {% for review in menu.reviews.all %}
-            <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-4 transition-transform transform scale-90 hover:scale-100 duration-500">
-                <div class="flex items-start">
-                    <div class="w-12 h-12 rounded-full overflow-hidden mr-4 flex items-center justify-center bg-gray-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
-                        </svg>
-                    </div>
+          <!-- Sorting Dropdown -->
+          <div class="flex justify-end mb-4">
+            <label for="sort-comments" class="mr-2 text-gray-600">Urutkan Berdasarkan:</label>
+            <select id="sort-comments" class="border border-gray-300 rounded-lg py-2 px-4" onchange="sortComments()">
+                <option value="highest">Rating Tertinggi</option>
+                <option value="lowest">Rating Terendah</option>
+            </select>
+        </div>
 
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-lg font-semibold text-gray-900">{{ review.user.username }}</p>
-                                <div class="flex items-center">
-                                    {% for i in "12345" %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if i <= review.rating|stringformat:"i" %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
-                                        </svg>
-                                    {% endfor %}
-                                    <span class="text-gray-600 ml-2 text-sm">({{ review.rating }})</span>
-                                </div>
-                            </div>
-                            {% if review.user == request.user %}
-                            <div class="flex space-x-2">
-                                <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M3 17.25V21h3.75l11-11.03-3.75-3.75L3 17.25zm18.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a 1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67z"/>
-                                    </svg>
-                                </a>
-                                <form id="deleteReviewForm" action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="text-red-500 hover:text-red-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M3 6h18v2H3zm2 3h14v13H5z"/>
-                                        </svg>
-                                    </button>
-                                </form>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <p class="text-gray-800 mt-4">{{ review.comment }}</p>
-                        <p class="text-gray-500 text-sm mt-2">{{ review.created_at|date:"d M Y, H:i" }}</p>
-                        {% if review.last_edited %}
-                        <p class="text-gray-400 text-xs italic">Diedit: {{ review.last_edited|date:"d M Y, H:i" }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-gray-500 mt-4">Belum ada ulasan untuk menu ini. Jadilah yang pertama memberikan ulasan!</p>
-        {% endfor %}
+        <!-- Reviews Container to Load Sorted Reviews -->
+        <div id="comments-section">
+            {% include 'partials/comments_section.html' with reviews=menu.reviews.all %}
+        </div>
     </div>
 
     <!-- Modals and JavaScript logic remain as originally written, ensuring consistent modal behavior -->
@@ -407,6 +371,20 @@ Detail Menu: {{ menu.name }}
       e.stopPropagation();
     });
   });
+
+
+  function sortComments() {
+  const sortOption = document.getElementById('sort-comments').value;
+
+  fetch(`{% url 'main:menu_comments' menu.id %}?sort=${sortOption}`)
+      .then(response => response.text())
+      .then(data => {
+          document.getElementById('comments-section').innerHTML = data;
+      })
+      .catch(error => console.error('Error:', error));
+}
 </script>
+
+
 
 {% endblock %}

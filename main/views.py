@@ -184,3 +184,18 @@ def menu_resto(request):
 
 def annoucement_resto(request):
     return render(request, 'annoucement_resto.html')
+
+def menu_comments(request, menu_id):
+    menu = get_object_or_404(Menu, id=menu_id)
+    sort_option = request.GET.get('sort', 'latest')
+
+    if sort_option == 'highest':
+        reviews = menu.reviews.order_by('-rating')
+    elif sort_option == 'lowest':
+        reviews = menu.reviews.order_by('rating')
+    elif sort_option == 'oldest':
+        reviews = menu.reviews.order_by('created_at')
+    else: 
+        reviews = menu.reviews.order_by('-created_at')
+
+    return render(request, 'partials/comments_section.html', {'reviews': reviews})
