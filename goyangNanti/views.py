@@ -55,10 +55,49 @@ def add_wishlist(request):
 @login_required(login_url='/main/login')
 @user_passes_test(is_customer)
 def show_wishlist(request):
-    wishlists = Wishlist.objects.filter(user=request.user.profile)
-    context = {'wishlists': wishlists}
-    return render(request, 'wishlists.html', context)
+    user_profile = request.user.profile
+    wishlists = Wishlist.objects.filter(user=user_profile)
 
+    # Ambil nilai filter dari request GET
+    sort_order = request.GET.get('sort_order')
+    price_range = request.GET.get('price_range')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
+    # Filter berdasarkan range harga tetap
+    if price_range == 'under_20000':
+        wishlists = wishlists.filter(menu__price__lt=20000)
+    elif price_range == '20000_40000':
+        wishlists = wishlists.filter(menu__price__gte=20000, menu__price__lte=40000)
+    elif price_range == '40000_60000':
+        wishlists = wishlists.filter(menu__price__gte=40000, menu__price__lte=60000)
+    elif price_range == '60000_80000':
+        wishlists = wishlists.filter(menu__price__gte=60000, menu__price__lte=80000)
+    elif price_range == '80000_100000':
+        wishlists = wishlists.filter(menu__price__gte=80000, menu__price__lte=100000)
+    elif price_range == '100000_150000':
+        wishlists = wishlists.filter(menu__price__gte=100000, menu__price__lte=150000)
+    elif price_range == '150000_200000':
+        wishlists = wishlists.filter(menu__price__gte=150000, menu__price__lte=200000)
+    elif price_range == 'above_200000':
+        wishlists = wishlists.filter(menu__price__gt=200000)
+
+    # Filter berdasarkan harga minimum dan maksimum jika ada
+    if min_price:
+        wishlists = wishlists.filter(menu__price__gte=min_price)
+    if max_price:
+        wishlists = wishlists.filter(menu__price__lte=max_price)
+
+    # Pengurutan berdasarkan harga
+    if sort_order == 'ascending':
+        wishlists = wishlists.order_by('menu__price')
+    elif sort_order == 'descending':
+        wishlists = wishlists.order_by('-menu__price')
+
+    context = {
+        'wishlists': wishlists,
+    }
+    return render(request, 'wishlists.html', context)
 
 @user_passes_test(is_customer)
 def edit_wishlist(request, pk):
