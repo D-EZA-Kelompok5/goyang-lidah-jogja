@@ -9,6 +9,10 @@ media
 # Backup files
 *.bak
 
+# Cache directories
+django_cache/
+search_cache/
+
 # If you are using PyCharm
 # User-specific stuff
 .idea/**/workspace.xml

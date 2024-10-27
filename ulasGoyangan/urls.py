@@ -10,4 +10,5 @@ urlpatterns = [
     path('my-reviews/', views.my_reviews, name='my_reviews'),
     path('menu/<int:menu_id>/comments/', views.menu_comments, name='menu_comments'),
     path('menu/<int:menu_id>/', views.menu_detail, name='menu_detail'),
+    
 ]
