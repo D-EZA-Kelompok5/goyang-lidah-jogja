@@ -7,15 +7,14 @@ Edit Ulas Goyangan {{ menu.name }}
 
 {% block content %}
 
-
-<div class="flex items-center justify-center w-screen h-screen">
+<div class="flex items-center justify-center min-h-screen px-4 md:px-0">
     <!-- Wrapper for the form and image -->
-    <div class="flex w-3/4 max-w-6xl shadow-lg rounded-lg overflow-hidden">
+    <div class="flex flex-col md:flex-row w-full md:w-3/4 max-w-6xl shadow-lg rounded-lg overflow-hidden">
         <!-- Left Section (Form) -->
-        <div class="w-1/2 p-8 bg-white bg-opacity-90">
+        <div class="w-full md:w-1/2 p-6 md:p-8 bg-white bg-opacity-90">
             <!-- Page Title -->
-            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Edit Ulas Goyangan </h1>
-            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">{{ menu.name }}</h1>
+            <h1 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-800 text-center">Edit Ulas Goyangan </h1>
+            <h1 class="text-xl md:text-3xl font-bold mb-6 text-gray-800 text-center">{{ menu.name }}</h1>
 
             <!-- Review Form -->
             <form method="post" class="space-y-6">
@@ -24,7 +23,7 @@ Edit Ulas Goyangan {{ menu.name }}
                 <!-- Custom Star Rating Field -->
                 <div>
                     <label class="block text-lg font-medium text-gray-700">Rating</label>
-                    <div id="star-rating" class="flex space-x-1 text-gray-400">
+                    <div id="star-rating" class="flex space-x-1 text-gray-400 justify-center md:justify-start">
                         {% for i in "12345" %}
                         <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" class="hidden">
                         <label for="star{{ i }}" class="cursor-pointer star" data-value="{{ i }}">
@@ -51,20 +50,14 @@ Edit Ulas Goyangan {{ menu.name }}
                         Batal
                     </a>
                 </div>
-
             </form>
-
         </div>
+
         <!-- Right Section (Background Image) -->
-        <div class="w-1/2 bg-cover bg-center relative" style="background-image: url('{{ menu.image }}');">
+        <div class="hidden md:block w-1/2 bg-cover bg-center relative" style="background-image: url('{{ menu.image }}');">
         </div>
     </div>
 </div>
-
-    
-
-    
-
 
 <!-- JavaScript to handle star rating selection -->
 <script>
@@ -100,4 +93,5 @@ Edit Ulas Goyangan {{ menu.name }}
         });
     });
 </script>
+
 {% endblock %}
