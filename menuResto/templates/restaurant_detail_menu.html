@@ -36,10 +36,26 @@
         </div>
     </div>
 
-        <!-- Announcements Section -->
+    <!-- Announcements Section Header -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h2 class="text-2xl font-bold">Announcements</h2>
+            <div class="flex items-center gap-4">
+                <h2 class="text-2xl font-bold">Announcements</h2>
+                
+                <!-- Announcement Filter -->
+                <form method="GET" class="flex items-center">
+                    <select name="announcement_filter" 
+                            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+                            onchange="this.form.submit()">
+                        <option value="all" {% if announcement_filter == 'all' %}selected{% endif %}>All Announcements</option>
+                        <option value="newest" {% if announcement_filter == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if announcement_filter == 'oldest' %}selected{% endif %}>Oldest First</option>
+                    </select>
+                    <!-- Preserve menu filter -->
+                    <input type="hidden" name="menu_filter" value="{{ menu_filter }}">
+                </form>
+            </div>
+            
             <button onclick="openAnnouncementModal()" 
                     class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
                 Add Announcement
@@ -47,7 +63,7 @@
         </div>
         <hr class="mb-6">
         <div class="space-y-4">
-            {% for announcement in restaurant.announcements.all %}
+            {% for announcement in announcements %}
             <div class="border rounded-lg p-4 relative">
                 <!-- Announcement Options Menu (three dots) -->
                 <div class="absolute top-4 right-4" x-data="{ isOpen: false }">
@@ -85,18 +101,36 @@
         </div>
     </div>
 
-    <!-- Menu Section -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex justify-between mb-3">
-            <h2 class="text-2xl font-bold mb-6 justify-center">Menu Items</h2>
-            <button onclick="location.href='{% url 'menuResto:create_menu' restaurant.id %}'" 
-                    class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300">
-                Add Menu
-            </button>
+    <!-- Menu Section Header -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div class="flex items-center gap-4">
+            <h2 class="text-2xl font-bold">Menu Items</h2>
+            
+            <!-- Menu Filter -->
+            <form method="GET" class="flex items-center">
+                <select name="menu_filter" 
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-sm"
+                        onchange="this.form.submit()">
+                    <option value="all" {% if menu_filter == 'all' %}selected{% endif %}>All Items</option>
+                    <option value="price_low" {% if menu_filter == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_high" {% if menu_filter == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    <option value="name_asc" {% if menu_filter == 'name_asc' %}selected{% endif %}>Name: A to Z</option>
+                    <option value="name_desc" {% if menu_filter == 'name_desc' %}selected{% endif %}>Name: Z to A</option>
+                </select>
+                <!-- Preserve announcement filter -->
+                <input type="hidden" name="announcement_filter" value="{{ announcement_filter }}">
+            </form>
         </div>
+        
+        <button onclick="location.href='{% url 'menuResto:create_menu' restaurant.id %}'" 
+                class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+            Add Menu
+        </button>
+    </div>
     <!-- Menu Section - Update the menu card part -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for menu in restaurant.menus.all %}
+        {% for menu in menus %}
         <div class="menu-card relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
             {% if menu.image %}
             <img src="{{ menu.image }}" 
@@ -111,7 +145,7 @@
             <div class="p-4">
                 <h3 class="menu-name font-bold text-xl mb-2">{{ menu.name }}</h3>
                 <p class="text-gray-600 mb-2 line-clamp-2">{{ menu.description }}</p>
-                <p class="menu-price font-medium text-gray-900">{{ menu.price|floatformat:2 }}</p>
+                <p class="menu-price font-medium text-gray-900">Rp {{ menu.price|floatformat:2 }}</p>
             </div>
             
             <!-- Options Menu (three dots) -->

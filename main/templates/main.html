@@ -13,20 +13,35 @@ Restoran di Yogyakarta
     <h1 class="text-5xl font-bold text-gray-900">Mau makan apa?</h1>
     <p class="text-lg text-gray-600 mt-2">Tempat makan terbaik di Yogyakarta</p>
 
-    <!-- Search Bar -->
     <div class="flex justify-center mb-2 mt-6">
-      <div class="relative w-2/3 max-w-2xl shadow-md rounded-full bg-white border border-gray-300">
-          <input type="text" placeholder="Tempat untuk dikunjungi, hal yang dapat dilakukan, hotel..." class="w-full py-4 pl-12 pr-32 text-gray-700 bg-transparent rounded-full focus:outline-none">
-          
-          <!-- Search Icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          
-          <!-- Search Button -->
-          <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">Cari</button>
-      </div>
+        <form action="{% url 'search:results' %}" method="GET" class="relative w-2/3 max-w-2xl">
+            <div class="shadow-md rounded-full bg-white border border-gray-300">
+                <input type="text" 
+                      name="q" 
+                      placeholder="Cari menu favorit anda..." 
+                      value="{{ request.GET.q|default:'' }}"
+                      class="w-full py-4 pl-12 pr-32 text-gray-700 bg-transparent rounded-full focus:outline-none">
+                
+                <!-- Search Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                
+                <!-- Search Button -->
+                <button type="submit" 
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-green-500 transition-all duration-300">
+                    Cari
+                </button>
+            </div>
+        </form>
     </div>
   </div>
 
