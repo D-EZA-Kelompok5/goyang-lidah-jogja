@@ -308,6 +308,20 @@ Restoran di Yogyakarta
 </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const showLogin = urlParams.get('show_login');
+      
+      if (showLogin === 'true') {
+          const loginModal = document.getElementById('loginModal');
+          if (loginModal) {
+              loginModal.classList.remove('hidden');
+          }
+      }
+  });
+</script>
+
 <!-- Modal Toggle Script -->
 <script>
   // Function to toggle modals
