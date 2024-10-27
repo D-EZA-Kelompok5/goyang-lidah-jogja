@@ -20,6 +20,7 @@ from goyangNanti.models import Wishlist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
+from userPreferences.models import MenuTag
 from announcementResto.models import Announcement
 
 # @login_required(login_url='/login')
@@ -33,12 +34,82 @@ def show_main(request):
         # Ambil semua ID menu di wishlist pengguna
         wishlist_items = Wishlist.objects.filter(user=request.user.profile).values_list('menu_id', flat=True)
     
+    if request.user.is_authenticated:
+            # Get all menus with optimized queries
+        menus = Menu.objects.all().prefetch_related('tags', 'restaurant')
+        
+        # Get recommended menus
+        user = request.user
+        
+        user_preference_tag_ids = user.profile.preferences.through.objects.filter(
+            userprofile_id=user.profile.pk
+        ).values_list('tag_id', flat=True)
+
+        if not user_preference_tag_ids:
+            recommended_menus = Menu.objects.none()
+        else:
+            menu_ids = MenuTag.objects.filter(
+                tag_id__in=user_preference_tag_ids
+            ).values_list('menu_id', flat=True)
+
+            recommended_menus = Menu.objects.filter(
+                id__in=menu_ids
+            ).distinct().select_related('restaurant')
+
     context = {
         'form': form,
         'menus': menus,
         'wishlist_items': list(wishlist_items),  # Kirim daftar ID item wishlist ke template
+        
     }
+
+    if request.user.is_authenticated:
+        context['recommended_menus'] = recommended_menus
+    
     return render(request, "main.html", context)
+
+@login_required
+def main(request):
+    # Get all menus with optimized queries
+    menus = Menu.objects.all().prefetch_related('tags', 'restaurant')
+    
+    # Get recommended menus
+    user = request.user
+    
+    user_preference_tag_ids = user.profile.preferences.through.objects.filter(
+        userprofile_id=user.profile.pk
+    ).values_list('tag_id', flat=True)
+
+    if not user_preference_tag_ids:
+        recommended_menus = Menu.objects.none()
+    else:
+        menu_ids = MenuTag.objects.filter(
+            tag_id__in=user_preference_tag_ids
+        ).values_list('menu_id', flat=True)
+
+        recommended_menus = Menu.objects.filter(
+            id__in=menu_ids
+        ).distinct().select_related('restaurant')
+
+    
+    # Add some debugging to check what's happening
+    print(f"User has preferences: {request.user.profile.preferences.exists()}")
+    print(f"Number of recommended menus: {len(recommended_menus)}")
+    
+    context = {
+        'menus': menus,
+        'recommended_menus': recommended_menus,
+        # 'wishlist_items': [item.menu.id for item in request.user.wishlist_set.all()],
+        # Add debug info to template
+        'debug_info': {
+            'has_preferences': request.user.profile.preferences.exists(),
+            'recommended_count': len(recommended_menus),
+        }
+    }
+
+    print(context)
+    
+    return render(request, 'main.html', context)
 
 def register_user(request):
     if request.method == "POST":
@@ -69,7 +140,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('main:show_main')
+            return redirect('main:main')
         else:
             messages.error(request, 'Username or password is incorrect!')
             return render(request, 'main.html', {'login_error': True, 'form': CustomUserCreationForm()})

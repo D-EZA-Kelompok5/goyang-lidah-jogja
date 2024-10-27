@@ -127,20 +127,21 @@ Detail Menu: {{ menu.name }}
                     <p class="text-2xl md:text-3xl text-green-600 font-bold">{{ average_rating }}</p>
                     <p class="text-gray-600">{{ menu.reviews.count }} ulasan</p>
                 </div>
-                <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                  <h2 class="text-xl md:text-2xl font-bold mb-2">Tags</h2>
-                  {% if menu.tags.all %}
-                      <div class="flex flex-wrap gap-2">
-                          {% for tag in menu.tags.all %}
-                              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                  {{ tag.name }}
-                              </span>
-                          {% endfor %}
-                      </div>
-                  {% else %}
-                      <p class="text-gray-600">No tags available</p>
-                  {% endif %}
-                </div>
+                <!-- Tags Section with Enhanced Design -->
+    <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
+      <h2 class="text-xl md:text-2xl font-bold mb-2">Tags</h2>
+      {% if menu.tags.all %}
+          <div class="flex flex-wrap gap-3">
+              {% for tag in menu.tags.all %}
+                  <span class="text-gray-900 px-3 py-1 rounded-full text-sm shadow-md hover:bg-opacity-80 transition duration-300">
+                      {{ tag.name }}
+                  </span>
+              {% endfor %}
+          </div>
+      {% else %}
+          <p class="text-gray-600">No tags available</p>
+      {% endif %}
+  </div>
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
                     <h2 class="text-xl md:text-2xl font-bold mb-2">Lokasi</h2>
                     <p>{{ menu.restaurant.address }}</p>
@@ -164,21 +165,32 @@ Detail Menu: {{ menu.name }}
 
     <!-- User Reviews Section -->
     <div class="mt-12 bg-white shadow-lg rounded-lg p-8">
-        <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
-          <!-- Sorting Dropdown -->
-          <div class="flex justify-end mb-4">
-            <label for="sort-comments" class="mr-2 text-gray-600">Urutkan Berdasarkan:</label>
-            <select id="sort-comments" class="border border-gray-300 rounded-lg py-2 px-4" onchange="sortComments()">
-                <option value="highest">Rating Tertinggi</option>
-                <option value="lowest">Rating Terendah</option>
-            </select>
-        </div>
-
-        <!-- Reviews Container to Load Sorted Reviews -->
-        <div id="comments-section">
-            {% include 'partials/comments_section.html' with reviews=menu.reviews.all %}
-        </div>
-    </div>
+      <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
+  
+      <!-- Filter dan Sorting Dropdown -->
+      <div class="flex flex-col sm:flex-row sm:justify-end sm:space-x-4 space-y-2 sm:space-y-0 mb-4">
+          <select id="filter-rating" class="border border-gray-300 rounded-lg py-2 px-4 w-full sm:w-auto" onchange="filterAndSortComments()">
+              <option value="">Semua Bintang</option>
+              <option value="5">5 Bintang</option>
+              <option value="4">4 Bintang</option>
+              <option value="3">3 Bintang</option>
+              <option value="2">2 Bintang</option>
+              <option value="1">1 Bintang</option>
+          </select>
+          
+          <select id="sort-comments" class="border border-gray-300 rounded-lg py-2 px-4 w-full sm:w-auto" onchange="filterAndSortComments()">
+              <option value="highest">Rating Tertinggi</option>
+              <option value="lowest">Rating Terendah</option>
+              <option value="latest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+          </select>
+      </div>
+  
+      <!-- Reviews Container to Load Filtered and Sorted Reviews -->
+      <div id="comments-section">
+          {% include 'partials/comments_section.html' with reviews=menu.reviews.all %}
+      </div>
+  </div>
 
     <!-- Modals and JavaScript logic remain as originally written, ensuring consistent modal behavior -->
      <!-- Login Modal -->
@@ -193,7 +205,7 @@ Detail Menu: {{ menu.name }}
 
       <!-- Logo (optional) -->
       <div class="flex justify-center mb-4">
-        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        <img src="{% static 'images/logo_sementara.png' %}" alt="Logo" class="w-16 h-16">
       </div>
 
       <!-- Welcome Message -->
@@ -379,15 +391,17 @@ Detail Menu: {{ menu.name }}
   });
 
 
-  function sortComments() {
-  const sortOption = document.getElementById('sort-comments').value;
+  function filterAndSortComments() {
+    const rating = document.getElementById('filter-rating').value;
+    const sortOption = document.getElementById('sort-comments').value;
 
-  fetch(`{% url 'ulasGoyangan:menu_comments' menu.id %}?sort=${sortOption}`)
-      .then(response => response.text())
-      .then(data => {
-          document.getElementById('comments-section').innerHTML = data;
-      })
-      .catch(error => console.error('Error:', error));
+    // Mengirim permintaan AJAX untuk filter dan sort
+    fetch(`{% url 'ulasGoyangan:menu_comments' menu.id %}?rating=${rating}&sort=${sortOption}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('comments-section').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
 }
 </script>
 
