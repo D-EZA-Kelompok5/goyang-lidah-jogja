@@ -18,6 +18,7 @@ from goyangNanti.models import Wishlist
 from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
 from django.db.models import Avg, Count
+from announcementResto.models import Announcement
 
 from goyangNanti.models import Wishlist
 from django.views.decorators.csrf import csrf_exempt
@@ -123,8 +124,10 @@ def menu_detail(request, menu_id):
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    announcements = Announcement.objects.filter(restaurant__owner_id=request.user.id)
     context = {
         'restaurant': restaurant,
+        'announcements': announcements
     }
     return render(request, 'restaurant_detail.html', context)
 
