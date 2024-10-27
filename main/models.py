@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from userPreferences.models import Tag
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -48,7 +47,7 @@ class UserProfile(models.Model):
     )
     
     preferences = models.ManyToManyField(
-        Tag,
+        'userPreferences.Tag',
         related_name='preferences'
     )
 
@@ -100,62 +99,3 @@ class Restaurant(models.Model):
     class Meta:
         verbose_name = 'Restaurant'
         verbose_name_plural = 'Restaurants'
-
-class Menu(models.Model):
-    restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.CASCADE,
-        related_name='menus'
-    )
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.URLField(
-        max_length=500,
-        null=True,
-        blank=True,
-        validators=[URLValidator()]
-    )
-
-    def __str__(self):
-        return f"{self.name} ({self.restaurant.name})"
-
-    class Meta:
-        verbose_name = 'Menu'
-        verbose_name_plural = 'Menus'
-
-class Announcement(models.Model):
-    restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.CASCADE,
-        related_name='announcements'
-    )
-    title = models.CharField(max_length=255)
-    message = models.TextField()
-
-    def __str__(self):
-        return f"{self.title} - {self.restaurant.name}"
-
-    class Meta:
-        verbose_name = 'Announcement'
-        verbose_name_plural = 'Announcements'
-
-class Wishlist(models.Model):
-    user = models.ForeignKey(
-        UserProfile,
-        on_delete=models.CASCADE,
-        related_name='wishlists',
-        limit_choices_to={'role': 'CUSTOMER'}
-    )
-    menu = models.ForeignKey(
-        Menu,
-        on_delete=models.CASCADE,
-        related_name='wishlisted_by'
-    )
-
-    def __str__(self):
-        return f"{self.user.user.username}'s wishlist item: {self.menu.name}"
-
-    class Meta:
-        verbose_name = 'Wishlist'
-        verbose_name_plural = 'Wishlists'

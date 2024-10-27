@@ -1,18 +1,19 @@
 from django.db import models
+from main.models import Restaurant
 
 # Create your models here.
-class Restaurant(models.Model):
-    name = models.CharField(max_length=100)
-    location = models.CharField(max_length=255)
+class Announcement(models.Model):
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name='announcements'
+    )
+    title = models.CharField(max_length=255)
+    message = models.TextField()
 
     def __str__(self):
-         return self.name
+        return f"{self.title} - {self.restaurant.name}"
 
-class Pengumuman(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='pengumuman')
-    judul = models.CharField(max_length=200)
-    konten = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.judul
+    class Meta:
+        verbose_name = 'Announcement'
+        verbose_name_plural = 'Announcements'
