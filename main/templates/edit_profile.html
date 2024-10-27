@@ -4,12 +4,12 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Profile</h1>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 text-center md:text-left">Edit Profile</h1>
     </div>
 
     <!-- Profile Form -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 max-w-md mx-auto">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 max-w-lg mx-auto">
         <form method="POST">
             {% csrf_token %}
 
@@ -89,8 +89,8 @@
             {% endif %}
 
             <!-- Edit Preferences and Submit Button -->
-            <div class="flex justify-between mt-6 space-x-2">
-                <a href="{% url 'userPreferences:edit_preferences' %}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            <div class="flex flex-col sm:flex-row justify-between mt-6 space-y-2 sm:space-y-0 sm:space-x-2">
+                <a href="{% url 'userPreferences:edit_preferences' %}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-center">
                     Edit Preferences
                 </a>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
