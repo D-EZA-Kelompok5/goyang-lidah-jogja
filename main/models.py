@@ -10,7 +10,6 @@ class UserProfile(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='profile',
-        unique=True,
         primary_key=True
     )
     ROLE_CHOICES = [
