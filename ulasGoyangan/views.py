@@ -42,4 +42,20 @@ def delete_review(request, review_id):
         review.delete()
         return redirect('main:menu_detail', menu_id=menu_id)
     
-    return render(request, 'ulasGoyangan/delete_review.html', {'review': review})
+    return render(request, 'delete_review.html', {'review': review})
+
+@login_required
+def my_reviews(request):
+    user_reviews = Review.objects.filter(user=request.user).order_by('-created_at')
+    review_count = user_reviews.count()
+    
+    # Update the review count in UserProfile
+    profile = request.user.profile
+    profile.review_count = review_count
+    profile.update_level()  # Update level based on the new review count
+    
+    return render(request, 'my_reviews.html', {
+        'user_reviews': user_reviews,
+        'review_count': review_count,
+        'level': profile.level
+    })
