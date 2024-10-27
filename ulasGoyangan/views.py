@@ -64,17 +64,25 @@ def my_reviews(request):
     })
 
 def menu_comments(request, menu_id):
-    menu = get_object_or_404(Menu, id=menu_id)
-    sort_option = request.GET.get('sort', 'latest')
+    reviews = Review.objects.filter(menu_id=menu_id)
+    
+    # Mendapatkan parameter filter dan sort dari permintaan GET
+    rating = request.GET.get('rating')
+    sort_option = request.GET.get('sort')
 
+    # Filter berdasarkan rating
+    if rating:
+        reviews = reviews.filter(rating=int(rating))
+
+    # Sort berdasarkan opsi yang dipilih
     if sort_option == 'highest':
-        reviews = menu.reviews.order_by('-rating')
+        reviews = reviews.order_by('-rating')
     elif sort_option == 'lowest':
-        reviews = menu.reviews.order_by('rating')
+        reviews = reviews.order_by('rating')
+    elif sort_option == 'latest':
+        reviews = reviews.order_by('-created_at')
     elif sort_option == 'oldest':
-        reviews = menu.reviews.order_by('created_at')
-    else:  # Default to 'latest'
-        reviews = menu.reviews.order_by('-created_at')
+        reviews = reviews.order_by('created_at')
 
     return render(request, 'partials/comments_section.html', {'reviews': reviews})
 
