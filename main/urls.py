@@ -4,7 +4,7 @@ from . import views
 app_name = 'main'
 
 urlpatterns = [
-    path('', views.show_main, name='main'),  # Landing page
+    path('', views.main, name='main'),  # Landing page
     path('login/', views.login_user, name='login'),  # Login
     path('register/', views.register_user, name='register'),  # Register
     path('logout/', views.logout_user, name='logout'),  # Logout
