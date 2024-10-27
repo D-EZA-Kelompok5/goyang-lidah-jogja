@@ -167,4 +167,7 @@ def edit_profile(request):
     }
     return render(request, 'edit_profile.html', context)
 
+def goyang_nanti(request):
+    return render(request, 'goyang_nanti.html')
+
 
