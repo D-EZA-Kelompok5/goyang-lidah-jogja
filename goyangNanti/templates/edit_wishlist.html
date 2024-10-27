@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <form method="post" class="bg-white shadow-md rounded-lg p-6">
+    <form id="wishlist-form" method="post" class="bg-white shadow-md rounded-lg p-6">
         {% csrf_token %}
 
         <!-- Catatan Field -->
@@ -46,4 +46,34 @@
         <a href="{% url 'wishlist:show_wishlist' %}" class="text-black hover:text-blue-700">Back to Wishlist</a>
     </div>
 </div>
+
+<script>
+document.getElementById('wishlist-form').addEventListener('submit', async function(event) {
+    event.preventDefault();  // Prevent form from submitting normally
+
+    let form = event.target;
+    let formData = new FormData(form);
+
+    // Send AJAX request
+    const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',  // Identifies the request as AJAX
+            'X-CSRFToken': '{{ csrf_token }}'  // Pass CSRF token
+        },
+        body: formData
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        if (result.status === 'success') {
+            window.location.href = result.redirect_url;
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } else {
+        alert('Request failed. Please try again.');
+    }
+});
+</script>
 {% endblock %}
