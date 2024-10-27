@@ -20,6 +20,7 @@ class UserProfile(models.Model):
     ]
     
     LEVEL_CHOICES = [
+        ('BEGINNER', 'Beginner'),
         ('BRONZE', 'Bronze'),
         ('SILVER', 'Silver'),
         ('GOLD', 'Gold'),
@@ -43,7 +44,7 @@ class UserProfile(models.Model):
     level = models.CharField(
         max_length=10,
         choices=LEVEL_CHOICES,
-        default='BRONZE'
+        default='BEGINNER'
     )
     
     preferences = models.ManyToManyField(
@@ -56,8 +57,10 @@ class UserProfile(models.Model):
             self.level = 'GOLD'
         elif self.review_count >= 25:
             self.level = 'SILVER'
-        else:
+        elif self.review_count >= 15:
             self.level = 'BRONZE'
+        else:
+            self.level = 'BEGINNER'
         self.save()
 
     def __str__(self):

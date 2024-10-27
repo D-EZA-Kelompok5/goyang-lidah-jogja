@@ -155,6 +155,8 @@ def edit_profile(request):
     owned_restaurant = None
     if request.user.profile.role == 'RESTAURANT_OWNER':
         owned_restaurant = request.user.profile.owned_restaurant.first()
+    
+    request.user.profile.update_level()
 
     context = {
         'user': request.user,

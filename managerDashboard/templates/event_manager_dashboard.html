@@ -5,7 +5,18 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Event Management Dashboard</h1>
+        <div class="flex items-center space-x-4">
+            <h1 class="text-2xl font-bold text-gray-900">Event Management Dashboard</h1>
+            <select 
+                id="priceFilter" 
+                class="block w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                onchange="EventManager.filterEvents(this.value)"
+            >
+                <option value="all">All Events</option>
+                <option value="free">Free Events</option>
+                <option value="paid">Paid Events</option>
+            </select>
+        </div>
         <button 
             onclick="EventManager.openCreateModal()"
             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -27,7 +38,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 {% for event in events %}
-                <tr>
+                <tr class="event-row" data-fee="{{ event.entrance_fee|default_if_none:0 }}">
                     <td class="px-6 py-4">
                         <div class="text-sm font-medium text-gray-900">{{ event.title }}</div>
                     </td>
@@ -63,7 +74,7 @@
                     </td>
                 </tr>
                 {% empty %}
-                <tr>
+                <tr id="no-events-row">
                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">
                         No events found. Click "Create New Event" to add one.
                     </td>
@@ -177,6 +188,36 @@
 const EventManager = {
     currentEventId: null,
 
+    filterEvents: function(filterValue) {
+        const eventRows = document.querySelectorAll('.event-row');
+        const noEventsRow = document.getElementById('no-events-row');
+        let visibleCount = 0;
+
+        eventRows.forEach(row => {
+            const fee = parseFloat(row.dataset.fee);
+            let showRow = false;
+
+            switch(filterValue) {
+                case 'free':
+                    showRow = fee === 0;
+                    break;
+                case 'paid':
+                    showRow = fee > 0;
+                    break;
+                default: // 'all'
+                    showRow = true;
+            }
+
+            row.style.display = showRow ? '' : 'none';
+            if (showRow) visibleCount++;
+        });
+
+        // Show/hide the "no events" message
+        if (noEventsRow) {
+            noEventsRow.style.display = visibleCount === 0 ? '' : 'none';
+        }
+    },
+
     handleEventAction: function(button, action) {
         const eventData = JSON.parse(button.dataset.event);
         if (action === 'edit') {
@@ -269,7 +310,6 @@ const EventManager = {
     }
 };
 
-// Add event listeners
 document.getElementById('eventForm').addEventListener('submit', EventManager.handleSubmit.bind(EventManager));
 </script>
 {% endblock content %}
