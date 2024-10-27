@@ -376,7 +376,7 @@ Detail Menu: {{ menu.name }}
   function sortComments() {
   const sortOption = document.getElementById('sort-comments').value;
 
-  fetch(`{% url 'main:menu_comments' menu.id %}?sort=${sortOption}`)
+  fetch(`{% url 'ulasGoyangan:menu_comments' menu.id %}?sort=${sortOption}`)
       .then(response => response.text())
       .then(data => {
           document.getElementById('comments-section').innerHTML = data;
