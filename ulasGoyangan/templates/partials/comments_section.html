@@ -1,11 +1,16 @@
 {% for review in reviews %}
-    <div class="bg-gray-100 p-6 rounded-lg shadow-md mb-4 transition-transform transform scale-90 hover:scale-100 duration-500">
-        <div class="flex items-start">
-            <div class="w-12 h-12 rounded-full overflow-hidden mr-4 flex items-center justify-center bg-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/>
-                </svg>
-            </div>
+<div class="bg-gray-100 p-6 rounded-lg shadow-md mb-4 transition-transform transform scale-90 hover:scale-100 duration-500">
+    <div class="flex items-start">
+        <div class="w-12 h-12 rounded-full overflow-hidden mr-4 flex items-center justify-center bg-gray-300">
+            {% if review.user.profile.profile_picture %}
+                <img src="{{ review.user.profile.profile_picture.url }}" alt="{{ review.user.username }}'s Profile Picture" 
+                     class="w-24 h-24 rounded-full mx-auto mb-2 object-cover border-2 border-gray-200">
+            {% else %}
+                <div class="w-24 h-24 rounded-full mx-auto mb-2 bg-gray-300 flex items-center justify-center">
+                    <span class="text-2xl text-gray-600">{{ review.user.username|make_list|first|upper }}</span>
+                </div>
+            {% endif %}
+        </div>
 
             <div class="flex-1">
                 <div class="flex items-center justify-between">
