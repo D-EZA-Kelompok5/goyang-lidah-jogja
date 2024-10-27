@@ -14,4 +14,5 @@ urlpatterns = [
     path('events/', views.event_list, name='event_list'), # URL for restaurant detail
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('goyang_nanti', views.goyang_nanti, name='goyang_nanti'),
+    path('menu/<int:menu_id>/comments/', views.menu_comments, name='menu_comments'),
 ]
