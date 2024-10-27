@@ -14,8 +14,11 @@ from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
 from django.db.models import Avg
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
+from goyangNanti.models import Wishlist
 from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
+from django.db.models import Avg, Count
+
 from goyangNanti.models import Wishlist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator

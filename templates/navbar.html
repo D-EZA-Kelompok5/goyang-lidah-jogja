@@ -1,34 +1,30 @@
 {% load static %}
 <nav class="fixed top-0 left-0 right-0 bg-white shadow-md py-2 z-50 transition-all duration-300" id="navbar">
-  <div class="container mx-auto flex justify-between items-center">
+  <div class="container mx-auto flex justify-between items-center px-4 md:px-8">
     
     <!-- Left Section: Logo -->
     <div class="flex items-center space-x-4">
-      <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja" class="w-10 h-10">
-      <a href="{% url 'main:main' %}" class="text-2xl font-bold text-green-600 hover:text-green-700">
+      <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja" class="w-8 h-8 md:w-10 md:h-10">
+      <a href="{% url 'main:main' %}" class="text-xl md:text-2xl font-bold text-green-600 hover:text-green-700">
         GoyangLidahJogja
       </a>
     </div>
 
-    <!-- Right Section: Links and Login Button -->
-    <div class="flex items-center space-x-4">
-      <!-- Login/Dashboard Buttons -->
+    <!-- Right Section: Links and Menu Toggle Button -->
+    <div class="hidden md:flex items-center space-x-4">
+      <!-- Conditionally Rendered Links for Authenticated Users -->
       {% if user.is_authenticated %}
         {% if user.profile.role == 'EVENT_MANAGER' %}
-          <a href="{% url 'managerDashboard:event_manager_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+          <a href="{% url 'managerDashboard:event_manager_dashboard' %}" class="bg-black text-white px-3 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Manager Dashboard
           </a>
         {% elif user.profile.role == 'CUSTOMER' %}
-          <a href="{% url 'wishlist:show_wishlist' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
-            Wishtlists
+          <a href="{% url 'wishlist:show_wishlist' %}" class="bg-black text-white px-3 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Wishlists
           </a>
         {% elif user.profile.role == 'RESTAURANT_OWNER' %}
-          <a href="{% url 'menuResto:restaurant_dashboard' %}" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+          <a href="{% url 'menuResto:restaurant_dashboard' %}" class="bg-black text-white px-3 py-2 rounded-full hover:bg-gray-800 transition duration-300">
             Restaurant Dashboard
-          </a>
-        {% elif user.profile.role == 'CUSTOMER' %}
-          <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
-            GoyangNanti
           </a>
         {% endif %}
 
@@ -49,13 +45,22 @@
           </button>
           
           <!-- Dropdown Menu -->
-          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden" id="profileMenu">
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden group-hover:block" id="profileMenu">
             <div class="py-1">
               <a href="{% url 'main:edit_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                 Profile
               </a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                My Reviews ({{ user.profile.review_count }})
+              <a href="{% url 'ulasGoyangan:my_reviews' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                My Reviews ({{ review_count }})
+                {% if review_count >= 50 %}
+                  <img src="{% static 'images/gold_icon.png' %}" alt="Gold" class="w-5 h-5 ml-2" title="Gold Level">
+                {% elif review_count >= 25 %}
+                  <img src="{% static 'images/silver_icon.png' %}" alt="Silver" class="w-5 h-5 ml-2" title="Silver Level">
+                {% elif review_count >= 15 %}
+                  <img src="{% static 'images/bronze_icon.png' %}" alt="Bronze" class="w-5 h-5 ml-2" title="Bronze Level">
+                {% else %}
+                  <span class="text-gray-600 ml-2">Newcommers</span>
+                {% endif %}
               </a>
               <hr class="my-1">
               <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
@@ -64,8 +69,55 @@
             </div>
           </div>
         </div>
-        {% else %}
+      {% else %}
         <a href="#" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
+          Masuk
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button id="mobileMenuToggle" class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="md:hidden hidden">
+    <div class="px-4 py-2">
+      {% if user.is_authenticated %}
+        {% if user.profile.role == 'EVENT_MANAGER' %}
+          <a href="{% url 'managerDashboard:event_manager_dashboard' %}" class="block bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Manager Dashboard
+          </a>
+        {% elif user.profile.role == 'CUSTOMER' %}
+          <a href="{% url 'wishlist:show_wishlist' %}" class="block bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Wishlists
+          </a>
+        {% elif user.profile.role == 'RESTAURANT_OWNER' %}
+          <a href="{% url 'menuResto:restaurant_dashboard' %}" class="block bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300">
+            Restaurant Dashboard
+          </a>
+        {% endif %}
+        
+        <a href="{% url 'main:edit_profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+        <a href="{% url 'ulasGoyangan:my_reviews' %}" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+          My Reviews ({{ review_count }})
+          {% if review_count >= 50 %}
+            <img src="{% static 'images/gold_icon.png' %}" alt="Gold" class="w-5 h-5 ml-2" title="Gold Level">
+          {% elif review_count >= 25 %}
+            <img src="{% static 'images/silver_icon.png' %}" alt="Silver" class="w-5 h-5 ml-2" title="Silver Level">
+          {% elif review_count >= 15 %}
+            <img src="{% static 'images/bronze_icon.png' %}" alt="Bronze" class="w-5 h-5 ml-2" title="Bronze Level">
+          {% else %}
+            <span class="text-gray-600 ml-2">Newcommers</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100">Logout</a>
+      {% else %}
+        <a href="#" class="block bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition duration-300" data-modal-toggle="loginModal">
           Masuk
         </a>
       {% endif %}
@@ -73,63 +125,40 @@
   </div>
 </nav>
 
-<!-- Add a spacer div to prevent content from jumping -->
+<!-- Spacer to prevent content from jumping -->
 <div class="h-16"></div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const navbar = document.getElementById('navbar');
-  const profileButton = document.getElementById('profileButton');
-  const profileMenu = document.getElementById('profileMenu');
-  let isOpen = false;
-  let lastScrollY = window.scrollY;
+  document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.getElementById('navbar');
+    const profileButton = document.getElementById('profileButton');
+    const profileMenu = document.getElementById('profileMenu');
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let isOpen = false;
+    let lastScrollY = window.scrollY;
 
-  // Handle navbar visibility on scroll
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY;
-    
-    // Add shadow effect when scrolling
-    if (currentScrollY > 0) {
-      navbar.classList.add('shadow-lg');
-      navbar.classList.remove('shadow-md');
-    } else {
-      navbar.classList.remove('shadow-lg');
-      navbar.classList.add('shadow-md');
-    }
-    
-    lastScrollY = currentScrollY;
-  });
+    // Handle navbar visibility on scroll
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 0) {
+        navbar.classList.add('shadow-lg');
+      } else {
+        navbar.classList.remove('shadow-lg');
+      }
+      lastScrollY = currentScrollY;
+    });
 
-  // Toggle menu on button click
-  profileButton.addEventListener('click', function(e) {
-    e.stopPropagation();
-    isOpen = !isOpen;
-    if (isOpen) {
-      profileMenu.classList.remove('hidden');
-    } else {
-      profileMenu.classList.add('hidden');
-    }
-  });
+    // Toggle dropdown menu
+    profileButton.addEventListener('click', function(e) {
+      e.stopPropagation();
+      isOpen = !isOpen;
+      profileMenu.classList.toggle('hidden', !isOpen);
+    });
 
-  // Prevent menu from closing when clicking inside it
-  profileMenu.addEventListener('click', function(e) {
-    e.stopPropagation();
+    // Toggle mobile menu
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
   });
-
-  // Close menu when clicking anywhere else on the page
-  document.addEventListener('click', function() {
-    if (isOpen) {
-      profileMenu.classList.add('hidden');
-      isOpen = false;
-    }
-  });
-
-  // Optional: Close menu when pressing Escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && isOpen) {
-      profileMenu.classList.add('hidden');
-      isOpen = false;
-    }
-  });
-});
 </script>

@@ -14,3 +14,8 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.menu.name}"
+    
+    def save(self, *args, **kwargs):
+        if self.pk:  # Only update last_edited if the review is being edited (exists)
+            self.last_edited = timezone.now()
+        super().save(*args, **kwargs)
