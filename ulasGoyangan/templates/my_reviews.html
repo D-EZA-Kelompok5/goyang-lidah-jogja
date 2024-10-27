@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block title %}My Reviews{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 md:px-8 my-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">My Reviews</h1>
+    
+    <div class="flex items-center mb-4">
+        <strong class="text-gray-700">Level:</strong>
+        {% if review_count >= 50 %}
+            <img src="{% static 'images/gold_icon.png' %}" alt="Gold Level" class="w-6 h-6 ml-2">
+            <span class="text-gray-800 ml-2">Gold ({{ review_count }} Reviews)</span>
+        {% elif review_count >= 25 %}
+            <img src="{% static 'images/silver_icon.png' %}" alt="Silver Level" class="w-6 h-6 ml-2">
+            <span class="text-gray-800 ml-2">Silver ({{ review_count }} Reviews)</span>
+        {% elif review_count >= 15 %}
+            <img src="{% static 'images/bronze_icon.png' %}" alt="Bronze Level" class="w-6 h-6 ml-2">
+            <span class="text-gray-800 ml-2">Bronze ({{ review_count }} Reviews)</span>
+        {% else %}
+            <span class="text-gray-600 ml-2">(Level up by adding more reviews!)</span>
+        {% endif %}
+    </div>
+    
+    {% if user_reviews %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for review in user_reviews %}
+                <div class="bg-white shadow-lg rounded-lg p-4 transition-transform transform hover:scale-105">
+                    <h2 class="text-xl font-semibold text-gray-900">{{ review.menu.name }}</h2>
+                    
+                    <!-- Star Rating Display -->
+                    <div class="flex items-center mb-2 mt-2">
+                        {% for i in "12345" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if i <= review.rating|stringformat:"i" %}text-yellow-400{% else %}text-gray-300{% endif %}" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
+                            </svg>
+                        {% endfor %}
+                        <span class="text-gray-600 ml-2 text-sm">({{ review.rating }})</span>
+                    </div>
+
+                    <p class="text-gray-600">{{ review.comment }}</p>
+                    <p class="text-gray-500 text-sm mt-2">{{ review.created_at|date:"d M Y, H:i" }}</p>
+                    
+                    <div class="flex mt-4 space-x-2">
+                        <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                        <form action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Are you sure?');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600 mt-6">You haven't submitted any reviews yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

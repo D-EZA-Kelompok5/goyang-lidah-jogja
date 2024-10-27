@@ -6,9 +6,9 @@ Detail Menu: {{ menu.name }}
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto relative">
+<div class="container mx-auto px-4 py-6 md:py-8 relative">
     <!-- Back Button and Love Icon in Top Right Corner -->
-    <div class="absolute top-4 right-4 flex items-center space-x-4">
+    <div class="absolute top-4 right-4 flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
         <!-- Back to Menu Button -->
         <a href="{% url 'main:show_main' %}" class="flex items-center bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 shadow-lg transition-all transform hover:scale-105">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -18,25 +18,25 @@ Detail Menu: {{ menu.name }}
         </a>
 
         <!-- Love Icon with Tooltip -->
-        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105 mt-4"
-        onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
-        {% if is_wishlisted %}
-            <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-        {% else %}
-            <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-        {% endif %}
-    </button>
+        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105"
+                onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
+            {% if is_wishlisted %}
+                <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+            {% else %}
+                <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+            {% endif %}
+        </button>
     </div>
+    
     
     <script>
         function handleLoveClick(event, button) {
             event.preventDefault();
             event.stopPropagation();
-      
             const isAuthenticated = button.getAttribute('data-is-authenticated') === 'True';
             const menuId = button.getAttribute('data-menu-id');
             const loveIcon = document.getElementById(`love-icon-${menuId}`);
-      
+            
             if (!isAuthenticated) {
                 const loginModal = document.getElementById('loginModal');
                 if (loginModal) {
@@ -44,8 +44,7 @@ Detail Menu: {{ menu.name }}
                 }
                 return;
             }
-      
-            // Get CSRF token from cookie
+
             function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -60,9 +59,8 @@ Detail Menu: {{ menu.name }}
                 }
                 return cookieValue;
             }
-      
+
             const csrftoken = getCookie('csrftoken');
-      
             fetch("{% url 'wishlist:add_wishlist' %}", {
                 method: 'POST',
                 headers: {
@@ -71,13 +69,11 @@ Detail Menu: {{ menu.name }}
                 },
                 body: JSON.stringify({
                     'menu_id': menuId,
-                    'catatan': '' // Add empty note since it's required
+                    'catatan': ''
                 })
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
             })
             .then(data => {
@@ -92,19 +88,19 @@ Detail Menu: {{ menu.name }}
                 alert('Terjadi kesalahan saat memproses permintaan Anda');
             });
         }
-      </script>
+    </script>
     
     <!-- Main Content with Image and Details -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden flex mb-8">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row mb-8">
         {% if menu.image %}
-        <div class="w-1/3 p-4">
-            <img src="{{ menu.image }}" alt="{{ menu.name }}" class="w-full h-48 object-cover rounded-lg shadow-sm">
+        <div class="w-full md:w-1/3 p-4">
+            <img src="{{ menu.image }}" alt="{{ menu.name }}" class="w-full h-48 md:h-full object-cover rounded-lg shadow-sm">
         </div>
         {% endif %}
 
-        <div class="w-2/3 p-8 bg-gray-50">
-            <h1 class="text-4xl font-bold mb-4 text-gray-900">{{ menu.name }}</h1>
-            <h2 class="text-2xl font-bold mb-2">
+        <div class="w-full md:w-2/3 p-4 md:p-8 bg-gray-50">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">{{ menu.name }}</h1>
+            <h2 class="text-xl md:text-2xl font-bold mb-2">
                 <a href="{% url 'main:restaurant_detail' restaurant_id=menu.restaurant.id %}" class="text-blue-500 hover:underline">
                     {{ menu.restaurant.name }}
                 </a>
@@ -113,49 +109,31 @@ Detail Menu: {{ menu.name }}
             <!-- Average Rating Display -->
             <div class="flex items-center mb-4">
                 {% for i in "12345" %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 cursor-pointer transition-transform transform hover:scale-110 {% if i <= average_rating|floatformat:0 %}fill-yellow-500{% else %}fill-gray-300{% endif %}" viewBox="0 0 24 24" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6 cursor-pointer transition-transform transform hover:scale-110 {% if i <= average_rating|floatformat:0 %}fill-yellow-500{% else %}fill-gray-300{% endif %}" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
                     </svg>
                 {% endfor %}
                 <span class="text-gray-600 ml-2">({{ average_rating }})</span>
             </div>
 
-            <p class="text-2xl text-green-600 font-semibold mb-4">Rp {{ menu.price|floatformat:2 }}</p>
+            <p class="text-xl md:text-2xl text-green-600 font-semibold mb-4">Rp {{ menu.price|floatformat:2 }}</p>
             <p class="text-gray-700 mb-6 leading-relaxed">{{ menu.description }}</p>
 
             <!-- Restaurant Information Section -->
-            <div class="grid grid-cols-3 gap-4 mb-8 transform translate-y-20 opacity-0 transition duration-1000 ease-out" id="restaurant-info-section">
-                <!-- Penilaian dan Ulasan -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 transform translate-y-20 opacity-0 transition duration-1000 ease-out" id="restaurant-info-section">
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                    <h2 class="text-2xl font-bold mb-2">Penilaian dan Ulasan</h2>
-                    <p class="text-3xl text-green-600 font-bold">{{ average_rating }}</p>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">Penilaian dan Ulasan</h2>
+                    <p class="text-2xl md:text-3xl text-green-600 font-bold">{{ average_rating }}</p>
                     <p class="text-gray-600">{{ menu.reviews.count }} ulasan</p>
-                    <!-- Rating Bars -->
-                    <div class="mt-4">
-                        {% for i in "54321" %}
-                            {% with percentage=rating_distribution.i|default:"0" %}
-                                <div class="flex items-center mb-2">
-                                    <span class="text-sm text-gray-700">{{ i }} Bintang</span>
-                                    <div class="w-full h-2 bg-gray-300 ml-2 rounded relative overflow-hidden">
-                                        <div class="h-full bg-green-500 rounded transition-all duration-500" ></div>
-                                    </div>
-                                </div>
-                            {% endwith %}
-                        {% endfor %}
-                    </div>
                 </div>
-
-                <!-- Rincian Menu -->
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                    <h2 class="text-2xl font-bold mb-2">Rincian</h2>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">Rincian</h2>
                     <p>Kisaran Harga: Rp {{ menu.price|floatformat:2 }}</p>
                     <p>Masakan: {{ menu.restaurant.cuisine }}</p>
                     <p>Diet Khusus: {{ menu.restaurant.special_diet }}</p>
                 </div>
-
-                <!-- Lokasi dan Kontak -->
                 <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
-                    <h2 class="text-2xl font-bold mb-2">Lokasi dan Kontak</h2>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2">Lokasi dan Kontak</h2>
                     <p>{{ menu.restaurant.address }}</p>
                     <p>Telepon: {{ menu.restaurant.phone }}</p>
                     <p>Situs Web: <a href="{{ menu.restaurant.website }}" class="text-blue-500 hover:underline">{{ menu.restaurant.website }}</a></p>
@@ -202,17 +180,13 @@ Detail Menu: {{ menu.name }}
                                     <span class="text-gray-600 ml-2 text-sm">({{ review.rating }})</span>
                                 </div>
                             </div>
-
-                            <!-- Edit/Delete Icons (Visible only to review author) -->
                             {% if review.user == request.user %}
                             <div class="flex space-x-2">
-                                <!-- Edit Button -->
                                 <a href="{% url 'ulasGoyangan:edit_review' review.id %}" class="text-blue-500 hover:text-blue-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M3 17.25V21h3.75l11-11.03-3.75-3.75L3 17.25zm18.71-10.04a1 1 0 0 0 0-1.41l-2.5-2.5a 1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.99-1.67z"/>
                                     </svg>
                                 </a>
-                                <!-- Delete Button with Confirmation -->
                                 <form id="deleteReviewForm" action="{% url 'ulasGoyangan:delete_review' review.id %}" method="post" onsubmit="return confirm('Apakah Anda yakin ingin menghapus ulasan ini?');">
                                     {% csrf_token %}
                                     <button type="submit" class="text-red-500 hover:text-red-700">
@@ -224,10 +198,7 @@ Detail Menu: {{ menu.name }}
                             </div>
                             {% endif %}
                         </div>
-
-                        <!-- Review Content -->
                         <p class="text-gray-800 mt-4">{{ review.comment }}</p>
-                        <!-- Review Date -->
                         <p class="text-gray-500 text-sm mt-2">{{ review.created_at|date:"d M Y, H:i" }}</p>
                         {% if review.last_edited %}
                         <p class="text-gray-400 text-xs italic">Diedit: {{ review.last_edited|date:"d M Y, H:i" }}</p>
@@ -240,149 +211,148 @@ Detail Menu: {{ menu.name }}
         {% endfor %}
     </div>
 
-    <!-- Login Modal -->
+    <!-- Modals and JavaScript logic remain as originally written, ensuring consistent modal behavior -->
+     <!-- Login Modal -->
 <div id="loginModal" class="modal-backdrop {% if login_error %}block{% else %}hidden{% endif %}">
-    <div class="fixed inset-0 flex items-center justify-center">
-      <div class="bg-white rounded-lg p-6 max-w-md w-full">
-        
-        <!-- Close Button -->
-        <div class="flex justify-end">
-          <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
-        </div>
-  
-        <!-- Logo (optional) -->
-        <div class="flex justify-center mb-4">
-          <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
-        </div>
-  
-        <!-- Welcome Message -->
-        <h3 class="text-2xl font-bold text-center">Selamat datang kembali.</h3>
-  
-        <!-- Login Form -->
-        <form method="POST" action="{% url 'main:login' %}" class="mt-6">
-          {% csrf_token %}
-          <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
-            <input type="text" name="username" id="email" 
-              value="{{ request.POST.username }}"
-              placeholder="Username atau Email" required
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            {% if form.username.errors %}
-            <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">Sandi</label>
-            <div class="relative">
-              <input type="password" name="password" id="password" placeholder="Sandi" required
-                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            </div>
-            {% if form.password.errors %}
-            <div class="mt-1 text-red-500 text-sm">{{ form.password.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <!-- Error Handling -->
-          {% if login_error %}
-          <div class="mb-4 text-red-500 text-sm text-center">
-            {% for message in messages %}
-              {{ message }}
-            {% endfor %}
-          </div>
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+      </div>
+
+      <!-- Logo (optional) -->
+      <div class="flex justify-center mb-4">
+        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+      </div>
+
+      <!-- Welcome Message -->
+      <h3 class="text-2xl font-bold text-center">Selamat datang kembali.</h3>
+
+      <!-- Login Form -->
+      <form method="POST" action="{% url 'main:login' %}" class="mt-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700">Username atau Alamat email</label>
+          <input type="text" name="username" id="email" 
+            value="{{ request.POST.username }}"
+            placeholder="Username atau Email" required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.username.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
           {% endif %}
-  
-  
-          <!-- Submit Button -->
-          <div class="mt-6">
-            <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Masuk</button>
-          </div>
-        </form>
-  
-        <!-- Registration Link -->
-        <div class="mt-6 text-center">
-          <span class="text-gray-400">Belum jadi anggota?</span>
-          <a href="#" class="text-black font-bold" data-modal-toggle="registerModal">Daftar Sekarang</a>
         </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-gray-700">Sandi</label>
+          <div class="relative">
+            <input type="password" name="password" id="password" placeholder="Sandi" required
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          {% if form.password.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Error Handling -->
+        {% if login_error %}
+        <div class="mb-4 text-red-500 text-sm text-center">
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+
+        <!-- Submit Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Masuk</button>
+        </div>
+      </form>
+
+      <!-- Registration Link -->
+      <div class="mt-6 text-center">
+        <span class="text-gray-400">Belum jadi anggota?</span>
+        <a href="#" class="text-black font-bold" data-modal-toggle="registerModal">Daftar Sekarang</a>
       </div>
     </div>
   </div>
-  
-  <!-- Register Modal -->
-  <div id="registerModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
-    <div class="fixed inset-0 flex items-center justify-center">
-      <div class="bg-white rounded-lg p-6 max-w-md w-full">
-        
-        <!-- Close Button -->
-        <div class="flex justify-end">
-          <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
-        </div>
-  
-        <!-- Logo (optional) -->
-        <div class="flex justify-center mb-4">
-          <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
-        </div>
-  
-        <!-- Welcome Message -->
-        <h3 class="text-2xl font-bold text-center">Daftar Sekarang</h3>
-  
-        <!-- Register Form -->
-        <form method="POST" action="{% url 'main:register' %}" class="mt-6">
-          {% csrf_token %}
-          <div class="mb-4">
-            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" name="username" id="username" placeholder="Username" required
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            {% if form.username.errors %}
-            <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <div class="mb-4">
-            <label for="password1" class="block text-sm font-medium text-gray-700">Sandi</label>
-            <input type="password" name="password1" id="password1" placeholder="Sandi" required
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            {% if form.password1.errors %}
-            <div class="mt-1 text-red-500 text-sm">{{ form.password1.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <div class="mb-4">
-            <label for="password2" class="block text-sm font-medium text-gray-700">Konfirmasi Sandi</label>
-            <input type="password" name="password2" id="password2" placeholder="Konfirmasi Sandi" required
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            {% if form.password2.errors %}
-            <div class="mt-1 text-red-500 text-sm">{{ form.password2.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <!-- Role Selection -->
-          <div class="mb-10">
-            <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-            {{ form.role }}
-            {% if form.role.errors %}
-                <div class="mt-1 text-red-500 text-sm">{{ form.role.errors }}</div>
-            {% endif %}
-          </div>
-  
-          <!-- Submit Button -->
-          <div class="mt-6">
-            <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Daftar</button>
-          </div>
-        </form>
-        
-        <!-- Back to Login Button -->
-        <div class="mt-6 text-center">
-          <span class="text-gray-400">Sudah punya akun?</span>
-          <a href="#" class="text-black font-bold" data-modal-toggle="loginModal">Masuk</a>
-        </div>
-      </div>
-    </div>
 </div>
 
-  
+<!-- Register Modal -->
+<div id="registerModal" class="modal-backdrop {% if form.errors %}block{% else %}hidden{% endif %}">
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+      
+      <!-- Close Button -->
+      <div class="flex justify-end">
+        <button class="text-gray-500 hover:text-gray-700" data-modal-close>&times;</button>
+      </div>
 
-   
+      <!-- Logo (optional) -->
+      <div class="flex justify-center mb-4">
+        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+      </div>
+
+      <!-- Welcome Message -->
+      <h3 class="text-2xl font-bold text-center">Daftar Sekarang</h3>
+
+      <!-- Register Form -->
+      <form method="POST" action="{% url 'main:register' %}" class="mt-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" name="username" id="username" placeholder="Username" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.username.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.username.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="password1" class="block text-sm font-medium text-gray-700">Sandi</label>
+          <input type="password" name="password1" id="password1" placeholder="Sandi" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.password1.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password1.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="mb-4">
+          <label for="password2" class="block text-sm font-medium text-gray-700">Konfirmasi Sandi</label>
+          <input type="password" name="password2" id="password2" placeholder="Konfirmasi Sandi" required
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          {% if form.password2.errors %}
+          <div class="mt-1 text-red-500 text-sm">{{ form.password2.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Role Selection -->
+        <div class="mb-10">
+          <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+          {{ form.role }}
+          {% if form.role.errors %}
+              <div class="mt-1 text-red-500 text-sm">{{ form.role.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-6">
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg">Daftar</button>
+        </div>
+      </form>
+      
+      <!-- Back to Login Button -->
+      <div class="mt-6 text-center">
+        <span class="text-gray-400">Sudah punya akun?</span>
+        <a href="#" class="text-black font-bold" data-modal-toggle="loginModal">Masuk</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
