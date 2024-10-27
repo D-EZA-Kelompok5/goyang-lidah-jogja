@@ -15,10 +15,7 @@ from managerDashboard.models import Event
 from django.db.models import Avg
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from goyangNanti.models import Wishlist
-from django.db.models import Avg, Count
 from django.contrib.auth.hashers import make_password
-from django.db.models import Avg, Count
-
 from goyangNanti.models import Wishlist
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -83,44 +80,6 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
-def menu_detail(request, menu_id):
-    menu = get_object_or_404(Menu, id=menu_id)
-
-    # Get all reviews for the menu
-    reviews = Review.objects.filter(menu=menu)
-
-    # Calculate average rating
-    if reviews.exists():
-        average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-        average_rating = round(average_rating, 1)
-    else:
-        average_rating = 0  # Default to 0 if no reviews
-
-    # Calculate rating distribution
-    total_reviews = reviews.count()
-    rating_counts = reviews.values('rating').annotate(count=Count('rating'))
-    rating_distribution = {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0}
-
-    for item in rating_counts:
-        rating = str(item['rating'])
-        count = item['count']
-        percentage = (count / total_reviews) * 100
-        rating_distribution[rating] = round(percentage, 2)
-
-    # Pass a fixed range for stars
-    star_range = [1, 2, 3, 4, 5]
-
-    is_wishlisted = Wishlist.objects.filter(user=request.user.profile, menu=menu).exists() if request.user.is_authenticated else False
-    
-    context = {
-        'menu': menu,
-        'average_rating': average_rating,
-        'star_range': star_range,
-        'rating_distribution': rating_distribution,  # Add this line
-        'is_wishlisted' : is_wishlisted,
-    }
-    return render(request, 'menu_detail.html', context)
-
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     context = {
@@ -174,17 +133,3 @@ def goyang_nanti(request):
     return render(request, 'goyang_nanti.html')
 
 
-def menu_comments(request, menu_id):
-    menu = get_object_or_404(Menu, id=menu_id)
-    sort_option = request.GET.get('sort', 'latest')
-
-    if sort_option == 'highest':
-        reviews = menu.reviews.order_by('-rating')
-    elif sort_option == 'lowest':
-        reviews = menu.reviews.order_by('rating')
-    elif sort_option == 'oldest':
-        reviews = menu.reviews.order_by('created_at')
-    else:  # Default to 'latest'
-        reviews = menu.reviews.order_by('-created_at')
-
-    return render(request, 'partials/comments_section.html', {'reviews': reviews})
