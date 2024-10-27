@@ -106,13 +106,23 @@ def edit_wishlist(request, pk):
         form = WishlistForm(request.POST, instance=wishlist)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('wishlist:show_wishlist'))
+            
+            # Respon JSON dengan informasi lengkap untuk frontend
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Wishlist item updated successfully.',
+                'catatan': form.cleaned_data['catatan'],
+                'status_display': wishlist.get_status_display(),
+                'redirect_url': reverse('wishlist:show_wishlist')  # URL tujuan untuk redirect
+            })
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form data is invalid.'}, status=400)
     else:
         form = WishlistForm(instance=wishlist)
     
     context = {
         'form': form,
-        'wishlist': wishlist  # Untuk menampilkan detail menu di template
+        'wishlist': wishlist
     }
     return render(request, 'edit_wishlist.html', context)
 

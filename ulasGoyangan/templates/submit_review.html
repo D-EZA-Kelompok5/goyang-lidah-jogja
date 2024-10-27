@@ -8,32 +8,31 @@ Ulas Goyangan untuk {{ menu.name }}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/stylesUlasGoyangan.css' %}">
 
-
-<div class="flex items-center justify-center w-screen h-screen">
+<div class="flex items-center justify-center min-h-screen px-4 md:px-0">
     <!-- Wrapper for the form and image -->
-    <div class="flex w-3/4 max-w-6xl shadow-lg rounded-lg overflow-hidden">
-
+    <div class="flex flex-col md:flex-row w-full md:w-3/4 max-w-6xl shadow-lg rounded-lg overflow-hidden">
+        
         <!-- Left Section (Background Image) -->
-        <div class="w-1/2 bg-cover bg-center relative" style="background-image: url('{{ menu.image }}');">
+        <div class="w-full md:w-1/2 h-64 md:h-auto bg-cover bg-center relative" style="background-image: url('{{ menu.image }}');">
         </div>
 
         <!-- Right Section (Form) -->
-        <div class="w-1/2 p-8 bg-white bg-opacity-90">
+        <div class="w-full md:w-1/2 p-6 md:p-8 bg-white bg-opacity-90">
             <!-- Page Title -->
-            <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Ulas Goyangan untuk "{{ menu.name }}"</h1>
+            <h1 class="text-xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-800 text-center">Ulas Goyangan untuk "{{ menu.name }}"</h1>
 
             <!-- Review Form -->
-            <form method="post" class="space-y-6">
+            <form method="post" class="space-y-4 md:space-y-6">
                 {% csrf_token %}
                 
                 <!-- Custom Star Rating Field -->
                 <div>
-                    <label class="block text-lg font-medium text-gray-700">Rating</label>
-                    <div id="star-rating" class="flex space-x-1 text-gray-400">
+                    <label class="block text-base md:text-lg font-medium text-gray-700">Rating</label>
+                    <div id="star-rating" class="flex space-x-1 text-gray-400 justify-center md:justify-start">
                         {% for i in "12345" %}
                         <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" class="hidden">
                         <label for="star{{ i }}" class="cursor-pointer star" data-value="{{ i }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 fill-current transition-colors duration-200 hover:fill-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 md:w-8 h-6 md:h-8 fill-current transition-colors duration-200 hover:fill-yellow-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 .587l3.668 7.451L24 9.75l-6 5.847 1.421 8.302L12 18.899 4.579 23.899 6 15.597 0 9.75l8.332-1.712z"/>
                             </svg>
                         </label>
@@ -43,17 +42,16 @@ Ulas Goyangan untuk {{ menu.name }}
 
                 <!-- Comment Field -->
                 <div>
-                    <label for="comment" class="block text-lg font-medium text-gray-700">Komentar</label>
+                    <label for="comment" class="block text-base md:text-lg font-medium text-gray-700">Komentar</label>
                     {{ form.comment }}
                 </div>
 
-
                 <!-- Submit Button -->
                 <div class="pt-4 text-center">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 md:px-6 rounded-lg shadow-md w-full md:w-auto">
                         Kirim Ulasan
                     </button>
-                    <a href="{% url 'main:menu_detail' menu.id %}" class="ml-4 inline-block text-gray-500 hover:text-gray-700">
+                    <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block mt-2 md:inline-block md:ml-4 text-gray-500 hover:text-gray-700">
                         Batal
                     </a>
                 </div>
@@ -61,11 +59,6 @@ Ulas Goyangan untuk {{ menu.name }}
         </div>
     </div>
 </div>
-
-    
-
-    
-
 
 <!-- JavaScript to handle star rating selection -->
 <script>

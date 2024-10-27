@@ -1,0 +1,43 @@
+{% load static %}
+<!-- Footer Section -->
+<footer class="bg-white shadow-md py-6 mt-10">
+    <div class="container mx-auto flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0 lg:space-x-10">
+      
+      <!-- Left Section: Logo and About -->
+      <div class="flex items-center space-x-4">
+        <img src="{% static 'images/logo_sementara.png' %}" alt="GoyangLidahJogja Logo" class="w-10 h-10">
+        <div class="flex flex-col">
+          <a href="{% url 'main:main' %}" class="text-xl font-bold text-green-600 hover:text-green-700">
+            GoyangLidahJogja
+          </a>
+          <p class="text-gray-600 text-sm">
+            Nikmati kuliner terbaik di Jogja!
+          </p>
+        </div>
+      </div>
+  
+      <!-- Middle Section: Navigation Links -->
+      <div class="flex flex-wrap justify-center lg:justify-start space-x-6 text-center lg:text-left">
+        <a href="{% url 'main:event_dashboard' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Event Dashboard</a>
+        <a href="{% url 'main:menu_resto' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Menu Resto</a>
+        <a href="{% url 'main:ulas_goyangan' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Ulas Goyangan</a>
+        <a href="{% url 'main:goyang_nanti' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Goyang Nanti</a>
+        <a href="{% url 'main:annoucement_resto' %}" class="text-gray-700 hover:text-gray-900 transition duration-300">Announcement Resto</a>
+      </div> 
+      
+      <!-- Social Media Section -->
+      <div class="flex justify-center lg:justify-start space-x-4">
+        <a href="https://www.instagram.com/goyanglidahjogja/" target="_blank" class="text-gray-700 hover:text-pink-700 transition duration-300 text-3xl lg:text-4xl">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>   
+    </div> 
+
+    <!-- Copyright Section -->
+    <div class="mt-4 border-t border-gray-200 pt-4 text-center text-gray-600 text-sm">
+      &copy; {{ "now" | date:"Y" }} GoyangLidahJogja. All rights reserved.
+    </div>
+  </footer>
+  
+  <!-- Link to Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">

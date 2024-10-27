@@ -98,7 +98,7 @@ Restoran di Yogyakarta
     <div id="all-menus" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for menu in menus %}
         <div class="menu-item">
-            <a href="{% url 'main:menu_detail' menu.id %}" class="block h-full">
+            <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block h-full">
                 <!-- Menu card content -->
                 <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
                     <!-- Image container -->
@@ -159,7 +159,7 @@ Restoran di Yogyakarta
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for menu in recommended_menus %}
                 <div class="menu-item">
-                    <a href="{% url 'main:menu_detail' menu.id %}" class="block h-full">
+                    <a href="{% url 'ulasGoyangan:menu_detail' menu.id %}" class="block h-full">
                         <!-- Menu card content -->
                         <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow h-full flex flex-col">
                             <!-- Image container -->
@@ -365,7 +365,7 @@ Restoran di Yogyakarta
 
       <!-- Logo (optional) -->
       <div class="flex justify-center mb-4">
-        <img src="path/to/logo.png" alt="Logo" class="w-16 h-16">
+        <img src="static\images\logo_sementara.png" alt="Logo" class="w-16 h-16">
       </div>
 
       <!-- Welcome Message -->
@@ -426,8 +426,22 @@ Restoran di Yogyakarta
 </div>
 </div>
 
-<!-- Modal Toggle Script -->
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const showLogin = urlParams.get('show_login');
+      
+      if (showLogin === 'true') {
+          const loginModal = document.getElementById('loginModal');
+          if (loginModal) {
+              loginModal.classList.remove('hidden');
+          }
+      }
+  });
+</script>
+
+<!-- Modal Toggle Script -->
+<script>  
   // Function to toggle modals
   document.querySelectorAll("[data-modal-toggle]").forEach((el) => {
     el.addEventListener("click", (e) => {

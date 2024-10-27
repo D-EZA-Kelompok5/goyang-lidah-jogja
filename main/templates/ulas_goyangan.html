@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Menu Resto
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Fitur Menu Resto</h1>
+    
+    <p class="text-gray-700 mb-4">
+        Selamat datang di <strong>Menu Resto</strong> – fitur yang dirancang khusus untuk <strong>Restaurant Owner</strong> dalam mengelola menu restoran mereka. Dengan Menu Resto, pemilik restoran dapat:
+    </p>
+    
+    <ul class="list-disc pl-6 text-gray-700 mb-6 space-y-2">
+        <li>Menambah menu baru ke dalam daftar menu restoran dengan detail lengkap, seperti nama, deskripsi, harga, dan gambar.</li>
+        <li>Menampilkan seluruh menu yang tersedia di restoran sehingga pelanggan dapat dengan mudah melihat pilihan yang ditawarkan.</li>
+        <li>Mengedit informasi menu yang ada, termasuk perubahan nama, deskripsi, harga, gambar, dan nama restoran, sesuai dengan kebutuhan.</li>
+        <li>Menghapus menu yang tidak lagi tersedia untuk memastikan informasi menu selalu akurat dan terbaru.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Menggunakan Fitur Menu Resto</h2>
+    <p class="text-gray-700 mb-6">
+        Untuk mulai menggunakan fitur Menu Resto, pastikan Anda sudah masuk sebagai <strong>Restaurant Owner</strong>. Setelah masuk, Anda dapat menambahkan atau memperbarui menu sesuai dengan keinginan Anda, sehingga pelanggan dapat mengetahui pilihan menu yang selalu up-to-date.
+    </p>
+    
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Kendali Penuh atas Menu Restoran Anda</h2>
+    <p class="text-gray-700 mb-6">
+        Dengan fitur Menu Resto, Anda memiliki fleksibilitas penuh untuk memperbarui menu kapan saja. Setiap perubahan pada menu akan langsung diterapkan, memberikan kemudahan kepada pelanggan untuk melihat penawaran terbaru dari restoran Anda.
+    </p>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Mempermudah Pengelolaan Restoran Anda!</h2>
+    <p class="text-gray-700 mb-6">
+        Menu Resto membantu Anda menjaga profesionalitas dan konsistensi dalam menyajikan menu kepada pelanggan. Dengan menu yang terstruktur dan selalu diperbarui, Anda dapat menawarkan pengalaman kuliner yang terbaik bagi pelanggan.
+    </p>
+
+    <a href="{% url 'main:show_main' %}" class="text-blue-500 hover:underline">Kembali ke Halaman Utama</a>
+</div>
+{% endblock %}

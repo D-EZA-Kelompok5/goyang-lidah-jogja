@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Announcement Resto
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Fitur Announcement Resto</h1>
+    
+    <p class="text-gray-700 mb-4">
+        Selamat datang di <strong>Announcement Resto</strong> – fitur yang dirancang khusus untuk <strong>Restaurant Owner</strong> dalam mengelola pengumuman terkait restoran mereka. Dengan Announcement Resto, pemilik restoran dapat:
+    </p>
+    
+    <ul class="list-disc pl-6 text-gray-700 mb-6 space-y-2">
+        <li>Membuat pengumuman baru, seperti promo, diskon, atau informasi penting lainnya yang ingin disampaikan kepada pelanggan.</li>
+        <li>Menampilkan semua pengumuman yang tersedia sehingga pelanggan dapat mengetahui informasi terbaru dari restoran.</li>
+        <li>Mengedit pengumuman yang ada, memungkinkan pemilik restoran untuk memperbarui atau menyesuaikan informasi yang sudah dipublikasikan.</li>
+        <li>Menghapus pengumuman yang sudah tidak relevan atau kadaluarsa, memastikan informasi selalu akurat dan up-to-date.</li>
+    </ul>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Menggunakan Fitur Announcement Resto</h2>
+    <p class="text-gray-700 mb-6">
+        Untuk mulai menggunakan fitur Announcement Resto, pastikan Anda sudah masuk sebagai <strong>Restaurant Owner</strong>. Setelah masuk, Anda dapat menambahkan, mengedit, atau menghapus pengumuman terkait restoran Anda agar pelanggan selalu mendapatkan informasi terbaru.
+    </p>
+    
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Pengumuman Langsung di Halaman Detail Restoran</h2>
+    <p class="text-gray-700 mb-6">
+        Setiap pengumuman yang dibuat dengan fitur Announcement Resto akan ditampilkan langsung di halaman detail restoran. Pelanggan dapat melihat pengumuman tersebut saat mengunjungi halaman detail, memberikan mereka informasi penting yang relevan dan terbaru.
+    </p>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-3">Meningkatkan Keterlibatan Pelanggan dengan Pengumuman</h2>
+    <p class="text-gray-700 mb-6">
+        Dengan fitur ini, pemilik restoran dapat berkomunikasi lebih efektif dengan pelanggan melalui pengumuman yang terstruktur dan selalu diperbarui. Pastikan pelanggan Anda mendapatkan informasi yang tepat mengenai penawaran khusus, diskon, atau acara yang diadakan restoran Anda.
+    </p>
+
+    <a href="{% url 'main:show_main' %}" class="text-blue-500 hover:underline">Kembali ke Halaman Utama</a>
+</div>
+{% endblock %}
