@@ -16,16 +16,6 @@ Detail Menu: {{ menu.name }}
             </svg>
             Kembali ke Daftar Menu
         </a>
-
-        <!-- Love Icon with Tooltip -->
-        <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105"
-                onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
-            {% if is_wishlisted %}
-                <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-            {% else %}
-                <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
-            {% endif %}
-        </button>
     </div>
     
     
@@ -99,7 +89,19 @@ Detail Menu: {{ menu.name }}
         {% endif %}
 
         <div class="w-full md:w-2/3 p-4 md:p-8 bg-gray-50">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">{{ menu.name }}</h1>
+          <div class="flex items-center space-x-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ menu.name }}</h1>
+            
+            <!-- Love Icon with Tooltip -->
+            <button class="flex items-center bg-white text-red-500 p-2 rounded-full border border-gray-300 hover:bg-red-100 transition-all transform hover:scale-105"
+                    onclick="handleLoveClick(event, this)" data-menu-id="{{ menu.id }}" data-is-authenticated="{{ request.user.is_authenticated }}">
+                {% if is_wishlisted %}
+                    <img src="{% static 'images/lovemerah.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+                {% else %}
+                    <img src="{% static 'images/lovehitam.png' %}" alt="Love" class="w-6 h-6" id="love-icon-{{ menu.id }}">
+                {% endif %}
+            </button>
+        </div>
             <h2 class="text-xl md:text-2xl font-bold mb-2">
                 <a href="{% url 'main:restaurant_detail' restaurant_id=menu.restaurant.id %}" class="text-blue-500 hover:underline">
                     {{ menu.restaurant.name }}
