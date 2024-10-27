@@ -143,3 +143,7 @@ GitHub.sublime-settings
 
 # SQLite database
 db.sqlite3
+
+# Cache directories
+django_cache/
+search_cache/
