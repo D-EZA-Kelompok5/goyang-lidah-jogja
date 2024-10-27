@@ -158,21 +158,32 @@ Detail Menu: {{ menu.name }}
 
     <!-- User Reviews Section -->
     <div class="mt-12 bg-white shadow-lg rounded-lg p-8">
-        <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
-          <!-- Sorting Dropdown -->
-          <div class="flex justify-end mb-4">
-            <label for="sort-comments" class="mr-2 text-gray-600">Urutkan Berdasarkan:</label>
-            <select id="sort-comments" class="border border-gray-300 rounded-lg py-2 px-4" onchange="sortComments()">
-                <option value="highest">Rating Tertinggi</option>
-                <option value="lowest">Rating Terendah</option>
-            </select>
-        </div>
-
-        <!-- Reviews Container to Load Sorted Reviews -->
-        <div id="comments-section">
-            {% include 'partials/comments_section.html' with reviews=menu.reviews.all %}
-        </div>
-    </div>
+      <h2 class="text-3xl font-bold mb-6">Ulasan Pengguna</h2>
+  
+      <!-- Filter dan Sorting Dropdown -->
+      <div class="flex justify-end mb-4 space-x-4">
+          <select id="filter-rating" class="border border-gray-300 rounded-lg py-2 px-4" onchange="filterAndSortComments()">
+              <option value="">Semua Bintang</option>
+              <option value="5">5 Bintang</option>
+              <option value="4">4 Bintang</option>
+              <option value="3">3 Bintang</option>
+              <option value="2">2 Bintang</option>
+              <option value="1">1 Bintang</option>
+          </select>
+          
+          <select id="sort-comments" class="border border-gray-300 rounded-lg py-2 px-4" onchange="filterAndSortComments()">
+              <option value="highest">Rating Tertinggi</option>
+              <option value="lowest">Rating Terendah</option>
+              <option value="latest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+          </select>
+      </div>
+  
+      <!-- Reviews Container to Load Filtered and Sorted Reviews -->
+      <div id="comments-section">
+          {% include 'partials/comments_section.html' with reviews=menu.reviews.all %}
+      </div>
+  </div>
 
     <!-- Modals and JavaScript logic remain as originally written, ensuring consistent modal behavior -->
      <!-- Login Modal -->
@@ -373,15 +384,17 @@ Detail Menu: {{ menu.name }}
   });
 
 
-  function sortComments() {
-  const sortOption = document.getElementById('sort-comments').value;
+  function filterAndSortComments() {
+    const rating = document.getElementById('filter-rating').value;
+    const sortOption = document.getElementById('sort-comments').value;
 
-  fetch(`{% url 'ulasGoyangan:menu_comments' menu.id %}?sort=${sortOption}`)
-      .then(response => response.text())
-      .then(data => {
-          document.getElementById('comments-section').innerHTML = data;
-      })
-      .catch(error => console.error('Error:', error));
+    // Mengirim permintaan AJAX untuk filter dan sort
+    fetch(`{% url 'ulasGoyangan:menu_comments' menu.id %}?rating=${rating}&sort=${sortOption}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('comments-section').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
 }
 </script>
 
