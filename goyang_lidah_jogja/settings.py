@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'goyangNanti',
     'ulasGoyangan', 
     'userPreferences',
+    'search'
 ]
 
 
@@ -132,3 +133,17 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import os
+
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+    }
+}
+
+# Search settings
+SEARCH_CACHE_DIR = os.path.join(BASE_DIR, 'search_cache')
+os.makedirs(SEARCH_CACHE_DIR, exist_ok=True)

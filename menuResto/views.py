@@ -23,23 +23,40 @@ def restaurant_dashboard(request):
 @login_required
 @user_passes_test(is_restaurant_owner)
 def restaurant_detail_menu(request, restaurant_id):
-    # Get the restaurant and verify ownership
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     
-    # Check if the current user owns this restaurant
+    # Check ownership
     if restaurant.owner != request.user.profile:
         return HttpResponseForbidden("You don't have permission to access this restaurant.")
     
-    # Get all menus for this restaurant
-    menus = Menu.objects.filter(restaurant_id=restaurant.id)
+    # Get filter parameters
+    menu_filter = request.GET.get('menu_filter', 'all')
+    announcement_filter = request.GET.get('announcement_filter', 'all')
     
-    # Get announcements for this restaurant, ordered by most recent
-    announcements = restaurant.announcements.all().order_by('-id')
+    # Filter menus
+    menus = Menu.objects.filter(restaurant_id=restaurant.id)
+    if menu_filter == 'price_low':
+        menus = menus.order_by('price')
+    elif menu_filter == 'price_high':
+        menus = menus.order_by('-price')
+    elif menu_filter == 'name_asc':
+        menus = menus.order_by('name')
+    elif menu_filter == 'name_desc':
+        menus = menus.order_by('-name')
+    
+    # Filter announcements
+    announcements = restaurant.announcements.all()
+    if announcement_filter == 'newest':
+        announcements = announcements.order_by('-id')
+    elif announcement_filter == 'oldest':
+        announcements = announcements.order_by('id')
     
     context = {
         'restaurant': restaurant,
         'menus': menus,
         'announcements': announcements,
+        'menu_filter': menu_filter,
+        'announcement_filter': announcement_filter,
     }
     return render(request, 'restaurant_detail_menu.html', context)
 

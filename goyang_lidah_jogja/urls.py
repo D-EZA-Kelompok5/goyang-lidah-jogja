@@ -34,4 +34,6 @@ urlpatterns = [
     
     # userPreferences app (for editing user preferences)
     path('userPreferences/', include('userPreferences.urls', namespace='userPreferences')),
+
+    path('search/', include('search.urls')),
 ]
