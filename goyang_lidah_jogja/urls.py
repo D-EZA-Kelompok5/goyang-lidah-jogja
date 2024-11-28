@@ -36,4 +36,7 @@ urlpatterns = [
     path('userPreferences/', include('userPreferences.urls', namespace='userPreferences')),
 
     path('search/', include('search.urls')),
+    
+    # Authentication for flutter
+    path('auth/', include('authentication.urls')),
 ]
