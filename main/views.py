@@ -34,11 +34,38 @@ def show_main(request):
         # Ambil semua ID menu di wishlist pengguna
         wishlist_items = Wishlist.objects.filter(user=request.user.profile).values_list('menu_id', flat=True)
     
+    if request.user.is_authenticated:
+            # Get all menus with optimized queries
+        menus = Menu.objects.all().prefetch_related('tags', 'restaurant')
+        
+        # Get recommended menus
+        user = request.user
+        
+        user_preference_tag_ids = user.profile.preferences.through.objects.filter(
+            userprofile_id=user.profile.pk
+        ).values_list('tag_id', flat=True)
+
+        if not user_preference_tag_ids:
+            recommended_menus = Menu.objects.none()
+        else:
+            menu_ids = MenuTag.objects.filter(
+                tag_id__in=user_preference_tag_ids
+            ).values_list('menu_id', flat=True)
+
+            recommended_menus = Menu.objects.filter(
+                id__in=menu_ids
+            ).distinct().select_related('restaurant')
+
     context = {
         'form': form,
         'menus': menus,
         'wishlist_items': list(wishlist_items),  # Kirim daftar ID item wishlist ke template
+        
     }
+
+    if request.user.is_authenticated:
+        context['recommended_menus'] = recommended_menus
+    
     return render(request, "main.html", context)
 
 @login_required
@@ -95,7 +122,7 @@ def register_user(request):
                 user.profile.save()
 
                 messages.success(request, 'Your account has been successfully created!')
-                return redirect('main:main')
+                return redirect('main:show_main')
 
             except Exception as e:
                 messages.error(request, 'An error occurred while creating your profile. Please try again.')

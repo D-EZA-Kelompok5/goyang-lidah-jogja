@@ -34,9 +34,7 @@ Target pengguna utama platform ini meliputi:
 GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan preferensi pengguna seperti jenis makanan, harga, dan lokasi. Beberapa fitur yang akan membantu pengguna antara lain:
 
 - **Pencarian berbasis "tags"**: Memungkinkan pengguna menemukan restoran yang sesuai dengan selera mereka.
-- **Ulasan komunitas**: Pengguna dapat membaca ulasan jujur dari komunitas mengenai pengalaman mereka di berbagai tempat kuliner.
 - **Fitur GoyangNanti**: Pengguna dapat menyimpan daftar restoran yang ingin dikunjungi di kemudian hari.
-- **Peta lokasi**: Menemukan restoran terdekat dengan fitur peta terintegrasi.
 
 ## Fitur Utama
 
@@ -53,11 +51,7 @@ GoyangLidahJogja menawarkan rekomendasi kuliner yang dipersonalisasi berdasarkan
 ##### Dikerjakan oleh: Malvin Muhammad Raqin
 
 4. **Filter Pencarian**
-   Pengguna dapat memfilter hasil pencarian berdasarkan kriteria seperti:
-   - Kategori kuliner (Indonesian, Western, Korean, dll.)
-   - Harga (Murah, Menengah, Mahal)
-   - Rating pengguna (dari tertinggi ke terendah)
-   - Lokasi (berdasarkan jarak dari lokasi pengguna)
+   Pengguna dapat memfilter hasil pencarian berdasarkan tags
 ##### Dikerjakan oleh: Bersama
 
 5. **Kolom Announcement**  

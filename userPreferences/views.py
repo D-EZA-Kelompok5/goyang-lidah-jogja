@@ -15,7 +15,7 @@ def edit_preferences(request):
         # Update user's preferences
         user_profile.preferences.set(selected_tag_ids)
         messages.success(request, 'Your preferences have been updated successfully!')
-        return redirect('userPreferences:edit_preferences')
+        return redirect('main:main')
     
     # Get user's current preferences
     user_preferences = user_profile.preferences.all()

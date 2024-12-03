@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-a!43tk2==*%06zh2vu^u&b3)tgjq4%^$k%n@w3%ocdieh36d_u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id"] 
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id", "10.0.2.2"] 
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication', # App to connect auth to flutter
+    'corsheaders',
     
     # Custom apps
     'main',
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     'goyangNanti',
     'ulasGoyangan', 
     'userPreferences',
-    'search'
+    'search',
 ]
 
 
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'goyang_lidah_jogja.urls'
@@ -148,3 +151,10 @@ CACHES = {
 # Search settings
 SEARCH_CACHE_DIR = os.path.join(BASE_DIR, 'search_cache')
 os.makedirs(SEARCH_CACHE_DIR, exist_ok=True)
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
