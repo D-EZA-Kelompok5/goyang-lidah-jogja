@@ -1,4 +1,5 @@
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
+from django.core import serializers
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from announcementResto.models import Announcement
@@ -71,8 +72,8 @@ def delete_announcement(request, pk):
     messages.success(request, 'Announcement deleted successfully!')
     return redirect('menuResto:restaurant_detail_menu', restaurant_id=restaurant.id)
 
-def show_json(request):
-    data = Announcement.objects.filter(user=request.user)
+def show_json(request, restaurant_id):
+    data = Announcement.objects.filter(restaurant__id=restaurant_id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 
