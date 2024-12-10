@@ -154,7 +154,7 @@ def logout_user(request):
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    announcements = Announcement.objects.filter(restaurant__owner_id=request.user.id)
+    announcements = Announcement.objects.filter(restaurant__id=restaurant_id)
     context = {
         'restaurant': restaurant,
         'announcements': announcements

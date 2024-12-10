@@ -1,6 +1,6 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.views.decorators.csrf import csrf_exempt
 from announcementResto.models import Announcement
 from main.models import Restaurant
 from menuResto.views import is_restaurant_owner
@@ -70,3 +70,27 @@ def delete_announcement(request, pk):
     announcement.delete()
     messages.success(request, 'Announcement deleted successfully!')
     return redirect('menuResto:restaurant_detail_menu', restaurant_id=restaurant.id)
+
+def show_json(request):
+    data = Announcement.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+
+@csrf_exempt
+def create_Announcement_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_Product = Announcement.objects.create(
+                restaurant=restaurant,
+                title=title,
+                message=message
+            )
+
+        new_Product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+    
