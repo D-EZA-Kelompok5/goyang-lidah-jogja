@@ -221,3 +221,58 @@ def annoucement_resto(request):
 def menu_api(request):
     menus = Menu.objects.all().values('id', 'name', 'description', 'price', 'image')
     return JsonResponse(list(menus), safe=False)
+
+@csrf_exempt
+@login_required
+def edit_profile_api(request):
+    user = request.user
+    profile = user.profile
+    if request.method == 'GET':
+        data = {
+            'user_id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'bio': profile.bio,
+            'profile_picture': profile.profile_picture,
+            'role': profile.role,
+            'level': profile.level,
+            'review_count': profile.review_count,
+            'preferences': list(profile.preferences.values()),  # Sesuaikan jika diperlukan
+            'owned_restaurant': profile.owned_restaurant.name if profile.owned_restaurant else None,
+            # Tambahkan field lain jika diperlukan
+        }
+        # print(data)  # Untuk debugging
+        return JsonResponse({'status': 'success', 'data': data})
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # print("POST received data:", data)  # Untuk debugging
+            
+            # Pastikan untuk mengambil data dari key 'data'
+            payload = data.get('data', {})
+            
+            # Update username
+            user.username = payload.get('username', user.username)
+            
+            # Update password jika disediakan
+            if payload.get('password'):
+                user.set_password(payload['password'])
+            
+            # Update bio dan profile_picture
+            profile.bio = payload.get('bio', profile.bio)
+            profile.profile_picture = payload.get('profile_picture', profile.profile_picture)
+            
+            user.save()
+            profile.save()
+            
+            # # Cek perubahan setelah save
+            # print("After save - username:", user.username)
+            # print("After save - bio:", profile.bio)
+            # print("After save - profile_picture:", profile.profile_picture)
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            # print("Error in POST:", e)  # Untuk debugging
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)

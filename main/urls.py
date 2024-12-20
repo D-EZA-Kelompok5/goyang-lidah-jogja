@@ -19,4 +19,5 @@ urlpatterns = [
     path('event_dashboard', views.event_dashboard, name='event_dashboard'),
     path('annoucement_resto', views.annoucement_resto, name='annoucement_resto'),
     path('api/menus/', menu_api, name='menu_api'),
+    path('edit_profile/json/', views.edit_profile_api, name='edit_profile_api'),
 ]
