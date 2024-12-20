@@ -17,4 +17,5 @@ urlpatterns = [
     path('menu_resto', views.menu_resto, name='menu_resto'),
     path('event_dashboard', views.event_dashboard, name='event_dashboard'),
     path('annoucement_resto', views.annoucement_resto, name='annoucement_resto'),
+    path('edit_profile/json/', views.edit_profile_api, name='edit_profile_api'),
 ]
