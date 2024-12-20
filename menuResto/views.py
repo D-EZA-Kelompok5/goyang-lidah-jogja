@@ -33,7 +33,7 @@ def restaurant_dashboard_api(request):
         'description': restaurant.description,
         'address': restaurant.address,
         'category': restaurant.category,
-        'price_range': restaurant.price_range.split(' ')[0],
+        'price_range': restaurant.price_range,
         'image': restaurant.image,
         'owner': {
             'id': restaurant.owner.user.id,
@@ -116,7 +116,7 @@ def restaurant_detail_menu_api(request, restaurant_id):
         'description': restaurant.description,
         'address': restaurant.address,
         'category': restaurant.category,
-        'price_range': restaurant.price_range.split(' ')[0],
+        'price_range': restaurant.price_range,
         'image': restaurant.image,
         'owner': {
             'id': restaurant.owner.user.id,
@@ -267,7 +267,7 @@ def create_menu_api(request, restaurant_id):
                 'description': restaurant.description,
                 'address': restaurant.address,
                 'category': restaurant.category,
-                'price_range': restaurant.price_range.split(' ')[0],
+                'price_range': restaurant.price_range,
                 'image': restaurant.image,
                 'owner': {
                     'id': restaurant.owner.user.id,
@@ -364,7 +364,7 @@ def edit_menu_api(request, pk):
                 'description': restaurant.description,
                 'address': restaurant.address,
                 'category': restaurant.category,
-                'price_range': restaurant.price_range.split(' ')[0],
+                'price_range': restaurant.price_range,
                 'image': restaurant.image,
                 'owner': {
                     'id': restaurant.owner.user.id,

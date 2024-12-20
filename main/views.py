@@ -218,3 +218,32 @@ def menu_resto(request):
 def annoucement_resto(request):
     return render(request, 'annoucement_resto.html')
 
+def menu_api(request):
+    menus = Menu.objects.all()
+    menu_list = []
+    
+    for menu in menus:
+        menu_list.append({
+            "id": menu.id,
+            "name": menu.name,
+            "description": menu.description,
+            "price": menu.price,
+            "image": menu.image,
+            "restaurant": {
+                "id": menu.restaurant.id,
+                "name": menu.restaurant.name,
+                "description": menu.restaurant.description,
+                "address": menu.restaurant.address,
+                "category": menu.restaurant.category,
+                "price_range": menu.restaurant.price_range,
+                "image": menu.restaurant.image,
+                "owner": {
+                    "id": menu.restaurant.owner.user.id,
+                    "username": menu.restaurant.owner.user.username,
+                }
+            }
+        })
+    
+    return JsonResponse({
+        "menus": menu_list
+    })

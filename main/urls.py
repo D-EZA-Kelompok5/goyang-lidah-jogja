@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+from . import views 
+from .views import menu_api
 
 app_name = 'main'
 
@@ -17,4 +18,5 @@ urlpatterns = [
     path('menu_resto', views.menu_resto, name='menu_resto'),
     path('event_dashboard', views.event_dashboard, name='event_dashboard'),
     path('annoucement_resto', views.annoucement_resto, name='annoucement_resto'),
+    path('api/menus/', menu_api, name='menu_api'),
 ]
