@@ -8,6 +8,7 @@ from menuResto.models import Menu
 from .forms import WishlistForm
 import json
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 # Fungsi untuk memeriksa apakah pengguna adalah 'CUSTOMER'
 def is_customer(user):
@@ -131,3 +132,125 @@ def delete_wishlist(request, pk):
     wishlist = get_object_or_404(Wishlist, pk=pk, user=request.user.profile)
     wishlist.delete()
     return HttpResponseRedirect(reverse('wishlist:show_wishlist'))
+
+
+#flutter
+@login_required
+@user_passes_test(is_customer)
+def wishlist_json(request):
+    wishlists = Wishlist.objects.filter(user=request.user.profile).select_related('menu', 'menu__restaurant')
+
+    data = []
+    for wishlist in wishlists:
+        menu = wishlist.menu
+        restaurant = menu.restaurant
+        menu_image_url = menu.image if menu.image else ''
+
+        data.append({
+            'id': wishlist.id,
+            'catatan': wishlist.catatan,
+            'status': wishlist.status,
+            'menu': {
+                'id': menu.id,
+                'name': menu.name,
+                'description': menu.description,
+                'price': float(menu.price),
+                'image': menu_image_url,
+                'restaurant_name': restaurant.name,
+            }
+        })
+
+    return JsonResponse({'wishlists': data}, status=200)
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_customer)
+def create_wishlist_flutter(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+        menu_id = data.get('menu_id')
+        catatan = data.get('catatan', '')
+        status = data.get('status', 'BELUM')
+
+        try:
+            menu_item = Menu.objects.get(id=menu_id)
+        except Menu.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Menu not found"}, status=404)
+
+        if Wishlist.objects.filter(user=request.user.profile, menu=menu_item).exists():
+            return JsonResponse({"status": "error", "message": "This item is already in the wishlist"}, status=400)
+
+        wishlist = Wishlist.objects.create(
+            user=request.user.profile,
+            menu=menu_item,
+            catatan=catatan,
+            status=status
+        )
+        wishlist.save()
+        return JsonResponse({"status": "success", "id": wishlist.id}, status=201)
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_customer)
+def update_wishlist_flutter(request, id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+        try:
+            wishlist = Wishlist.objects.get(id=id, user=request.user.profile)
+        except Wishlist.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Wishlist item not found"}, status=404)
+
+        catatan = data.get('catatan', wishlist.catatan)
+        status = data.get('status', wishlist.status)
+        menu_id = data.get('menu_id', wishlist.menu.id)
+        if menu_id != wishlist.menu.id:
+            try:
+                new_menu = Menu.objects.get(id=menu_id)
+                if Wishlist.objects.filter(user=request.user.profile, menu=new_menu).exclude(id=wishlist.id).exists():
+                    return JsonResponse({"status": "error", "message": "This menu is already in your wishlist"}, status=400)
+                wishlist.menu = new_menu
+            except Menu.DoesNotExist:
+                return JsonResponse({"status": "error", "message": "New menu not found"}, status=404)
+
+        wishlist.catatan = catatan
+        wishlist.status = status
+        wishlist.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_customer)
+def delete_wishlist_flutter(request, id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+        if data.get('action') == 'delete':
+            try:
+                wishlist = Wishlist.objects.get(id=id, user=request.user.profile)
+            except Wishlist.DoesNotExist:
+                return JsonResponse({"status": "error", "message": "Wishlist item not found"}, status=404)
+
+            wishlist.delete()
+            return JsonResponse({"status": "success"}, status=200)
+        else:
+            return JsonResponse({"status": "error", "message": "Invalid action"}, status=400)
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
