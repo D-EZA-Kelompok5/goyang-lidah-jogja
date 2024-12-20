@@ -218,3 +218,6 @@ def menu_resto(request):
 def annoucement_resto(request):
     return render(request, 'annoucement_resto.html')
 
+def menu_api(request):
+    menus = Menu.objects.all().values('id', 'name', 'description', 'price', 'image')
+    return JsonResponse(list(menus), safe=False)
