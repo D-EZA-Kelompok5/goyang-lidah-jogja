@@ -12,7 +12,7 @@ from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from goyangNanti.models import Wishlist
 from django.contrib.auth.hashers import make_password
@@ -219,9 +219,19 @@ def annoucement_resto(request):
     return render(request, 'annoucement_resto.html')
 
 def menu_api(request):
-    menus = Menu.objects.all()
-    menu_list = []
+    search_query = request.GET.get('search', '')
     
+    # Use Q objects for searching in multiple fields
+    if search_query:
+        menus = Menu.objects.filter(
+            Q(name__icontains=search_query) |  # Search in name
+            Q(description__icontains=search_query) |  # Search in description
+            Q(restaurant__name__icontains=search_query)  # Search in restaurant name
+        )
+    else:
+        menus = Menu.objects.all()
+    
+    menu_list = []
     for menu in menus:
         menu_list.append({
             "id": menu.id,
