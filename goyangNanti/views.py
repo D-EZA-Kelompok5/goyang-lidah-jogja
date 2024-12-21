@@ -135,10 +135,8 @@ def delete_wishlist(request, pk):
 
 
 #flutter
-@login_required
-@user_passes_test(is_customer)
+@csrf_exempt
 def wishlist_json(request):
-    """Get all wishlist items for the authenticated CUSTOMER user."""
     wishlists = Wishlist.objects.filter(user=request.user.profile).select_related('menu', 'menu__restaurant')
 
     data = []
@@ -165,10 +163,7 @@ def wishlist_json(request):
 
 
 @csrf_exempt
-@login_required
-@user_passes_test(is_customer)
 def create_wishlist_flutter(request):
-    """Create a new wishlist item."""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -199,10 +194,7 @@ def create_wishlist_flutter(request):
 
 
 @csrf_exempt
-@login_required
-@user_passes_test(is_customer)
 def update_wishlist_flutter(request, id):
-    """Update an existing wishlist item by its ID."""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -236,10 +228,7 @@ def update_wishlist_flutter(request, id):
 
 
 @csrf_exempt
-@login_required
-@user_passes_test(is_customer)
 def delete_wishlist_flutter(request, id):
-    """Delete a wishlist item by its ID."""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
