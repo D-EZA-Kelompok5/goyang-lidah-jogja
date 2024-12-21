@@ -113,7 +113,7 @@ def api_create_announcement(request, restaurant_id):
 
 @csrf_exempt
 def api_edit_announcement(request, pk):
-    if request.method == 'PUT':
+    if request.method == 'POST':
         try:
             announcement = get_object_or_404(Announcement, pk=pk)
             data = json.loads(request.body)
@@ -145,7 +145,7 @@ def api_edit_announcement(request, pk):
 
 @csrf_exempt
 def api_delete_announcement(request, pk):
-    if request.method == 'DELETE':
+    if request.method == 'POST':
         try:
             announcement = get_object_or_404(Announcement, pk=pk)
             announcement.delete()
