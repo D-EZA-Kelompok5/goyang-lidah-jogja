@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+
+from ulasGoyangan.forms import ReviewForm
 from .models import Review
 from menuResto.models import Menu
 from goyangNanti.models import Wishlist
@@ -133,11 +135,11 @@ def edit_review_json(request, review_id):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-
+@csrf_exempt
 @login_required
 def delete_review_json(request, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
-    if request.method == 'DELETE':
+    if request.method == 'POST':
         try:
             review.delete()
             return JsonResponse({'message': 'Review deleted successfully'}, status=200)

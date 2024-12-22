@@ -144,3 +144,4 @@ def delete_event_flutter(request, id):
             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
     else:
         return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+    
