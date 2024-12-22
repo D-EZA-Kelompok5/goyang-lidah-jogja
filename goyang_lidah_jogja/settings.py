@@ -55,12 +55,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'goyang_lidah_jogja.urls'
@@ -152,7 +152,14 @@ CACHES = {
 SEARCH_CACHE_DIR = os.path.join(BASE_DIR, 'search_cache')
 os.makedirs(SEARCH_CACHE_DIR, exist_ok=True)
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = False  # Nonaktifkan izin semua origin
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "https://vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id", 
+]
+
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
