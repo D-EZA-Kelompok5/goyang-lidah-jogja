@@ -39,6 +39,9 @@ def create_users():
     print("Cleaning up existing data...")
     UserProfile.objects.all().delete()
     User.objects.all().delete()
+
+    print(UserProfile.objects.count())
+    print(User.objects.count())
     
     for username, password in users_data.items():
         try:
