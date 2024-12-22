@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'goyang_lidah_jogja.settings')
 django.setup()
 
 from django.contrib.auth.models import User
-from authentication.models import UserProfile
+from main.models import UserProfile
 from django.db import transaction
 
 # Dictionary of users with their passwords
