@@ -92,8 +92,8 @@ def restaurant_detail_menu_api(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     
     # Check ownership
-    if restaurant.owner != request.user.profile:
-        return JsonResponse({"error": "You don't have permission to access this restaurant."}, status=403)
+    #if restaurant.owner != request.user.profile:
+        #return JsonResponse({"error": "You don't have permission to access this restaurant."}, status=403)
     
     # Get filter parameters
     menu_filter = request.GET.get('menu_filter', 'all')
