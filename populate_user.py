@@ -9,7 +9,7 @@ from django.db import transaction
 
 # Dictionary of users with their passwords
 users_data = {
-    'gordon.ramsay': 'ChefKing2024!',
+    'gordon.ramsay': 'ChefKing2024!', 
     'jamie.oliver': 'PastaMaster123!',
     'thomas.keller': 'FineDine@987',
     'nigella.lawson': 'SassyChef#21',
