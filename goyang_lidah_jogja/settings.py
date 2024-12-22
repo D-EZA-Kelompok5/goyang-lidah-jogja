@@ -153,14 +153,27 @@ SEARCH_CACHE_DIR = os.path.join(BASE_DIR, 'search_cache')
 os.makedirs(SEARCH_CACHE_DIR, exist_ok=True)
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = False  # Nonaktifkan izin semua origin
-
+CORS_ALLOW_ALL_ORIGINS = False  
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-    "https://vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id", 
+    "https://vissuta-gunawan-goyanglidahjogja.pbp.cs.ui.ac.id",
 ]
-
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+    "x-requested-with",
+]
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
 CORS_ALLOW_CREDENTIALS = True
+
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
