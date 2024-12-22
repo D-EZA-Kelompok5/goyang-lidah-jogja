@@ -9,7 +9,7 @@ from userPreferences.models import Tag, MenuTag
 
 # Tag data with associated menu IDs
 tag_data = {
-    'Beverages': [5, 24, 29, 30, 58, 44, 45, 50], 
+    'Beverages': [5, 24, 29, 30, 58, 44, 45, 50],
     'Coffee & Tea': [9, 10, 19, 20, 33, 52],
     'Cold Drinks': [5, 24, 29, 30, 58, 50],
     'Fusion': [22, 23, 54, 49],
