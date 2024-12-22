@@ -14,7 +14,7 @@ urlpatterns = [
     path('submit_review_json/<int:menu_id>/', views.submit_review_json, name='submit_review_json'),  # Review submission URL
     path('edit_review_json/<int:review_id>/', views.edit_review_json, name='edit_review_json'),
     path('delete_review_json/<int:review_id>/', views.delete_review_json, name='delete_review_json'),
-    path('my-reviews_json/', views.my_reviews_json, name='my_reviews_json'),
+    path('my_reviews_json/', views.my_reviews_json, name='my_reviews_json'),
     path('menu_json/<int:menu_id>/comments/', views.menu_comments_json, name='menu_comments_json'),
     path('menu_json/<int:menu_id>/', views.menu_detail_json, name='menu_detail_json'),
     

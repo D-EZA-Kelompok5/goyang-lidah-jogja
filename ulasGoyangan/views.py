@@ -147,21 +147,35 @@ def delete_review_json(request, review_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
 @login_required
 def my_reviews_json(request):
-    reviews = Review.objects.filter(user=request.user).order_by('-created_at')
-    reviews_data = [{
-        'id': review.id,
-        'menu_id': review.menu.id,
-        'menu_name': review.menu.name,
-        'rating': review.rating,
-        'comment': review.comment,
-        'created_at': review.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-    } for review in reviews]
+    user_reviews = Review.objects.filter(user=request.user).order_by('-created_at')
+    review_count = user_reviews.count()
+    
+    # Update the review count in UserProfile
+    profile = request.user.profile
+    profile.review_count = review_count
+    profile.update_level()  # Update level based on the new review count
+
+    # Serialize the reviews into JSON format
+    reviews_data = [
+        {
+            "id": review.id,
+            "user": review.user.username,  # Pastikan ini sesuai dengan model Flutter (string username)
+            "rating": review.rating,
+            "comment": review.comment,
+            "created_at": review.created_at.isoformat(),  # Format ISO untuk DateTime
+        }
+        for review in user_reviews
+    ]
+
+    # Return JSON response
     return JsonResponse({
-        'reviews': reviews_data,
-        'review_count': reviews.count(),
-    }, status=200)
+        "user_reviews": reviews_data,
+        "review_count": review_count,
+        "level": profile.level,  # Sertakan level pengguna jika dibutuhkan
+    })
 
 def menu_comments_json(request, menu_id):
     reviews = Review.objects.filter(menu_id=menu_id)
