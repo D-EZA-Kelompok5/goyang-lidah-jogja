@@ -14,7 +14,6 @@ from django.shortcuts import render, redirect
 
 
 @csrf_exempt
-@login_required
 def submit_review_json(request, menu_id):
     menu = get_object_or_404(Menu, id=menu_id)
     if request.method == 'POST':
@@ -78,7 +77,6 @@ def submit_review_json(request, menu_id):
 
 
 @csrf_exempt
-@login_required
 def edit_review_json(request, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     if request.method == 'POST':
@@ -136,7 +134,6 @@ def edit_review_json(request, review_id):
 
 
 @csrf_exempt
-@login_required
 def delete_review_json(request, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     if request.method == 'POST':
@@ -148,7 +145,6 @@ def delete_review_json(request, review_id):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
-@login_required
 def my_reviews_json(request):
     user_reviews = Review.objects.filter(user=request.user).order_by('-created_at')
     review_count = user_reviews.count()
