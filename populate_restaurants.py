@@ -5,7 +5,7 @@ django.setup()
 
 from django.db import transaction
 from main.models import Restaurant
-from authentication.models import UserProfile
+from main.models import UserProfile
 
 # Restaurant data as a list of tuples
 restaurant_data = [
