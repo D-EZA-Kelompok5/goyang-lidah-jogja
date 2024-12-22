@@ -35,32 +35,49 @@ users_data = {
 def create_users():
     print("Starting user creation...")
     
+    # First, let's clean up any existing data
+    print("Cleaning up existing data...")
+    UserProfile.objects.all().delete()
+    User.objects.all().delete()
+    
     for username, password in users_data.items():
         try:
+            # Check if user exists
+            if User.objects.filter(username=username).exists():
+                print(f"User {username} already exists, skipping...")
+                continue
+                
             # Create User instance
             user = User.objects.create_user(
                 username=username,
                 password=password,
-                email=f"{username}@example.com"  # Default email
+                email=f"{username}@example.com"
             )
             
+            # Check if profile exists
+            if UserProfile.objects.filter(user=user).exists():
+                print(f"Profile for {username} already exists, skipping...")
+                continue
+                
             # Create associated UserProfile
             UserProfile.objects.create(
                 user=user,
                 role='RESTAURANT_OWNER',
-                bio='',  # Empty bio
-                profile_picture=None,  # No profile picture
-                review_count=0,  # Default review count
-                level='BEGINNER'  # Default level
+                bio='',
+                profile_picture=None,
+                review_count=0,
+                level='BEGINNER'
             )
             
             print(f"Created user: {username}")
             
         except Exception as e:
             print(f"Error creating user {username}: {str(e)}")
-            raise
+            continue  # Continue with next user instead of raising
 
-    print("User creation completed successfully!")
+    print("User creation completed!")
+    print(f"Total users created: {User.objects.count()}")
+    print(f"Total profiles created: {UserProfile.objects.count()}")
 
 if __name__ == "__main__":
     create_users()
