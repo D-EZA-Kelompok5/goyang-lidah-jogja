@@ -10,7 +10,7 @@ class Review(models.Model):
     rating = models.PositiveIntegerField(default=0)  # Rating field
     comment = models.TextField()  # Comment field
     created_at = models.DateTimeField(auto_now_add=True)
-    last_edited = models.DateTimeField(null=True, blank=True)  # New field
+    updated_at = models.DateTimeField(null=True, blank=True)  # New field
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.menu.name}"

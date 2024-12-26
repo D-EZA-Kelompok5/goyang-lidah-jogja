@@ -12,7 +12,7 @@ from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from managerDashboard.models import Event
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from ulasGoyangan.models import Review  # Import Review from ulasGoyangan
 from goyangNanti.models import Wishlist
 from django.contrib.auth.hashers import make_password
@@ -154,7 +154,7 @@ def logout_user(request):
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    announcements = Announcement.objects.filter(restaurant__owner_id=request.user.id)
+    announcements = Announcement.objects.filter(restaurant__id=restaurant_id)
     context = {
         'restaurant': restaurant,
         'announcements': announcements
@@ -236,3 +236,97 @@ def menu_resto(request):
 def annoucement_resto(request):
     return render(request, 'annoucement_resto.html')
 
+def menu_api(request):
+    search_query = request.GET.get('search', '')
+    
+    # Use Q objects for searching in multiple fields
+    if search_query:
+        menus = Menu.objects.filter(
+            Q(name__icontains=search_query) |  # Search in name
+            Q(description__icontains=search_query) |  # Search in description
+            Q(restaurant__name__icontains=search_query)  # Search in restaurant name
+        )
+    else:
+        menus = Menu.objects.all()
+    
+    menu_list = []
+    for menu in menus:
+        menu_list.append({
+            "id": menu.id,
+            "name": menu.name,
+            "description": menu.description,
+            "price": menu.price,
+            "image": menu.image,
+            "restaurant": {
+                "id": menu.restaurant.id,
+                "name": menu.restaurant.name,
+                "description": menu.restaurant.description,
+                "address": menu.restaurant.address,
+                "category": menu.restaurant.category,
+                "price_range": menu.restaurant.price_range,
+                "image": menu.restaurant.image,
+                "owner": {
+                    "id": menu.restaurant.owner.user.id,
+                    "username": menu.restaurant.owner.user.username,
+                }
+            }
+        })
+    
+    return JsonResponse({
+        "menus": menu_list
+    })
+
+@csrf_exempt
+@login_required
+def edit_profile_api(request):
+    user = request.user
+    profile = user.profile
+    if request.method == 'GET':
+        data = {
+            'user_id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'bio': profile.bio,
+            'profile_picture': profile.profile_picture,
+            'role': profile.role,
+            'level': profile.level,
+            'review_count': profile.review_count,
+            'preferences': list(profile.preferences.values()),  # Sesuaikan jika diperlukan
+            'owned_restaurant': profile.owned_restaurant.name if profile.owned_restaurant else None,
+            # Tambahkan field lain jika diperlukan
+        }
+        # print(data)  # Untuk debugging
+        return JsonResponse({'status': 'success', 'data': data})
+    elif request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # print("POST received data:", data)  # Untuk debugging
+            
+            # Pastikan untuk mengambil data dari key 'data'
+            payload = data.get('data', {})
+            
+            # Update username
+            user.username = payload.get('username', user.username)
+            
+            # Update password jika disediakan
+            if payload.get('password'):
+                user.set_password(payload['password'])
+            
+            # Update bio dan profile_picture
+            profile.bio = payload.get('bio', profile.bio)
+            profile.profile_picture = payload.get('profile_picture', profile.profile_picture)
+            
+            user.save()
+            profile.save()
+            
+            # # Cek perubahan setelah save
+            # print("After save - username:", user.username)
+            # print("After save - bio:", profile.bio)
+            # print("After save - profile_picture:", profile.profile_picture)
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            # print("Error in POST:", e)  # Untuk debugging
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
