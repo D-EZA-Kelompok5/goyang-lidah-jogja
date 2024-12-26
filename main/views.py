@@ -165,6 +165,24 @@ def event_list(request):
     events = Event.objects.all().order_by('-date')
     return render(request, 'events.html', {'events': events})
 
+def event_list_json(request):
+    events = Event.objects.all().order_by('-date')
+    data = [
+        {
+            'id': event.id,
+            'title': event.title,
+            'description': event.description,
+            'date': event.date.isoformat(),
+            'time': event.time.strftime('%H:%M'),  # Memastikan format waktu yang konsisten
+            'location': event.location,
+            'entrance_fee': float(event.entrance_fee) if event.entrance_fee else None,  # Konversi Decimal ke float
+        }
+        for event in events
+    ]
+    # print(f'Returning {data} events for user {request.user.username}')
+    return JsonResponse({'status': 'success', 'events': data}, safe=False)
+
+
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
